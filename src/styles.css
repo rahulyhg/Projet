@@ -1,0 +1,319 @@
+body {
+  font-family: 'Titillium Web', sans-serif;
+  color: #000;
+      user-select: none;
+          text-align: justify;
+}
+
+li, ul, a {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-decoration: none;
+      color: #000;
+}
+
+#page_nav,
+#page_header {
+    border: 2px solid black;
+}
+
+.lien {
+cursor: pointer;
+}
+
+.lilien {
+    font-weight: bold;
+    border-bottom: 1.5px dotted;
+    transition: 0.25s;
+    display: table;
+}
+
+.lilien:hover {
+  color: #555;
+  border-bottom: 1.5px solid;
+}
+
+.profile_nav {
+    float: left;
+}
+
+.profile_nav img {
+  max-height: 30px;
+  border-radius: 30px;
+}
+
+
+#page_header {
+  position: fixed;
+      right: 0;
+      left: 0;
+      top: 0;
+      height: 50px;
+      background-color: white;
+z-index: 10;
+}
+
+.page_header_block_gauche {
+  margin-left: 30px;
+  padding-top: 10px;
+  float: left;
+}
+
+.page_header_block_droite {
+  margin-right: 30px;
+  padding-top: 10px;
+  float: right;
+}
+
+.page_header_block_gauche li,
+.page_header_block_droite li {
+  font-weight: bold;
+  border-bottom: 1.5px dotted;
+  transition: 0.25s;
+  float: left;
+  margin-left: 15px;
+}
+
+.page_header_block_gauche li:hover,
+.page_header_block_droite li:hover {
+  color: #555;
+  border-bottom: 1.5px solid;
+}
+
+#page_section {
+      left: 300px;
+      right: 0;
+      position: absolute;
+      top: 50px;
+      padding: 200px;
+      padding-top: 100px;
+      padding-bottom: 100px;
+}
+
+#page_nav {
+  left: 0;
+    position: fixed;
+    top: 50px;
+    width: 300px;
+    bottom: 0;
+}
+
+.page_nav_content {
+  padding: 20px;
+}
+
+.page_nav_content img {
+max-width: 260px;
+max-height: 260px;
+}
+
+.page_nav_liens {
+      margin-top: 20px;
+}
+
+.page_nav_liens li {
+  margin-top: 20px;
+display: table;
+margin-left: 20px;
+}
+
+#dev {
+  bottom: 0;
+      position: fixed;
+      border: 2px solid black;
+      left: 0;
+      width: 300px;
+      padding-top: 5px;
+      padding-bottom: 5px;
+      text-align: center;
+      display: inline-flex;
+      z-index: 1000;
+}
+
+#dev .edit,
+#dev .dev {
+  cursor: pointer;
+  float: left;
+  margin: auto;
+}
+
+#dev .edit svg,
+#dev .dev svg {
+  width: 50px;
+    height: 50px;
+}
+
+#devPopup {
+  position: fixed;
+    width: 300px;
+    height: 300px;
+    border: 3px solid black;
+    background-color: #AFAFAF;
+    opacity: 0.9;
+        z-index: 1000;
+        left: 0;
+    bottom: 10%;
+}
+
+.bar {
+      max-height: 100px;
+}
+
+.bar_content {
+      display: flex;
+          border-bottom: 2px solid black;
+          cursor: move;
+}
+
+.bar_content_title {
+      float: left;
+      width: 90%;
+      text-align: center;
+      font-weight: bold;
+}
+
+.bar_content_title li {
+  word-wrap: break-word;
+      font-size: 30px;
+      padding: 0;
+      padding-left: 10px;
+      padding-right: 10px;
+      margin: 0;
+}
+
+.bar_close_button {
+  width: 10%;
+      float: right;
+      text-align: center;
+      margin-top: auto;
+      margin-bottom: auto;
+          cursor: pointer;
+}
+
+.bar_close_button svg {
+  width: 50% !important;
+height: 50% !important;
+}
+
+.devPopup_content li {
+  margin: 20px;
+}
+
+.table {
+  border: 2px solid black;
+  border-collapse: collapse;
+      width: 100%;
+      text-align: center;
+          table-layout: fixed;
+}
+
+.table td,
+.table th
+{
+  border-top: 2px dotted black;
+  border-right: 1px dotted black;
+  padding: 5px;
+  word-wrap: break-word;
+}
+
+.table td input,
+.table td select {
+      width: 100%;
+}
+
+#notify {
+  border: 2px solid black;
+display: table;
+margin-left: 300px;
+margin-top: 60px;
+}
+
+.LoginForm {
+  width: 600px;
+  margin: auto;
+}
+
+.LoginForm_login,
+.LoginForm_password {
+    margin: 20px;
+    display: flex;
+    border: 2px solid #666;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.LoginForm_button {
+  width: 50%;
+}
+
+.LoginForm label {
+  padding: 12px;
+  border-right: 2px solid #666;
+  width: 50px;
+}
+
+.LoginForm label svg {
+  width: 30px !important;
+  height: 30px;
+  color: #666;
+}
+
+.LoginForm input {
+  width: 470px;
+  border: none;
+  padding: 5px;
+  border-bottom-right-radius: 10px;
+  border-top-right-radius: 10px;
+  font-family: 'Titillium Web', sans-serif;
+  font-size: 20px;
+  padding-left: 25px;
+  font-weight: bold;
+}
+
+.LoginForm_ErrorMsg {
+  text-align: left;
+  padding-left: 50px;
+  font-size: 20px;
+  font-weight: bold;
+  color: red;
+}
+
+.LoginForm_content {
+  text-align: center;
+}
+
+.LoginForm_button {
+  margin-top: 20px;
+    border: 2px solid #008800 !important;
+    background-color: #00BE00;
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
+    padding-left: 5px !important;
+}
+
+.LoginForm_button:hover {
+    border: 2px solid #00BE00 !important;
+    background-color: #008800;
+}
+
+.Account_content {
+  float: left;
+  padding: auto;
+  margin: auto;
+  padding: 35px;
+}
+
+.profile {
+  float: left;
+  text-align: center;
+  display: flex;
+}
+
+.profile img {
+  height: 200px;
+  width: 200px;
+}

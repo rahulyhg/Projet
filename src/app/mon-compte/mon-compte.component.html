@@ -1,0 +1,15 @@
+<div *ngIf="_currentUser.group.Access_MonCompte === '1'">
+  <div class="profile">
+      <img src="/src/app/uploads/images/{{ _currentUser.picture }}">
+  </div>
+  <div class="Account_content">
+      <ul>
+          <li>Nom : {{_currentUser.login}}</li>
+          <li>Mot de passe : {{_currentUser.password}}</li>
+          <li>Date de dernière connexion : {{_currentUser.connection}}</li>
+          <li>Groupe : {{_currentUser.group.name}}</li>
+          <li>Image de profil : {{_currentUser.picture}}</li>
+        </ul>
+  </div>
+  
+</div>

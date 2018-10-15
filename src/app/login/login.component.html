@@ -1,0 +1,23 @@
+<div class="LoginForm_content">
+
+    <h1>Sign In : </h1>
+    <form [formGroup]="LoginForm" (ngSubmit)="logIn(LoginForm.value)" class="LoginForm">
+            <div class="LoginForm_login">
+                <label><i class="far fa-user"></i></label>
+                <input type="text" formControlName="login">
+            </div>
+            
+            <div class="LoginForm_password">
+                <label><i class="fas fa-lock"></i></label>
+                <input type="password" formControlName="password">
+            </div>
+
+            <div class="LoginForm_ErrorMsg">
+                    {{ ErrorMsg }}
+                </div>
+        
+            <input class="LoginForm_button" type="submit" value="Se connecter" [disabled]="!LoginForm.valid">
+        </form>
+</div>
+
+    

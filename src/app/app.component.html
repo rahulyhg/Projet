@@ -1,0 +1,57 @@
+<div id="page_content">
+  <header id="page_header">
+    <div class="page_header_block_gauche">
+      <li class="lien"><a routerLink="/Accueil">Accueil</a></li>
+    </div>
+    <div class="page_header_block_droite">
+      <div *ngIf="_currentUser.log === '1'">
+        <a class="profile_nav" routerLink="/MonCompte"><img src="/src/app/uploads/images/{{ _currentUser.picture }}"></a>
+        <li class="lien"><a routerLink="/MonCompte">Mon Compte ( {{ _currentUser.login }} )</a></li>
+        <li class="lien" (click)="logOut()">Se déconnecter</li>
+      </div>
+      <div *ngIf="_currentUser.log === '0'">
+        <li class="lien"><a routerLink="/Login">Se Connecter</a></li>
+      </div>
+    </div>
+  </header>
+
+  <nav id="page_nav">
+    <div class="page_nav_content">
+      <div class="page_nav_logo">
+        <a routerLink="/Accueil"><img class="lien" src="/src/app/uploads/images/logo.jpg"></a>
+      </div>
+      <div class="page_nav_liens">
+        <li class="lien" >Lien 1</li>
+        <li class="lien" >Lien 2</li>
+        <li class="lien" >Lien 3</li>
+        <li class="lien" >Lien 4</li>
+      </div>
+    </div>
+  </nav>
+
+  <section *ngIf="_currentUser.group.droit_dev === '1' && _currentUser.log === '1'" id="dev">
+      <div *ngIf="_currentUser.group.droit_dev === '1'" class="edit" (click)="GestionSitePopup()"><i class="far fa-edit"></i></div>
+      <div *ngIf="_currentUser.group.droit_dev === '1'" class="dev"><a routerLink="/Developer"><i class="fas fa-code"></i></a></div>
+  </section>
+
+  <div id="devPopup" *ngIf="_GestionSitePopupStatut" appMovable>
+    <div id="bar_move" class="bar">
+      <div class="bar_content">
+        <div class="bar_content_title">
+          <li>Test bar dev web</li>
+        </div>
+        <div class="bar_close_button" (click)="GestionSitePopupClose()"><i class="fas fa-times"></i></div>
+      </div>
+    </div>
+  
+    <div class="devPopup_content">
+      <li class='lien'><a routerLink="/UserManagement">Gestion des utilisateurs</a></li>
+      <li class='lien'><a routerLink="/SetGroups">Gestion des groupes</a></li>
+    </div>
+  </div>
+
+  <section id="page_section">
+    <router-outlet></router-outlet>
+  </section>
+
+</div>
