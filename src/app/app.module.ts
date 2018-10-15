@@ -9,6 +9,8 @@ import { AppRoutingModule } from './routing/routing.module';
 import { DraggableModule } from './draggable/draggable.module';
 import { LoginComponent } from './login/login.component';
 import { MonCompteComponent } from './mon-compte/mon-compte.component';
+import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
+import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 
 @NgModule({
   declarations: [
@@ -23,7 +25,9 @@ import { MonCompteComponent } from './mon-compte/mon-compte.component';
     DraggableModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    LoadingBarHttpClientModule,
+    LoadingBarRouterModule
   ],
   providers: [],
   bootstrap: [AppComponent]

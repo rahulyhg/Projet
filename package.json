@@ -20,6 +20,8 @@
     "@angular/platform-browser": "^6.1.0",
     "@angular/platform-browser-dynamic": "^6.1.0",
     "@angular/router": "^6.1.0",
+    "@ngx-loading-bar/http-client": "^2.2.0",
+    "@ngx-loading-bar/router": "^2.2.0",
     "core-js": "^2.5.4",
     "md5-typescript": "^1.0.5",
     "rxjs": "~6.2.0",
