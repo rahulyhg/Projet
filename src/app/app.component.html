@@ -6,7 +6,7 @@
     </div>
     <div class="page_header_block_droite">
       <div *ngIf="_currentUser.log === '1'">
-        <a class="profile_nav" routerLink="/MonCompte"><img src="/src/app/uploads/images/{{ _currentUser.picture }}"></a>
+        <a class="profile_nav" routerLink="/MonCompte"><img src="assets/uploads/images/{{ _currentUser.picture }}"></a>
         <li class="lien"><a routerLink="/MonCompte">Mon Compte ( {{ _currentUser.login }} )</a></li>
         <li class="lien" (click)="logOut()">Se déconnecter</li>
       </div>
@@ -19,7 +19,7 @@
   <nav id="page_nav">
     <div class="page_nav_content">
       <div class="page_nav_logo">
-        <a routerLink="/Accueil"><img class="lien" src="/src/app/uploads/images/logo.jpg"></a>
+        <a routerLink="/Accueil"><img class="lien" src="assets/uploads/images/logo.jpg"></a>
       </div>
       <div class="page_nav_liens">
         <li class="lien" >Lien 1</li>
