@@ -45,9 +45,7 @@ export class AppComponent implements OnInit {
         this.userApi.getUserById(id, login, password).subscribe((data) => {this.create(data, true)});
       }
     } else {
-      var group: Group = { id: null, droit_bar_dev: "0", droit_dev: "0", droit_edit: "0", Access_MonCompte: "0", name: null};
-      var user: User = { id: null, login: null, password: null, log : "0", group: group, picture: null, inscription: null, connection: null };
-      this.create(user, false);
+      this.create(new User(), false);
     }
   }
 
