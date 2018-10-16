@@ -26,6 +26,10 @@ export class UserService {
     return this.http.get<Data>('https://dev.kevin-c.fr/api/User/logOut/' + id + this.create_auth(login, password));
   }
 
+  getUserList(login: string, password: string) {
+    return this.http.get<Data>('https://dev.kevin-c.fr/api/User/getUserList' + this.create_auth(login, password));
+  }
+
   create_auth(login: string, password: string) {
     return "&login=" + login + "&password=" + password;
   }

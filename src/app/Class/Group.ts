@@ -5,6 +5,8 @@ export class Group {
     droit_dev: string;
     Access_MonCompte: string;
     name: string;
+    UserManagement: string;
+    SelectedUserManagement: string;
 
     constructor() {
       this.id = null,
@@ -12,6 +14,8 @@ export class Group {
       this.droit_bar_dev = "0",
       this.droit_dev = "0",
       this.droit_edit = "O",
-      this.Access_MonCompte = "0"
+      this.Access_MonCompte = "0",
+      this.UserManagement = "0",
+      this.SelectedUserManagement = "0"
     }
   }

@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {DatePipe} from '@angular/common';
 
 import { AppComponent } from './app.component';
 import { AccueilComponent } from './accueil/accueil.component';
@@ -11,13 +12,17 @@ import { LoginComponent } from './login/login.component';
 import { MonCompteComponent } from './mon-compte/mon-compte.component';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
+import { UserManagementComponent } from './user-management/user-management.component';
+import { SelectedUserManagementComponent } from './selected-user-management/selected-user-management.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     AccueilComponent,
     LoginComponent,
-    MonCompteComponent
+    MonCompteComponent,
+    UserManagementComponent,
+    SelectedUserManagementComponent
   ],
   imports: [
     BrowserModule,
@@ -29,7 +34,7 @@ import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
     LoadingBarHttpClientModule,
     LoadingBarRouterModule
   ],
-  providers: [],
+  providers: [DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

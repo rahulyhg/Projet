@@ -1,0 +1,26 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th width="10px">id</th>
+      <th width="10px">log</th>
+      <th width="10px">login</th>
+      <th width="10px">password</th>
+      <th width="10px">inscription</th>
+      <th width="10px">connection</th>
+      <th width="10px">group</th>
+      <th width="10px">picture</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let user of UserList">
+      <td>#{{ user.id }}</td>
+      <td>{{ user.log }}</td>
+      <td><li class="lien"><a routerLink="/UserManagement/{{ user.id }}">{{ user.login }}</a></td>
+      <td>{{ user.password }}</td>
+      <td>{{ user.inscription }}</td>
+      <td>{{ user.connection }}</td> 
+      <td><li class="lien"><a routerLink="/SetGroups/{{ user.group }}">{{ user.group.name }}</a></td>
+      <td>{{ user.picture }}</td>
+    </tr>
+  </tbody>
+</table>

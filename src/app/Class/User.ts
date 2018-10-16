@@ -1,4 +1,5 @@
 import { Group } from './Group'; 
+import { DatePipe } from '@angular/common';
 
 export class User {
   id: number;
@@ -7,8 +8,8 @@ export class User {
   group: Group;
   picture: string;
   log: string;
-  connection: Date;
-  inscription: Date;
+  connection: string;
+  inscription: string;
 
   constructor() {
     this.id = null,
