@@ -11,7 +11,7 @@ export class User {
   inscription: Date;
 
   constructor() {
-    this.id = 0,
+    this.id = null,
     this.login = null,
     this.password = null,
     this.group = new Group(),
