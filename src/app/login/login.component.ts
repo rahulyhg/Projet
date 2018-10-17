@@ -33,6 +33,8 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
+    this._currentUser = this.app._currentUser;
+
     if(localStorage.getItem('isLoggedIn') === "true") {
       this.router.navigate(['/Accueil']);
     }

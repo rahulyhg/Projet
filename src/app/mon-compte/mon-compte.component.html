@@ -1,15 +1,15 @@
-<div *ngIf="_currentUser.group.Access_MonCompte === '1'">
+<div *ngIf="_currentUser.group.rightGroupPage.access_MonCompte === '1'">
   <div class="profile">
-      <img src="assets/uploads/images/{{ _currentUser.picture }}">
+      <img src="assets/uploads/images/{{ _currentUser.profile }}">
   </div>
   <div class="Account_content">
       <ul>
           <li>Login : {{_currentUser.login}}</li>
           <li>Mot de passe : {{_currentUser.password}}</li>
-          <li>Date de dernière connexion : {{_currentUser.connection}}</li>
-          <li>Date d'Inscription : {{_currentUser.inscription}}</li>
+          <li>Date de dernière connexion : {{_currentUser.date_time_logIn}}</li>
+          <li>Date d'Inscription : {{_currentUser.date_time_signIn}}</li>
           <li>Groupe : {{_currentUser.group.name}}</li>
-          <li>Image de profil : {{_currentUser.picture}}</li>
+          <li>Image de profil : {{_currentUser.profile}}</li>
         </ul>
   </div>
 </div>

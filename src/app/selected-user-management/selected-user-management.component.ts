@@ -43,7 +43,7 @@ export class SelectedUserManagementComponent implements OnInit {
   ngOnInit() {
     this._currentUser = this.app._currentUser;
 
-    if(this._currentUser.group.SelectedUserManagement !== "1") {
+    if(this._currentUser.group.rightGroupPage.access_SelectedUserManagement !== "1") {
       this.router.navigate(['/Accueil']);
     }
 
@@ -94,13 +94,13 @@ export class SelectedUserManagementComponent implements OnInit {
     this._RightEdit = false;
     this.SelectedUserManagementForm = this.fb.group({
       'id': this.user.id,
-      'log': this.user.log,
+      'statut': this.user.statut,
       'login' : this.user.login,
       'password' : this.user.password,
-      'inscription' : this.ConvertDate(this.user.inscription),
-      'connection' : this.ConvertDate(this.user.connection),
+      'date_time_signIn' : this.ConvertDate(this.user.date_time_signIn),
+      'date_time_logIn' : this.ConvertDate(this.user.date_time_logIn),
       'group' : new FormControl(this.user.group),
-      'picture' : this.user.picture,
+      'profile' : this.user.profile,
     });
   }
 
@@ -120,7 +120,7 @@ export class SelectedUserManagementComponent implements OnInit {
     
     if(user.id === this._currentUser.id) {
       this._currentUser = user;
-      if(this._currentUser.group.SelectedUserManagement !== "1") {
+      if(this._currentUser.group.rightGroupPage.access_SelectedUserManagement !== "1") {
         this.router.navigate(['/Accueil']);
       }
       this.app.ngOnInit();
@@ -141,10 +141,8 @@ export class SelectedUserManagementComponent implements OnInit {
 
   ChangeRightEdit() {
     if(!this._RightEdit) {
-      console.log("true");
       this._RightEdit = true;
     } else {
-      console.log("false");
       this._RightEdit = false;
     }
   }

@@ -26,10 +26,12 @@ export class UserService {
   };
 
   getUserById(id: number, login: string, password: string) {
+    console.log('/api/User/getUserById/' + id + this.create_auth(login, password));
     return this.http.get<Data>('/api/User/getUserById/' + id + this.create_auth(login, password));
   }
 
   auth(login: string, password: string) {
+    console.log('/api/User/Auth/' + login + "/" + this.create_md5(password));
     return this.http.get<Data>('/api/User/Auth/' + login + "/" + this.create_md5(password));
   }
 

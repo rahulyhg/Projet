@@ -1,4 +1,4 @@
-<table class="table">
+<table class="table" *ngIf="_currentUser.group.rightGroupPage.access_UserManagement === '1'">
   <thead>
     <tr>
       <th width="10px">id</th>
@@ -14,13 +14,13 @@
   <tbody>
     <tr *ngFor="let user of UserList">
       <td>#{{ user.id }}</td>
-      <td>{{ user.log }}</td>
+      <td>{{ user.statut }}</td>
       <td><li class="lien"><a routerLink="/UserManagement/{{ user.id }}">{{ user.login }}</a></td>
       <td>{{ user.password }}</td>
-      <td>{{ user.inscription }}</td>
-      <td>{{ user.connection }}</td> 
+      <td>{{ user.date_time_signIn }}</td>
+      <td>{{ user.date_time_logIn }}</td> 
       <td><li class="lien"><a routerLink="/SetGroups/{{ user.group }}">{{ user.group.name }}</a></td>
-      <td>{{ user.picture }}</td>
+      <td>{{ user.profile }}</td>
     </tr>
   </tbody>
 </table>

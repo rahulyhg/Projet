@@ -5,12 +5,12 @@
       <li class="lien"><a routerLink="/Accueil">Accueil</a></li>
     </div>
     <div class="page_header_block_droite">
-      <div *ngIf="_currentUser.log === '1'">
-        <a class="profile_nav" routerLink="/MonCompte"><img src="assets/uploads/images/{{ _currentUser.picture }}"></a>
+      <div *ngIf="_currentUser.statut === '1'">
+        <a class="profile_nav" routerLink="/MonCompte"><img src="assets/uploads/images/{{ _currentUser.profile }}"></a>
         <li class="lien"><a routerLink="/MonCompte">Mon Compte ( {{ _currentUser.login }} )</a></li>
         <li class="lien" (click)="logOut()">Se déconnecter</li>
       </div>
-      <div *ngIf="_currentUser.log === '0'">
+      <div *ngIf="_currentUser.statut === '0'">
         <li class="lien"><a routerLink="/Login">Se Connecter</a></li>
       </div>
     </div>
@@ -30,9 +30,9 @@
     </div>
   </nav>
 
-  <section *ngIf="_currentUser.group.droit_dev === '1' && _currentUser.log === '1'" id="dev">
-      <div *ngIf="_currentUser.group.droit_dev === '1'" class="edit" (click)="GestionSitePopup()"><i class="far fa-edit"></i></div>
-      <div *ngIf="_currentUser.group.droit_dev === '1'" class="dev"><a routerLink="/Developer"><i class="fas fa-code"></i></a></div>
+  <section *ngIf="_currentUser.group.rightGroupPage.access_Main_EditBar === '1'" id="dev">
+      <div *ngIf="_currentUser.group.rightGroupPage.access_Main_EditBar_Edit === '1'" class="edit" (click)="GestionSitePopup()"><i class="far fa-edit"></i></div>
+      <div *ngIf="_currentUser.group.rightGroupPage.access_Main_EditBar_Dev === '1'" class="dev"><a routerLink="/Developer"><i class="fas fa-code"></i></a></div>
   </section>
 
   <div id="devPopup" *ngIf="_GestionSitePopupStatut" appMovable>

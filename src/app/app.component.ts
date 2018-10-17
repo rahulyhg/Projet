@@ -18,23 +18,6 @@ export class AppComponent implements OnInit {
 
   constructor(public userApi: UserService, private router: Router) { }
 
-  logOut() {
-    this.userApi.logOut(this._currentUser.id, this._currentUser.login, this._currentUser.password).subscribe();
-    localStorage.clear();
-    this.router.navigate(['/Accueil']);
-    this.ngOnInit();
-  }
-
-  GestionSitePopup() {
-    if(!this._GestionSitePopupStatut) {
-      this._GestionSitePopupStatut = true;
-    } else { this.GestionSitePopupClose(); }
-  }
-
-  GestionSitePopupClose() {
-    this._GestionSitePopupStatut = false;
-  }
-
   ngOnInit() {
     if(localStorage.getItem('isLoggedIn') === "true") {
       if(localStorage.getItem('User') !== null ) {
@@ -53,7 +36,7 @@ export class AppComponent implements OnInit {
       if(att.api) {
         if(att.auth) {
           if(att.data[0] !== null) {
-            if(att.data[0].log === "1") {
+            if(att.data[0].statut === "1") {
               this._currentUser = att.data[0];
             } else {
               this.logOut();
@@ -68,5 +51,22 @@ export class AppComponent implements OnInit {
         console.log("Error : Could not join API");
       }
     }
+  }
+
+  logOut() {
+    this.userApi.logOut(this._currentUser.id, this._currentUser.login, this._currentUser.password).subscribe();
+    localStorage.clear();
+    this.router.navigate(['/Accueil']);
+    this.ngOnInit();
+  }
+
+  GestionSitePopup() {
+    if(!this._GestionSitePopupStatut) {
+      this._GestionSitePopupStatut = true;
+    } else { this.GestionSitePopupClose(); }
+  }
+
+  GestionSitePopupClose() {
+    this._GestionSitePopupStatut = false;
   }
 }

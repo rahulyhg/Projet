@@ -19,7 +19,7 @@ export class UserManagementComponent implements OnInit {
   ngOnInit() {
     this._currentUser = this.app._currentUser;
 
-    if(this._currentUser.group.UserManagement !== "1") {
+    if(this._currentUser.group.rightGroupPage.access_UserManagement !== "1") {
       this.router.navigate(['/Accueil']);
     }
 
