@@ -14,11 +14,9 @@ interface Data {
 })
 export class AppComponent implements OnInit {
   _GestionSitePopupStatut = false;
-  public _currentUser = null;
+  public _currentUser: User;
 
-  constructor(public userApi: UserService, private router: Router) {
-    this._currentUser = new User();
-   }
+  constructor(public userApi: UserService, private router: Router) { }
 
   logOut() {
     this.userApi.logOut(this._currentUser.id, this._currentUser.login, this._currentUser.password).subscribe();
