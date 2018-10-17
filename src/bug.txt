@@ -2,3 +2,4 @@ Faire en sorte que les liste déroulante fasse apparaitre leur valeur par defaut
 => Les liste ne prénne pas la valeur qu'on leur donne
 Enlever l'erreur avec log
 Le Nom de group ne peux pas avoir d'accent
+enlever l'espace dan le Mon compte entre les parenthèse te le login
