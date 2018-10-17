@@ -26,11 +26,11 @@ export class UserService {
   };
 
   getUserById(id: number, login: string, password: string) {
-    return this.http.get<Data>('/api/User/getUserById/' + id + this.create_auth(login, password));
+    return this.http.get<Data>('https://dev.kevin-c.fr/api/User/getUserById/' + id + this.create_auth(login, password));
   }
 
   auth(login: string, password: string) {
-    return this.http.get<Data>('/api/User/Auth/' + login + "/" + this.create_md5(password));
+    return this.http.get<Data>('https://dev.kevin-c.fr/api/User/Auth/' + login + "/" + this.create_md5(password));
   }
 
   logOut(id: number, login: string, password: string) {
@@ -38,7 +38,7 @@ export class UserService {
   }
 
   getUserList(login: string, password: string) {
-    return this.http.get<Data>('/api/User/getUserList' + this.create_auth(login, password));
+    return this.http.get<Data>('https://dev.kevin-c.fr/api/User/getUserList' + this.create_auth(login, password));
   }
 
   putUserById(user: User, login: string, password: string) {

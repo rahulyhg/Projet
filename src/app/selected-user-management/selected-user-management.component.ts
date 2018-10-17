@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute} from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { DatePipe } from '@angular/common';
 
 import { AppComponent } from '../app.component';
 
@@ -10,8 +9,6 @@ import { Group } from '../Class/Group';
 
 import { UserService } from '../user.service';
 import { GroupService } from '../group.service';
-
-
 
 @Component({
   selector: 'app-selected-user-management',
@@ -35,7 +32,6 @@ export class SelectedUserManagementComponent implements OnInit {
     public userApi: UserService,
     private router: Router,
     private fb: FormBuilder,
-    private datePipe: DatePipe,
     private groupApi: GroupService) {
     this.initData();
   }
@@ -125,6 +121,9 @@ export class SelectedUserManagementComponent implements OnInit {
       }
       this.app.ngOnInit();
     }
+    
+    this.router.navigateByUrl('/UserManagement');
+    this.ngOnInit();
   }
 
   Rep(att: any) {
