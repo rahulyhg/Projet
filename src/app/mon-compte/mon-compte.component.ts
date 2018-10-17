@@ -15,6 +15,7 @@ export class MonCompteComponent implements OnInit {
   public _currentUser: User;
 
   ngOnInit() {
+    this.app.ngOnInit();
     this._currentUser = this.app._currentUser;
     if(this._currentUser.group.rightGroupPage.access_MonCompte !== "1") {
       this.router.navigate(['/Accueil']);

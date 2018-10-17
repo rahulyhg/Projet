@@ -4,3 +4,5 @@ Enlever l'erreur avec log
 Le Nom de group ne peux pas avoir d'accent
 
 Le reload via changement de route ne reshef pas correctment les données suite a la modification des données
+
+Les données ne sont pas rechargé a charque changement de page (comme mon compte)

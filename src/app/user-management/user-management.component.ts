@@ -17,13 +17,13 @@ export class UserManagementComponent implements OnInit {
   UserList: User[];
 
   ngOnInit() {
+    this.app.ngOnInit();
     this._currentUser = this.app._currentUser;
+    this.userApi.getUserList(this._currentUser.login, this._currentUser.password).subscribe((data) => {this.create(data)});
 
     if(this._currentUser.group.rightGroupPage.access_UserManagement !== "1") {
       this.router.navigate(['/Accueil']);
     }
-
-    this.userApi.getUserList(this._currentUser.login, this._currentUser.password).subscribe((data) => {this.create(data)});
   }
 
   create(att) {

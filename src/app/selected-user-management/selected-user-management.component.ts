@@ -3,6 +3,7 @@ import { Router, ActivatedRoute} from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 
 import { AppComponent } from '../app.component';
+import { UserManagementComponent } from '../user-management/user-management.component';
 
 import { User } from '../Class/User';
 import { Group } from '../Class/Group';
@@ -17,7 +18,7 @@ import { GroupService } from '../group.service';
 })
 export class SelectedUserManagementComponent implements OnInit {
 
-  _currentUser = new User();
+  _currentUser: User;
   SelectedUserManagementForm:FormGroup;
 
   post:any;
@@ -117,13 +118,15 @@ export class SelectedUserManagementComponent implements OnInit {
     if(user.id === this._currentUser.id) {
       this._currentUser = user;
       if(this._currentUser.group.rightGroupPage.access_SelectedUserManagement !== "1") {
+        this.app._currentUser = this.user;
+        this.ngOnInit();
+        this.app.ngOnInit();
         this.router.navigate(['/Accueil']);
       }
-      this.app.ngOnInit();
     }
-    
-    this.router.navigateByUrl('/UserManagement');
-    this.ngOnInit();
+    else {
+      this.router.navigate(['/UserManagement']);
+    }
   }
 
   Rep(att: any) {
