@@ -317,3 +317,19 @@ margin-top: 60px;
   height: 200px;
   width: 200px;
 }
+
+.col_gauche,
+.col_droite {
+  width: 50%;
+  float: left;
+}
+
+.col_droite li,
+.col_gauche li {
+  border: 2px solid;
+  padding: 5px;
+}
+
+.col_droite input {
+  width: 99%;
+}

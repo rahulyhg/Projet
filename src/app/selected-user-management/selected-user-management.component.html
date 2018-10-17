@@ -1,31 +1,27 @@
 <form [formGroup]="SelectedUserManagementForm" (ngSubmit)="editUse(SelectedUserManagementForm.value)">
-<table class="table">
-    <thead>
-    <tr>
-        <th>id</th>
-        <th>log</th>
-        <th>login</th>
-        <th>password</th>
-        <th>inscription</th>
-        <th>connection</th>
-        <!-- <th>group</th> -->
-        <th>picture</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td><input type="text" formControlName="id"/></td>
-        <td><input type="text" formControlName="log"/></td>
-        <td><input type="text" formControlName="login"/></td>
-        <td><input type="password" formControlName="password"/></td>
-        <td><input type="datetime-local" formControlName="inscription"/></td>
-        <td><input type="datetime-local" formControlName="connection"/></td>
-        <!-- <td><SELECT id="group" >
-        <option formControlName="group"></option>
-        </SELECT></td> -->
-        <td><input type="text" formControlName="picture"/></td>
-    </tr>
-    </tbody>
-</table>
-<button type="submit" [disabled]="!SelectedUserManagementForm.valid">Valider</button>
+    <div class="col_gauche">
+        <ul>
+            <li>id</li>
+            <li>log</li>
+            <li>login</li>
+            <li>password</li>
+            <li>inscription</li>
+            <li>connection</li>
+            <li>group</li>
+            <li>picture</li>
+        </ul>
+    </div>
+    <div class="col_droite">
+        <ul>
+            <li><input type="text" formControlName="id"/></li>
+            <li><input type="text" formControlName="log"/></li>
+            <li><input type="text" formControlName="login"/></li>
+            <li><input type="text" formControlName="password"/></li>
+            <li><input type="text" formControlName="inscription"/></li>
+            <li><input type="text" formControlName="connection"/></li>
+            <li><input type="text" formControlName="group"/></li>
+            <li><input type="text" formControlName="picture"/></li>
+        </ul>
+    </div>
+    <button type="submit" [disabled]="!SelectedUserManagementForm.valid">Valider</button>
 </form>

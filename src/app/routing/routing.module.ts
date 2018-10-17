@@ -8,7 +8,6 @@ import { UserManagementComponent } from '../user-management/user-management.comp
 import { SelectedUserManagementComponent } from '../selected-user-management/selected-user-management.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/Accueil', pathMatch: 'full' },
   { path: 'Accueil', component: AccueilComponent },
   { path: 'Login', component: LoginComponent },
   { path: 'MonCompte', component: MonCompteComponent },

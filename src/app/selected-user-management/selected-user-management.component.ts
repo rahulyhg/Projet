@@ -4,7 +4,6 @@ import { User } from '../Class/User';
 import { AppComponent } from '../app.component';
 import { UserService } from '../user.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { format } from 'path';
 import {DatePipe} from '@angular/common';
 
 @Component({
