@@ -1,0 +1,7 @@
+{
+    "/api": {
+        "target": "https://dev.kevin-c.fr",
+        "secure": false,
+        "changeOrigin": true
+    }
+}

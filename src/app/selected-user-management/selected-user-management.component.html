@@ -1,27 +1,27 @@
-<form [formGroup]="SelectedUserManagementForm" (ngSubmit)="editUse(SelectedUserManagementForm.value)">
-    <div class="col_gauche">
-        <ul>
-            <li>id</li>
-            <li>log</li>
-            <li>login</li>
-            <li>password</li>
-            <li>inscription</li>
-            <li>connection</li>
-            <li>group</li>
-            <li>picture</li>
-        </ul>
-    </div>
-    <div class="col_droite">
-        <ul>
-            <li><input type="text" formControlName="id"/></li>
-            <li><input type="text" formControlName="log"/></li>
-            <li><input type="text" formControlName="login"/></li>
-            <li><input type="text" formControlName="password"/></li>
-            <li><input type="text" formControlName="inscription"/></li>
-            <li><input type="text" formControlName="connection"/></li>
-            <li><input type="text" formControlName="group"/></li>
-            <li><input type="text" formControlName="picture"/></li>
-        </ul>
-    </div>
-    <button type="submit" [disabled]="!SelectedUserManagementForm.valid">Valider</button>
-</form>
+<div *ngIf="_currentUser.group.Access_MonCompte === '1'">
+    <form [formGroup]="SelectedUserManagementForm" (ngSubmit)="editUse(SelectedUserManagementForm.value)">
+        <div class="profile">
+            <img src="assets/uploads/images/{{ _currentUser.picture }}">
+        </div>
+        <div class="Account_content">
+            <ul>
+                <li>Login : <input type="text" formControlName="id"/></li>
+                <li>Mot de passe : <input type="text" formControlName="password"/></li>
+                <li>Statut de connexion : <input type="text" formControlName="log"/></li>
+                <li>Date de dernière connexion : <input type="datetime-local" formControlName="connection"/></li>
+                <li>Date d'Inscription : <input type="datetime-local" formControlName="inscription"/></li>
+                <li> Group :
+                    <select formControlName="group">
+                        <option *ngFor="let group of GroupList" [ngValue]="group">{{ group.name }}</option>
+                    </select>
+                </li>
+                <li>Image de profil : <input type="text" formControlName="picture"/></li>
+            </ul>
+        </div>
+        <div class="button" (click)="ChangeRightEdit()">Modifier les doits de l'utilisateur</div>
+        <div *ngIf="_RightEdit" class="RightEdit">
+            <li>RightEdit</li>
+        </div>
+        <button type="submit" [disabled]="!SelectedUserManagementForm.valid">Valider</button>
+    </form>
+</div>

@@ -305,6 +305,7 @@ margin-top: 60px;
   padding: auto;
   margin: auto;
   padding: 35px;
+  padding-top: 0;
 }
 
 .profile {
@@ -328,8 +329,41 @@ margin-top: 60px;
 .col_gauche li {
   border: 2px solid;
   padding: 5px;
+  height: 30px;
 }
 
-.col_droite input {
+.col_droite input,
+.col_droite select {
   width: 99%;
+  height: 85%;
+}
+
+.RightEdit {
+  float: left;
+  width: 100%;
+  margin-top: 30px;
+}
+.button {
+  border-color: rgb(216, 216, 216) rgb(209, 209, 209) rgb(186, 186, 186);
+  border-style: solid;
+  border-width: 1px;
+  padding: 1px 7px 2px;
+  align-items: flex-start;
+  text-align: center;
+  cursor: default;
+  color: buttontext;
+  background-color: buttonface;
+  box-sizing: border-box;
+  border-image: initial;
+  text-rendering: auto;
+  letter-spacing: normal;
+  word-spacing: normal;
+  text-transform: none;
+  text-indent: 0px;
+  text-shadow: none;
+  display: inline-block;
+  margin: 0em;
+  font: 400 11px system-ui;
+  /* -webkit-writing-mode: horizontal-tb !important; */
+  -webkit-appearance: button;
 }

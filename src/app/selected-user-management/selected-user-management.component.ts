@@ -1,10 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute} from '@angular/router';
-import { User } from '../Class/User';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { DatePipe } from '@angular/common';
+
 import { AppComponent } from '../app.component';
+
+import { User } from '../Class/User';
+import { Group } from '../Class/Group';
+
 import { UserService } from '../user.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import {DatePipe} from '@angular/common';
+import { GroupService } from '../group.service';
+
+
 
 @Component({
   selector: 'app-selected-user-management',
@@ -19,7 +26,17 @@ export class SelectedUserManagementComponent implements OnInit {
   post:any;
   user= new User();
 
-  constructor(private route: ActivatedRoute, public app: AppComponent, public userApi: UserService, private router: Router, private fb: FormBuilder, private datePipe: DatePipe) {
+  _RightEdit = false;
+
+  GroupList: Group[];
+
+  constructor(private route: ActivatedRoute,
+    public app: AppComponent,
+    public userApi: UserService,
+    private router: Router,
+    private fb: FormBuilder,
+    private datePipe: DatePipe,
+    private groupApi: GroupService) {
     this.initData();
   }
 
@@ -31,12 +48,12 @@ export class SelectedUserManagementComponent implements OnInit {
     }
 
     this.user.id = Number(this.route.snapshot.paramMap.get('id'));
-    this.userApi.getUserById(this.user.id, this._currentUser.login, this._currentUser.password).subscribe((data) => {this.create(data)}); 
+    this.userApi.getUserById(this.user.id, this._currentUser.login, this._currentUser.password).subscribe((data) => {this.createUser(data)}); 
 
-    
+    this.groupApi.getGroupList(this._currentUser.login, this._currentUser.password).subscribe((data) => {this.createGroup(data)}); 
   }
 
-  create(att) {
+  createUser(att) {
     if(att !== null) {
       if(att.api) {
         if(att.auth) {
@@ -55,7 +72,26 @@ export class SelectedUserManagementComponent implements OnInit {
     }
   }
 
+  createGroup(att) {
+    if(att !== null) {
+      if(att.api) {
+        if(att.auth) {
+          if(att.data[0] !== null) {
+            this.GroupList = att.data;
+          } else {
+            console.log("Error : No Data");
+          }
+        } else {
+          console.log("Error: You can not access the API if you are not authenticated! ");
+        }
+      } else {
+        console.log("Error : Could not join API");
+      }
+    }
+  }
+
   initData() {
+    this._RightEdit = false;
     this.SelectedUserManagementForm = this.fb.group({
       'id': this.user.id,
       'log': this.user.log,
@@ -63,7 +99,8 @@ export class SelectedUserManagementComponent implements OnInit {
       'password' : this.user.password,
       'inscription' : this.ConvertDate(this.user.inscription),
       'connection' : this.ConvertDate(this.user.connection),
-      'picture' : this.user.picture
+      'group' : new FormControl(this.user.group),
+      'picture' : this.user.picture,
     });
   }
 
@@ -76,7 +113,39 @@ export class SelectedUserManagementComponent implements OnInit {
   }
 
   editUse(post) {
-    console.log(this.user);
+    var user = new User();
+    user = post;
+
+    this.userApi.putUserById(user, this._currentUser.login, this._currentUser.password).subscribe((data) => {this.Rep(data)});
+    
+    if(user.id === this._currentUser.id) {
+      this._currentUser = user;
+      if(this._currentUser.group.SelectedUserManagement !== "1") {
+        this.router.navigate(['/Accueil']);
+      }
+      this.app.ngOnInit();
+    }
   }
 
+  Rep(att: any) {
+    if(att !== null) {
+      if(att.api) {
+        if(!att.auth) {
+          console.log("Error: You can not access the API if you are not authenticated! ");
+        }
+      } else {
+        console.log("Error : Could not join API");
+      }
+    }
+  }
+
+  ChangeRightEdit() {
+    if(!this._RightEdit) {
+      console.log("true");
+      this._RightEdit = true;
+    } else {
+      console.log("false");
+      this._RightEdit = false;
+    }
+  }
 }
