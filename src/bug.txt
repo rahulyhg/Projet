@@ -1,8 +1,7 @@
 Faire en sorte que les liste déroulante fasse apparaitre leur valeur par defaut
 => Les liste ne prénne pas la valeur qu'on leur donne
-Enlever l'erreur avec log
 Le Nom de group ne peux pas avoir d'accent
 
-Le reload via changement de route ne reshef pas correctment les données suite a la modification des données
+Le reload via changement de route ne reshef pas correctment les données suite a la modification des données)
 
-Les données ne sont pas rechargé a charque changement de page (comme mon compte)
+Mettre une option pour voir le mot de passe avec confirmation (genre avec un bouton)

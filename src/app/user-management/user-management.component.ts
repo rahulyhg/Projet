@@ -13,9 +13,11 @@ export class UserManagementComponent implements OnInit {
   private _currentUser: User;
   private UserList: User[];
 
-  constructor(private app:AppComponent, private router: Router, private userApi: UserService) { }
+  constructor(private app:AppComponent, private router: Router, private userApi: UserService) {
+    this._currentUser = new User(null);
+  }
 
-  ngOnInit() { 
+  ngOnInit(): void { 
     this.app.ngOnInit();
     this._currentUser = this.app._currentUser;
 

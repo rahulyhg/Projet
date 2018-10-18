@@ -15,27 +15,24 @@ export class LoginComponent implements OnInit {
   private _currentUser: User;
   private LoginForm : FormGroup;
   private post: any;
-  private login: string;
-  private password: string;
   private ErrorMsg: string;
-
   private statut_requete: boolean;
 
   constructor(private fb: FormBuilder, private userApi: UserService, private app:AppComponent, private router: Router) { 
-      this.LoginForm = fb.group({
-        'login': '',
-        'password': ''
-      })
-      this.statut_requete = false;
-    }
+    this._currentUser = new User(null);
+    this.LoginForm = fb.group({
+      'login': '',
+      'password': ''
+    })
+    this.statut_requete = false;
+  }
 
   ngOnInit(): void {
     this.app.ngOnInit();
     this._currentUser = this.app._currentUser;
 
-    if(this._currentUser.statut) {
+    if(this._currentUser.statut)
       this.router.navigate(['/Accueil']);
-    }
 
     if(!this._currentUser.group.rightGroupPage.access_Login) {
       console.log("Vous n'avez pas la permission d'accedez à cette page");
@@ -65,5 +62,4 @@ export class LoginComponent implements OnInit {
       }
     }
   }
-
 }

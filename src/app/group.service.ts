@@ -1,35 +1,55 @@
 import { Injectable } from '@angular/core';
-import { Md5 } from 'ts-md5/dist/md5';
-import { HttpClient } from '@angular/common/http';
 import { User } from './Class/User';
 import { Group } from './Class/Group';
+import { Data } from './Data';
 
-interface Data {
-  data: Object;
+interface Api {
+  api: boolean;
+  auth: boolean;
+  ErrorMsg: string;
+  data: Object[];
 }
-
-//GET => Prendre
-//POST => Ajouter
-//PUT => Modifier
-//DELETE => Supprimer
 
 @Injectable({
   providedIn: 'root'
 })
 export class GroupService {
 
-  constructor(public http:HttpClient) { }
+  constructor(private data: Data) { }
 
-  getGroupList(login: string, password: string) {
-    return this.http.get<Data>('https://dev.kevin-c.fr/api/Group/getGroupList' + this.create_auth(login, password));
+  public getGroupList(): Group[] {
+    var reponse = this.InitReponse(JSON.parse(this.data.getGroup()));
+    console.log("getGroupList Resquest");
+    var group: Group[];
+    if(reponse !== null && reponse !== undefined) {
+      return group = reponse;
+    } else {
+      return group = [
+        null
+      ]
+    }
   }
 
-  create_auth(login: string, password: string) {
-    return "&login=" + login + "&password=" + password;
-  }
-
-  create_md5(attrib: string) {
-    const md5 = new Md5();
-    return md5.appendStr(attrib).end();
+  private InitReponse(api: Api): any {
+    if(api !== null && api !== undefined) {
+      if(api.api) {
+        if(api.auth) {
+          if(api.ErrorMsg !== null && api.ErrorMsg !== undefined) {
+            console.log(api.ErrorMsg);
+          } 
+          if(api.data !== null && api.data !== undefined) {
+            return api.data;
+          } else {
+            return null;
+          }
+        } else {
+          console.log("Error: Authentification False");
+        }
+      } else {
+        console.log("Error: Api false");
+      }
+    } else {
+      console.log("Error: Reponse Null");
+    }
   }
 }

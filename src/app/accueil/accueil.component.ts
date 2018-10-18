@@ -11,9 +11,11 @@ import { Router } from "@angular/router";
 export class AccueilComponent implements OnInit {
   private _currentUser: User;
 
-  constructor(private app:AppComponent, private router: Router) { }
+  constructor(private app:AppComponent, private router: Router) {
+    this._currentUser = new User(null);
+  }
 
-  ngOnInit() { 
+  ngOnInit(): void { 
     this.app.ngOnInit();
     this._currentUser = this.app._currentUser;
 

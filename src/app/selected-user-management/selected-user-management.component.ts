@@ -11,83 +11,53 @@ import { Group } from '../Class/Group';
 import { UserService } from '../user.service';
 import { GroupService } from '../group.service';
 
+
 @Component({
   selector: 'app-selected-user-management',
   templateUrl: './selected-user-management.component.html',
   styleUrls: ['./selected-user-management.component.css']
 })
 export class SelectedUserManagementComponent implements OnInit {
+  private _currentUser: User;
+  private _RightEdit: boolean;
+  private GroupList: Group[];
+  private post: any;
+  private SelectedUserManagementForm: FormGroup;
+  private user: User;
 
-  _currentUser: User;
-  SelectedUserManagementForm:FormGroup;
+  constructor(private route: ActivatedRoute, private app: AppComponent, private userApi: UserService, private router: Router,
+    private fb: FormBuilder, private groupApi: GroupService) { 
+      this.user = new User(null);
+      this._currentUser = new User(null);
+      this._RightEdit = false;
+    }
 
-  post:any;
-  user= new User(null);
 
-  _RightEdit = false;
+  ngOnInit(): void { 
+    this.app.ngOnInit();
+    this._currentUser = this.app._currentUser;
 
-  GroupList: Group[];
+    if(!this._currentUser.group.rightGroupPage.access_MonCompte) {
+      console.log("Vous n'avez pas la permission d'accedez à cette page");
+      this.router.navigate(['/Accueil']);
+      this.ngOnInit();
+    }
 
-  constructor(private route: ActivatedRoute,
-    public app: AppComponent,
-    public userApi: UserService,
-    private router: Router,
-    private fb: FormBuilder,
-    private groupApi: GroupService) {
+    this.getUserById();
+    this.getGroupList();
+    
     this.initData();
   }
 
-  ngOnInit() {
-    this._currentUser = this.app._currentUser;
-
-    if(!this._currentUser.group.rightGroupPage.access_SelectedUserManagement) {
-      this.router.navigate(['/Accueil']);
-    }
-
-    this.user.id = Number(this.route.snapshot.paramMap.get('id'));
-    //this.userApi.getUserById(this.user.id, this._currentUser.login, this._currentUser.password).subscribe((data) => {this.createUser(data)}); 
-
-    this.groupApi.getGroupList(this._currentUser.login, this._currentUser.password).subscribe((data) => {this.createGroup(data)}); 
+  private getUserById(): void {
+    this.user = new User(this.userApi.getUserById(Number(this.route.snapshot.paramMap.get('id'))));
   }
 
-  createUser(att) {
-    if(att !== null) {
-      if(att.api) {
-        if(att.auth) {
-          if(att.data[0] !== null) {
-            this.user = att.data[0];
-            this.initData();
-          } else {
-            console.log("Error : No Data");
-          }
-        } else {
-          console.log("Error: You can not access the API if you are not authenticated! ");
-        }
-      } else {
-        console.log("Error : Could not join API");
-      }
-    }
+  private getGroupList(): void {
+    this.GroupList = this.groupApi.getGroupList();
   }
 
-  createGroup(att) {
-    if(att !== null) {
-      if(att.api) {
-        if(att.auth) {
-          if(att.data[0] !== null) {
-            this.GroupList = att.data;
-          } else {
-            console.log("Error : No Data");
-          }
-        } else {
-          console.log("Error: You can not access the API if you are not authenticated! ");
-        }
-      } else {
-        console.log("Error : Could not join API");
-      }
-    }
-  }
-
-  initData() {
+  private initData(): void {
     this._RightEdit = false;
     this.SelectedUserManagementForm = this.fb.group({
       'id': this.user.id,
@@ -98,10 +68,14 @@ export class SelectedUserManagementComponent implements OnInit {
       'date_time_logIn' : this.ConvertDate(this.user.date_time_logIn),
       'group' : new FormControl(this.user.group),
       'profile' : this.user.profile,
+      'gameTag' : this.user.gameTag,
+      'name' : this.user.name,
+      'firstName' : this.user.firstName,
+      'birthDate' : this.user.birthDate
     });
   }
 
-  ConvertDate(date: string) {
+  private ConvertDate(date: string): string {
     if(date !== null) {
       var date_t = (date.split(' ')[0]).split('-');
       var time_t = (date.split(' ')[1]).split(':');
@@ -109,43 +83,16 @@ export class SelectedUserManagementComponent implements OnInit {
     }
   }
 
-  editUse(post) {
-    var user = new User(null);
-    user = post;
-
-    //this.userApi.putUserById(user, this._currentUser.login, this._currentUser.password).subscribe((data) => {this.Rep(data)});
-    
-    if(user.id === this._currentUser.id) {
-      this._currentUser = user;
-      if(!this._currentUser.group.rightGroupPage.access_SelectedUserManagement) {
-        this.app._currentUser = this.user;
-        this.ngOnInit();
-        this.app.ngOnInit();
-        this.router.navigate(['/Accueil']);
-      }
-    }
-    else {
-      this.router.navigate(['/UserManagement']);
-    }
-  }
-
-  Rep(att: any) {
-    if(att !== null) {
-      if(att.api) {
-        if(!att.auth) {
-          console.log("Error: You can not access the API if you are not authenticated! ");
-        }
-      } else {
-        console.log("Error : Could not join API");
-      }
-    }
-  }
-
-  ChangeRightEdit() {
+  private ChangeRightEdit(): void {
     if(!this._RightEdit) {
       this._RightEdit = true;
     } else {
       this._RightEdit = false;
     }
+  }
+
+  private editUse(post: any): void {
+    this.user = new User(post);
+    console.log(this.user);
   }
 }

@@ -6,16 +6,20 @@
         <div class="Account_content">
             <ul>
                 <li>Login : <input type="text" formControlName="login"/></li>
-                <li>Mot de passe : <input type="text" formControlName="password"/></li>
-                <li>Statut de connexion : <input type="text" formControlName="statut"/></li>
-                <li>Date de dernière connexion : <input type="datetime-local" formControlName="date_time_logIn"/></li>
-                <li>Date d'Inscription : <input type="datetime-local" formControlName="date_time_signIn"/></li>
+                <li>Mot de passe : <input type="password" formControlName="password"/></li>
                 <li> Group :
                     <select formControlName="group">
                         <option *ngFor="let group of GroupList" [ngValue]="group">{{ group.name }}</option>
                     </select>
                 </li>
                 <li>Image de profil : <input type="text" formControlName="profile"/></li>
+                <li>Statut de connexion : <input type="text" formControlName="statut"/></li>
+                <li>Date de dernière connexion : <input type="datetime-local" formControlName="date_time_logIn"/></li>
+                <li>Date d'Inscription : <input type="datetime-local" formControlName="date_time_signIn"/></li>
+                <li>Game Tag : <input type="text" formControlName="gameTag"/></li>
+                <li>Name : <input type="text" formControlName="name"/></li>
+                <li>FirstName : <input type="text" formControlName="firstName"/></li>
+                <li>BirthDate : <input type="date" formControlName="birthDate"/></li>
             </ul>
         </div>
         <div class="button" (click)="ChangeRightEdit()">Modifier les doits de l'utilisateur</div>
