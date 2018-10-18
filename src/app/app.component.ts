@@ -22,7 +22,6 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.getCurrentUser();
     console.log("Refresh APP");
-    console.log(this._currentUser);
   }
 
   private getCurrentUser(): void {

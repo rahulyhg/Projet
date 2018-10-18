@@ -36,6 +36,12 @@ export class LoginComponent implements OnInit {
     if(this._currentUser.statut) {
       this.router.navigate(['/Accueil']);
     }
+
+    if(!this._currentUser.group.rightGroupPage.access_Login) {
+      console.log("Vous n'avez pas la permission d'accedez à cette page");
+      this.router.navigate(['/Accueil']);
+      this.ngOnInit();
+    }
   }
 
   private logIn(post): void {

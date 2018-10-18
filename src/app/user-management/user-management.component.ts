@@ -10,38 +10,24 @@ import { Router } from "@angular/router";
   styleUrls: ['./user-management.component.css']
 })
 export class UserManagementComponent implements OnInit {
+  private _currentUser: User;
+  private UserList: User[];
 
-  constructor(public app: AppComponent, public userApi: UserService, private router: Router) { }
+  constructor(private app:AppComponent, private router: Router, private userApi: UserService) { }
 
-  _currentUser: User;
-  UserList: User[];
-
-  ngOnInit() {
+  ngOnInit() { 
     this.app.ngOnInit();
     this._currentUser = this.app._currentUser;
-    //this.userApi.getUserList(this._currentUser.login, this._currentUser.password).subscribe((data) => {this.create(data)});
 
     if(!this._currentUser.group.rightGroupPage.access_UserManagement) {
+      console.log("Vous n'avez pas la permission d'accedez à cette page");
       this.router.navigate(['/Accueil']);
+      this.ngOnInit();
     }
+    this.getUserList();
   }
 
-  create(att) {
-    if(att !== null) {
-      if(att.api) {
-        if(att.auth) {
-          if(att.data !== null) {
-            this.UserList = att.data;
-          } else {
-            console.log("Error : No Data");
-          }
-        } else {
-          console.log("Error: You can not access the API if you are not authenticated! ");
-        }
-      } else {
-        console.log("Error : Could not join API");
-      }
-    }
+  private getUserList(): void {
+    this.UserList = this.userApi.getUserList();
   }
-
 }

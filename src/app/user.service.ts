@@ -38,6 +38,19 @@ export class UserService {
     }
   }
 
+  public getUserList(): User[] {
+    var reponse = this.InitReponse(JSON.parse(this.data.getUser()));
+    console.log("getUserById Resquest");
+    var user: User[];
+    if(reponse !== null && reponse !== undefined) {
+      return user = reponse;
+    } else {
+      return user = [
+        null
+      ]
+    }
+  }
+
   private InitReponse(api: Api): any {
     if(api !== null && api !== undefined) {
       if(api.api) {

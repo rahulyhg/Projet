@@ -17,7 +17,7 @@ export class MonCompteComponent implements OnInit {
     this.app.ngOnInit();
     this._currentUser = this.app._currentUser;
 
-    if(!this._currentUser.group.rightGroupPage.access_Accueil) {
+    if(!this._currentUser.group.rightGroupPage.access_MonCompte) {
       console.log("Vous n'avez pas la permission d'accedez à cette page");
       this.router.navigate(['/Accueil']);
       this.ngOnInit();

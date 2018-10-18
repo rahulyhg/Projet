@@ -1,4 +1,4 @@
-<div *ngIf="_currentUser.group.rightGroupPage.access_SelectedUserManagement === '1'">
+<div *ngIf="_currentUser.group.rightGroupPage.access_SelectedUserManagement">
     <form [formGroup]="SelectedUserManagementForm" (ngSubmit)="editUse(SelectedUserManagementForm.value)">
         <div class="profile">
             <img src="assets/uploads/images/{{ user.profile }}">
