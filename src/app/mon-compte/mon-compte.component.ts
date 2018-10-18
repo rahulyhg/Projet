@@ -9,16 +9,18 @@ import { Router } from "@angular/router";
   styleUrls: ['./mon-compte.component.css']
 })
 export class MonCompteComponent implements OnInit {
+  private _currentUser: User;
 
-  constructor(public app: AppComponent, private router: Router) { }
+  constructor(private app:AppComponent, private router: Router) { }
 
-  public _currentUser: User;
-
-  ngOnInit() {
+  ngOnInit() { 
     this.app.ngOnInit();
     this._currentUser = this.app._currentUser;
-    if(!this._currentUser.group.rightGroupPage.access_MonCompte) {
+
+    if(!this._currentUser.group.rightGroupPage.access_Accueil) {
+      console.log("Vous n'avez pas la permission d'accedez à cette page");
       this.router.navigate(['/Accueil']);
+      this.ngOnInit();
     }
   }
 }

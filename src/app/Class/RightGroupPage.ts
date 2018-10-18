@@ -14,15 +14,15 @@ export class RightGroupPage {
       if(value === null) { value = "" }
 
       this.id = this.IsEmpty(value.id, 1),
-      this.access_Main = this.IsEmptyBoolean(value.access_Main),
-      this.access_Accueil = this.IsEmptyBoolean(value.access_Accueil),
-      this.access_Login = this.IsEmptyBoolean(value.access_Login),
-      this.access_MonCompte = this.IsEmptyBoolean(value.access_MonCompte),
-      this.access_Main_EditBar = this.IsEmptyBoolean(value.access_Main_EditBar),
-      this.access_SelectedUserManagement = this.IsEmptyBoolean(value.access_SelectedUserManagement),
-      this.access_UserManagement = this.IsEmptyBoolean(value.access_UserManagement),
-      this.access_Main_EditBar_Edit = this.IsEmptyBoolean(value.access_Main_EditBar_Edit),
-      this.access_Main_EditBar_Dev = this.IsEmptyBoolean(value.access_Main_EditBar_Dev)
+      this.access_Main = this.IsEmptyBoolean(value.access_Main, true),
+      this.access_Accueil = this.IsEmptyBoolean(value.access_Accueil, true),
+      this.access_Login = this.IsEmptyBoolean(value.access_Login, true),
+      this.access_MonCompte = this.IsEmptyBoolean(value.access_MonCompte, false),
+      this.access_Main_EditBar = this.IsEmptyBoolean(value.access_Main_EditBar, false),
+      this.access_SelectedUserManagement = this.IsEmptyBoolean(value.access_SelectedUserManagement, false),
+      this.access_UserManagement = this.IsEmptyBoolean(value.access_UserManagement, false),
+      this.access_Main_EditBar_Edit = this.IsEmptyBoolean(value.access_Main_EditBar_Edit, false),
+      this.access_Main_EditBar_Dev = this.IsEmptyBoolean(value.access_Main_EditBar_Dev, false)
     }
 
     private IsEmpty(value: any, default_value: any): any {
@@ -32,7 +32,7 @@ export class RightGroupPage {
         return default_value;
     }
   
-    private IsEmptyBoolean(value: any): boolean {
+    private IsEmptyBoolean(value: any, default_value: boolean): boolean {
       if(value !== null && value !== undefined) {
         if(value || !value) 
           return value;
@@ -41,6 +41,6 @@ export class RightGroupPage {
         if(value === "1")
           return true;
       } else
-        return false;
+        return default_value;
     }
   }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AppComponent } from '../app.component';
 import { User } from '../Class/User';
+import { Router } from "@angular/router";
  
 @Component({
   selector: 'app-accueil',
@@ -8,7 +9,18 @@ import { User } from '../Class/User';
   styleUrls: ['./accueil.component.css']
 })
 export class AccueilComponent implements OnInit {
-  constructor() { }
+  private _currentUser: User;
 
-  ngOnInit() { }
+  constructor(private app:AppComponent, private router: Router) { }
+
+  ngOnInit() { 
+    this.app.ngOnInit();
+    this._currentUser = this.app._currentUser;
+
+    if(!this._currentUser.group.rightGroupPage.access_Accueil) {
+      console.log("Vous n'avez pas la permission d'accedez à cette page");
+      this.router.navigate(['/Accueil']);
+      this.ngOnInit();
+    }
+  }
 }
