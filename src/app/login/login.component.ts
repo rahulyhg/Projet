@@ -12,66 +12,52 @@ import { Router } from "@angular/router";
 })
 export class LoginComponent implements OnInit {
 
-  LoginForm : FormGroup;
-  post:any;
-  login:string = '';
-  password:string = '';
-  
-  _currentUser:User;
-  ErrorMsg = null;
+  private _currentUser: User;
+  private LoginForm : FormGroup;
+  private post: any;
+  private login: string;
+  private password: string;
+  private ErrorMsg: string;
 
-  constructor(
-    private fb: FormBuilder,
-    public userApi: UserService,
-    public app:AppComponent,
-    private router: Router)
-    {
-    this.LoginForm = fb.group({
-      'login': '',
-      'password': ''
-    })
-  }
+  private statut_requete: boolean;
 
-  ngOnInit() {
+  constructor(private fb: FormBuilder, private userApi: UserService, private app:AppComponent, private router: Router) { 
+      this.LoginForm = fb.group({
+        'login': '',
+        'password': ''
+      })
+      this.statut_requete = false;
+    }
+
+  ngOnInit(): void {
+    this.app.ngOnInit();
     this._currentUser = this.app._currentUser;
 
-    if(localStorage.getItem('isLoggedIn') === "true") {
+    if(this._currentUser.statut) {
       this.router.navigate(['/Accueil']);
     }
   }
 
-  logIn(post) {
-    if(post.login !== "") {
-      if(post.password !== "") {
-        this.userApi.auth(post.login, post.password).subscribe((data) => {this.create(data)});
-      } else {
-        console.log("Error : No Password Enter");
-      }
-    } else {
-      console.log("Error : No Login Enter");
-    }
-  }
-  
-  create(att) {
-    if(att !== null) {
-      if(att.api) {
-        if(att.auth) {
-          if(att.data !== null) {
-            this._currentUser = att.data;
-            this.app._currentUser = this._currentUser;
-            localStorage.setItem('isLoggedIn', "true");
-            localStorage.setItem('User', this._currentUser.id  + "/\\" +  this._currentUser.login + "/\\" + this._currentUser.password);
-            this.router.navigate(['/Accueil']);
-          } else {
-            console.log("Error : No Data");
-          }
+  private logIn(post): void {
+    if(!this.statut_requete) {
+      this.statut_requete = true;
+      if(post.login !== "" && post.login !== null && post.login !== undefined) {
+        if(post.password !== "" && post.password !== null && post.password !== undefined) {
+          this._currentUser = new User(this.userApi.Auth(post.login, post.password));
+          localStorage.setItem('isLoggedIn', "true");
+          localStorage.setItem('user', this._currentUser.id  + "/\\" +  this._currentUser.login + "/\\" + this._currentUser.password);
+          this.app.ngOnInit();
+          this.app._currentUser = this._currentUser;
+          this.router.navigate(['/Accueil']);
         } else {
-          console.log("Error: Login or password False ");
-          this.ErrorMsg = att.ErrorMsg;
+          this.statut_requete = false;
+          console.log("Error : No Password Enter");
         }
       } else {
-        console.log("Error : Could not join API");
+        this.statut_requete = false;
+        console.log("Error : No Login Enter");
       }
     }
   }
+
 }

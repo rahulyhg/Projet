@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
+import { Data } from './Data';
 
 import { AppComponent } from './app.component';
 import { AccueilComponent } from './accueil/accueil.component';
@@ -34,7 +35,7 @@ import { SelectedUserManagementComponent } from './selected-user-management/sele
     LoadingBarHttpClientModule,
     LoadingBarRouterModule
   ],
-  providers: [DatePipe],
+  providers: [DatePipe, Data],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

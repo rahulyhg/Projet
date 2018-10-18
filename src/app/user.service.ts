@@ -1,57 +1,64 @@
 import { Injectable } from '@angular/core';
-import { Md5 } from 'ts-md5/dist/md5';
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { User } from './Class/User';
+import { Data } from './Data';
 
-interface Data {
-  data: Object;
+interface Api {
+  api: boolean;
+  auth: boolean;
+  ErrorMsg: string;
+  data: Object[];
 }
-
-//GET => Prendre
-//POST => Ajouter
-//PUT => Modifier
-//DELETE => Supprimer
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
-  constructor(public http:HttpClient) { }
+  constructor(private data: Data) { }
 
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type':  'application/json'
-    })
-  };
-
-  getUserById(id: number, login: string, password: string) {
-    return this.http.get<Data>('https://dev.kevin-c.fr/api/User/getUserById/' + id + this.create_auth(login, password));
+  public getUserById(id: number): User {
+    var reponse = this.InitReponse(JSON.parse(this.data.getUserById(id)));
+    console.log("getUserById Resquest");
+    var user: User;
+    if(reponse !== null && reponse !== undefined) {
+      return user = new User(reponse[0]);
+    } else {
+      return user = new User(null);
+    }
   }
 
-  auth(login: string, password: string) {
-    return this.http.get<Data>('https://dev.kevin-c.fr/api/User/Auth/' + login + "/" + this.create_md5(password));
+  public Auth(login: string, password: string): User {
+    var reponse = this.InitReponse(JSON.parse(this.data.AuthUser(login, password)));
+    console.log("AuthUser Resquest");
+    var user: User;
+    if(reponse !== null && reponse !== undefined) {
+      return user = new User(reponse);
+    } else {
+      return user = new User(null);
+    }
   }
 
-  logOut(id: number, login: string, password: string) {
-    return this.http.put<Data>('/api/User/logOut/' + id + this.create_auth(login, password), this.httpOptions);
+  private InitReponse(api: Api): any {
+    if(api !== null && api !== undefined) {
+      if(api.api) {
+        if(api.auth) {
+          if(api.ErrorMsg !== null && api.ErrorMsg !== undefined) {
+            console.log(api.ErrorMsg);
+          } 
+          if(api.data !== null && api.data !== undefined) {
+            return api.data;
+          } else {
+            return null;
+          }
+        } else {
+          console.log("Error: Authentification False");
+        }
+      } else {
+        console.log("Error: Api false");
+      }
+    } else {
+      console.log("Error: Reponse Null");
+    }
   }
 
-  getUserList(login: string, password: string) {
-    return this.http.get<Data>('https://dev.kevin-c.fr/api/User/getUserList' + this.create_auth(login, password));
-  }
-
-  putUserById(user: User, login: string, password: string) {
-    let body = JSON.stringify(user); 
-    return this.http.put<Data>('/api/User/putUserById/' + user.id + this.create_auth(login, password), body, this.httpOptions);
-  }
-
-  create_auth(login: string, password: string) {
-    return "&login=" + login + "&password=" + password;
-  }
-
-  create_md5(attrib: string) {
-    const md5 = new Md5();
-    return md5.appendStr(attrib).end();
-  }
 }

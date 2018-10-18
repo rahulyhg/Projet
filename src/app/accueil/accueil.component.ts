@@ -8,12 +8,7 @@ import { User } from '../Class/User';
   styleUrls: ['./accueil.component.css']
 })
 export class AccueilComponent implements OnInit {
+  constructor() { }
 
-  constructor(public app: AppComponent) { }
-
-  _currentUser: User;
-
-  ngOnInit() {
-    this._currentUser = this.app._currentUser;
-  }
+  ngOnInit() { }
 }

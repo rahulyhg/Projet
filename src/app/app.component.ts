@@ -2,10 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from './user.service';
 import { User } from './Class/User';
 import { Router } from "@angular/router";
-
-interface Data {
-  data: Object;
-}
+import { Data } from './Data';
 
 @Component({
   selector: 'app-root',
@@ -13,60 +10,55 @@ interface Data {
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  _GestionSitePopupStatut = false;
+
   public _currentUser: User;
+  private _GestionSitePopupStatut: boolean;
+  
+  constructor(private userApi: UserService, private router: Router) { 
+    this._currentUser = new User(null);
+    this._GestionSitePopupStatut = false;
+  }
 
-  constructor(public userApi: UserService, private router: Router) { }
+  ngOnInit(): void {
+    this.getCurrentUser();
+    console.log("Refresh APP");
+    console.log(this._currentUser);
+  }
 
-  ngOnInit() {
+  private getCurrentUser(): void {
     if(localStorage.getItem('isLoggedIn') === "true") {
-      if(localStorage.getItem('User') !== null ) {
-        var id = Number(localStorage.getItem('User').split("/\\")[0]);
-        var login = localStorage.getItem('User').split("/\\")[1];
-        var password = localStorage.getItem('User').split("/\\")[2];
-        this.userApi.getUserById(id, login, password).subscribe((data) => {this.create(data)});
+      var user = localStorage.getItem('user');
+      if(user !== null && user !== undefined) {
+        var user_tab = user.split("/\\");
+        var id = Number(user_tab[0]);
+        // var login = user[1];
+        // var password = user[2];
+        this._currentUser =  this.userApi.getUserById(id);
+        if(!this._currentUser.statut) {
+          this.logOut();
+        }
       }
     } else {
-      this._currentUser = new User();
+      this._currentUser = new User(null);
     }
   }
 
-  create(att) {
-    if(att !== null) {
-      if(att.api) {
-        if(att.auth) {
-          if(att.data[0] !== null) {
-            if(att.data[0].statut === "1") {
-              this._currentUser = att.data[0];
-            } else {
-              this.logOut();
-            }
-          } else {
-            console.log("Error : No Data");
-          }
-        } else {
-          console.log("Error: You can not access the API if you are not authenticated! ");
-        }
-      } else {
-        console.log("Error : Could not join API");
-      }
-    }
-  }
-
-  logOut() {
-    this.userApi.logOut(this._currentUser.id, this._currentUser.login, this._currentUser.password).subscribe();
+  private logOut(): void {
+    // Mise à jours dans la base de données pour que user.statut valle false
+    console.log("deconnection");
     localStorage.clear();
     this.router.navigate(['/Accueil']);
     this.ngOnInit();
   }
 
-  GestionSitePopup() {
-    if(!this._GestionSitePopupStatut) {
+  private GestionSitePopup(): void {
+    if(!this._GestionSitePopupStatut)
       this._GestionSitePopupStatut = true;
-    } else { this.GestionSitePopupClose(); }
+    else
+      this.GestionSitePopupClose();
   }
 
-  GestionSitePopupClose() {
+  private GestionSitePopupClose():void {
     this._GestionSitePopupStatut = false;
   }
 }

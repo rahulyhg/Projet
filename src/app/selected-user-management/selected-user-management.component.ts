@@ -22,7 +22,7 @@ export class SelectedUserManagementComponent implements OnInit {
   SelectedUserManagementForm:FormGroup;
 
   post:any;
-  user= new User();
+  user= new User(null);
 
   _RightEdit = false;
 
@@ -40,12 +40,12 @@ export class SelectedUserManagementComponent implements OnInit {
   ngOnInit() {
     this._currentUser = this.app._currentUser;
 
-    if(this._currentUser.group.rightGroupPage.access_SelectedUserManagement !== "1") {
+    if(!this._currentUser.group.rightGroupPage.access_SelectedUserManagement) {
       this.router.navigate(['/Accueil']);
     }
 
     this.user.id = Number(this.route.snapshot.paramMap.get('id'));
-    this.userApi.getUserById(this.user.id, this._currentUser.login, this._currentUser.password).subscribe((data) => {this.createUser(data)}); 
+    //this.userApi.getUserById(this.user.id, this._currentUser.login, this._currentUser.password).subscribe((data) => {this.createUser(data)}); 
 
     this.groupApi.getGroupList(this._currentUser.login, this._currentUser.password).subscribe((data) => {this.createGroup(data)}); 
   }
@@ -110,14 +110,14 @@ export class SelectedUserManagementComponent implements OnInit {
   }
 
   editUse(post) {
-    var user = new User();
+    var user = new User(null);
     user = post;
 
-    this.userApi.putUserById(user, this._currentUser.login, this._currentUser.password).subscribe((data) => {this.Rep(data)});
+    //this.userApi.putUserById(user, this._currentUser.login, this._currentUser.password).subscribe((data) => {this.Rep(data)});
     
     if(user.id === this._currentUser.id) {
       this._currentUser = user;
-      if(this._currentUser.group.rightGroupPage.access_SelectedUserManagement !== "1") {
+      if(!this._currentUser.group.rightGroupPage.access_SelectedUserManagement) {
         this.app._currentUser = this.user;
         this.ngOnInit();
         this.app.ngOnInit();
