@@ -15,7 +15,7 @@
                 <li>Image de profil : <input type="text" formControlName="profile"/></li>
                 <li>Statut de connexion : <input type="checkbox" formControlName="statut"/></li>
                 <li>Date de dernière connexion : <input type="datetime-local" formControlName="date_time_logIn"/></li>
-                <li>Date d'Inscription : <input type="datetime-local" formControlName="date_time_signIn"/></li>
+                <li>Datse d'Inscription : <input type="datetime-local" formControlName="date_time_signIn"/></li>
                 <li>Game Tag : <input type="text" formControlName="gameTag"/></li>
                 <li>Name : <input type="text" formControlName="name"/></li>
                 <li>FirstName : <input type="text" formControlName="firstName"/></li>
@@ -25,7 +25,25 @@
         <div class="button" (click)="ChangeRightEdit()">Modifier les doits de l'utilisateur</div>
         <div *ngIf="_RightEdit" class="RightEdit">
             <li>(La modification des droits de cette utilisateur va créer un group + un group de droit pour cette utilisateurs uniquement)</li>
-            
+            <h2>Main Page</h2>
+            <li>access_Main : <input type="checkbox" formControlName="access_Main"/></li>
+
+            <h2>Accueil Page</h2>
+            <li>access_Accueil : <input type="checkbox" formControlName="access_Accueil"/></li>
+
+            <h2>MonCompte Page</h2>
+            <li>access_MonCompte : <input type="checkbox" formControlName="access_MonCompte"/></li>
+
+            <h2>EditBar</h2>
+            <li>access_Main_EditBar : <input type="checkbox" formControlName="access_Main_EditBar"/></li>
+            <li>access_Main_EditBar_Dev : <input type="checkbox" formControlName="access_Main_EditBar_Dev"/></li>
+            <li>access_Main_EditBar_Edit : <input type="checkbox" formControlName="access_Main_EditBar_Edit"/></li>
+
+            <h2>SelectedUserManagement Page</h2>
+            <li>access_SelectedUserManagement : <input type="checkbox" formControlName="access_SelectedUserManagement"/></li>
+
+            <h2>UserManagement Page</h2>
+            <li>access_UserManagement : <input type="checkbox" formControlName="access_UserManagement"/></li>
         </div>
         <button type="submit" [disabled]="!SelectedUserManagementForm.valid">Valider</button>
     </form>

@@ -70,10 +70,26 @@ export class SelectedUserManagementComponent implements OnInit {
       'gameTag' : this.user.gameTag,
       'name' : this.user.name,
       'firstName' : this.user.firstName,
-      'birthDate' : this.user.birthDate
+      'birthDate' : this.user.birthDate,
+      'access_Main' : this.user.group.rightGroupPage.access_Main,
+      'access_Accueil' : this.user.group.rightGroupPage.access_Accueil,
+      'access_MonCompte' : this.user.group.rightGroupPage.access_MonCompte,
+      'access_Main_EditBar' : this.user.group.rightGroupPage.access_Main_EditBar,
+      'access_Main_EditBar_Dev' : this.user.group.rightGroupPage.access_Main_EditBar_Dev,
+      'access_Main_EditBar_Edit' : this.user.group.rightGroupPage.access_Main_EditBar_Edit,
+      'access_SelectedUserManagement' : this.user.group.rightGroupPage.access_SelectedUserManagement,
+      'access_UserManagement' : this.user.group.rightGroupPage.access_UserManagement
     });
 
     this.SelectedUserManagementForm.get('statut').setValue(this.user.statut);
+    this.SelectedUserManagementForm.get('access_Main').setValue(this.user.group.rightGroupPage.access_Main);
+    this.SelectedUserManagementForm.get('access_Accueil').setValue(this.user.group.rightGroupPage.access_Accueil);
+    this.SelectedUserManagementForm.get('access_MonCompte').setValue(this.user.group.rightGroupPage.access_MonCompte);
+    this.SelectedUserManagementForm.get('access_Main_EditBar').setValue(this.user.group.rightGroupPage.access_Main_EditBar);
+    this.SelectedUserManagementForm.get('access_Main_EditBar_Dev').setValue(this.user.group.rightGroupPage.access_Main_EditBar_Dev);
+    this.SelectedUserManagementForm.get('access_Main_EditBar_Edit').setValue(this.user.group.rightGroupPage.access_Main_EditBar_Edit);
+    this.SelectedUserManagementForm.get('access_SelectedUserManagement').setValue(this.user.group.rightGroupPage.access_SelectedUserManagement);
+    this.SelectedUserManagementForm.get('access_UserManagement').setValue(this.user.group.rightGroupPage.access_UserManagement);
 
     for (var group of this.GroupList) {
       if(group.id === this.user.group.id) 
@@ -101,9 +117,19 @@ export class SelectedUserManagementComponent implements OnInit {
   }
 
   private editUse(post: any): void {
+
+
     post.date_time_logIn = this.ConvertDateInverse(post.date_time_logIn);
     post.date_time_signIn = this.ConvertDateInverse(post.date_time_signIn);
     this.user = new User(post);
+    this.user.group.rightGroupPage.access_Main = post.access_Main;
+    this.user.group.rightGroupPage.access_Accueil = post.access_Accueil;
+    this.user.group.rightGroupPage.access_MonCompte = post.access_MonCompte;
+    this.user.group.rightGroupPage.access_Main_EditBar = post.access_Main_EditBar;
+    this.user.group.rightGroupPage.access_Main_EditBar_Dev = post.access_Main_EditBar_Dev;
+    this.user.group.rightGroupPage.access_Main_EditBar_Edit = post.access_Main_EditBar_Edit;
+    this.user.group.rightGroupPage.access_SelectedUserManagement = post.access_SelectedUserManagement;
+    this.user.group.rightGroupPage.access_UserManagement = post.access_UserManagement;
     this.userApi.putUser(post.id, this.user);
     this.router.navigate(['/UserManagement']);
     if(this.user.id === this._currentUser.id)
