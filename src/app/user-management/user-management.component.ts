@@ -32,5 +32,16 @@ export class UserManagementComponent implements OnInit {
 
   private getUserList(): void {
     this.UserList = this.userApi.getUserList();
+    var i: number = 0;
+    for(var user of this.UserList) {
+      var pass: string = "";
+      var j: number = 0;
+      while(j < user.password.length) {
+        pass += "*";
+        j++;
+      }
+      this.UserList[i].password = pass;
+      i++
+    }
   }
 }

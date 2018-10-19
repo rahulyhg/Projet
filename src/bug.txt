@@ -1,7 +1,0 @@
-Faire en sorte que les liste déroulante fasse apparaitre leur valeur par defaut
-=> Les liste ne prénne pas la valeur qu'on leur donne
-Le Nom de group ne peux pas avoir d'accent
-
-Le reload via changement de route ne reshef pas correctment les données suite a la modification des données)
-
-Mettre une option pour voir le mot de passe avec confirmation (genre avec un bouton)

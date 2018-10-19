@@ -141,12 +141,18 @@ export class Data {
 
   public AuthUser(login: string, password: string): string {
     var user_return: any;
+    var index: number = 0;
+    var i: number = 0;
     for (var user of this.user) {
       if(user.login === login) 
-        if(user.password = password)
+        if(user.password === password)
           user.statut = true;
+          index = i;
           user_return = user;
+      i++;
     }
+
+    this.user[index].statut = true;
     var api: Api;
     var error = null;
     if(user_return.login === undefined) {

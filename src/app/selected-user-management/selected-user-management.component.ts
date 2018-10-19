@@ -24,14 +24,15 @@ export class SelectedUserManagementComponent implements OnInit {
   private post: any;
   private SelectedUserManagementForm: FormGroup;
   private user: User;
+  private isPassword: boolean;
 
   constructor(private route: ActivatedRoute, private app: AppComponent, private userApi: UserService, private router: Router,
     private fb: FormBuilder, private groupApi: GroupService) { 
       this.user = new User(null);
       this._currentUser = new User(null);
       this._RightEdit = false;
+      this.isPassword = true;
     }
-
 
   ngOnInit(): void { 
     this.app.ngOnInit();
@@ -45,7 +46,6 @@ export class SelectedUserManagementComponent implements OnInit {
 
     this.getUserById();
     this.getGroupList();
-    
     this.initData();
   }
 
@@ -66,13 +66,20 @@ export class SelectedUserManagementComponent implements OnInit {
       'password' : this.user.password,
       'date_time_signIn' : this.ConvertDate(this.user.date_time_signIn),
       'date_time_logIn' : this.ConvertDate(this.user.date_time_logIn),
-      'group' : new FormControl(this.user.group),
+      'group' : this.user.group,
       'profile' : this.user.profile,
       'gameTag' : this.user.gameTag,
       'name' : this.user.name,
       'firstName' : this.user.firstName,
       'birthDate' : this.user.birthDate
     });
+
+    this.SelectedUserManagementForm.get('statut').setValue(this.user.statut);
+
+    for (var group of this.GroupList) {
+      if(group.id === this.user.group.id) 
+      this.SelectedUserManagementForm.get('group').setValue(group);
+    }
   }
 
   private ConvertDate(date: string): string {
@@ -91,11 +98,7 @@ export class SelectedUserManagementComponent implements OnInit {
   }
 
   private ChangeRightEdit(): void {
-    if(!this._RightEdit) {
-      this._RightEdit = true;
-    } else {
-      this._RightEdit = false;
-    }
+    this._RightEdit = !(this._RightEdit);
   }
 
   private editUse(post: any): void {
@@ -106,5 +109,9 @@ export class SelectedUserManagementComponent implements OnInit {
     this.router.navigate(['/UserManagement']);
     if(this.user.id === this._currentUser.id)
       this.app.logOut();
+  }
+
+  private showPassword() {
+    this.isPassword = !(this.isPassword);
   }
 }

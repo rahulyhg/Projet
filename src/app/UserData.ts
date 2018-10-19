@@ -22,7 +22,7 @@ export const USER: User[] = [
         password: "b22f2a7814d6e43374cea98ff1e824be",
         group: GROUP[1], 
         profile: "dev.jpg",
-        statut: false, 
+        statut: true, 
         date_time_logIn: "2018-10-18 11:49:48", 
         date_time_signIn: "2018-10-15 18:38:01",
         gameTag: "@dov118", 
