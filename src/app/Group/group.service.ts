@@ -17,7 +17,7 @@ export class GroupService {
   constructor(private data: Data) { }
 
   public getGroupList(): Group[] {
-    console.log("getGroupList Resquest");
+    console.log("GET / GROUP / getGroupList");
     var reponse: Group[] = this.InitReponse(JSON.parse(this.data.getGroup()));
     if(reponse !== null && reponse !== undefined)
       return reponse;

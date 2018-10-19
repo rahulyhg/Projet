@@ -17,7 +17,7 @@ export class UserService {
   constructor(private data: Data) { }
 
   public getUserById(id: number): User {
-    console.log("getUserById Resquest");
+    console.log("GET / USER / getUserById");
     var reponse: User[] = this.InitReponse(JSON.parse(this.data.getUserById(id)));
     if(reponse !== null && reponse !== undefined)
       return new User(reponse[0]);
@@ -26,7 +26,7 @@ export class UserService {
   }
 
   public Auth(login: string, password: string): User {
-    console.log("AuthUser Resquest");
+    console.log("GET:AUTH / USER / AuthUser");
     var reponse: User[] = this.InitReponse(JSON.parse(this.data.AuthUser(login, password)));
     if(reponse !== null && reponse !== undefined)
       return new User(reponse);
@@ -35,7 +35,7 @@ export class UserService {
   }
 
   public getUserList(): User[] {
-    console.log("getUserList Resquest");
+    console.log("GET / USER / getUserList");
     var reponse: User[] = this.InitReponse(JSON.parse(this.data.getUser()));
     if(reponse !== null && reponse !== undefined)
       return reponse;
@@ -44,7 +44,7 @@ export class UserService {
   }
 
   public putUser(id: number, user: User): void {
-    console.log("putUser Resquest");
+    console.log("PUT / USER / putUser");
     this.InitReponse(JSON.parse(this.data.putUser(id, user)));
   }
 
