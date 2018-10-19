@@ -1,17 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { UserService } from '../user.service';
-import { User } from '../Class/User';
-import { AppComponent } from '../app.component';
 import { Router } from "@angular/router";
+
+import { UserService } from '../User/user.service';
+import { User } from '../User/User';
+import { AppComponent } from '../app.component';
   
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  templateUrl: './login.component.html'
 })
 export class LoginComponent implements OnInit {
-
   private _currentUser: User;
   private LoginForm : FormGroup;
   private post: any;
@@ -23,7 +21,9 @@ export class LoginComponent implements OnInit {
     this.LoginForm = fb.group({
       'login': '',
       'password': ''
-    })
+    });
+    this.post = null;
+    this.ErrorMsg = null;
     this.statut_requete = false;
   }
 
@@ -43,7 +43,6 @@ export class LoginComponent implements OnInit {
 
   private logIn(post): void {
     if(!this.statut_requete) {
-      this.statut_requete = true;
       if(post.login !== "" && post.login !== null && post.login !== undefined) {
         if(post.password !== "" && post.password !== null && post.password !== undefined) {
           this._currentUser = new User(this.userApi.Auth(post.login, post.password));

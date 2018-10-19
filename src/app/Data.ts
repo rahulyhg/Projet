@@ -1,10 +1,10 @@
-import { Group } from './Class/Group'; 
-import { User } from './Class/User'; 
-import { RightGroupPage } from './Class/RightGroupPage'; 
+import { Group } from './Group/Group'; 
+import { User } from './User/User'; 
+import { RightGroupPage } from './RightGroupPage/RightGroupPage'; 
 
-import { USER } from './UserData';
-import { GROUP } from './GroupData';
-import { RIGHTGROUPPAGE } from './RightGroupPageData';
+import { USER } from './User/UserData';
+import { GROUP } from './Group/GroupData';
+import { RIGHTGROUPPAGE } from './RightGroupPage/RightGroupPageData';
 
 interface Api {
   api: boolean;

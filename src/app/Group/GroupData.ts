@@ -1,5 +1,5 @@
-import { Group } from './Class/Group';
-import { RIGHTGROUPPAGE } from './RightGroupPageData';
+import { Group } from './Group';
+import { RIGHTGROUPPAGE } from '../RightGroupPage/RightGroupPageData';
 
 export const GROUP: Group[] = [
     { 

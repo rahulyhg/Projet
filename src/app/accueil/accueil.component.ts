@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { AppComponent } from '../app.component';
-import { User } from '../Class/User';
 import { Router } from "@angular/router";
- 
+
+import { AppComponent } from '../app.component';
+import { User } from '../User/User';
+
 @Component({
-  selector: 'app-accueil',
-  templateUrl: './accueil.component.html',
-  styleUrls: ['./accueil.component.css']
+  templateUrl: './accueil.component.html'
 })
 export class AccueilComponent implements OnInit {
   private _currentUser: User;

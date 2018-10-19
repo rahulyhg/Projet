@@ -1,4 +1,4 @@
-import { RightGroupPage } from './Class/RightGroupPage';
+import { RightGroupPage } from './RightGroupPage';
 
 export const RIGHTGROUPPAGE: RightGroupPage[] = [
     { 

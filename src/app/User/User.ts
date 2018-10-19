@@ -1,4 +1,4 @@
-import { Group } from './Group'; 
+import { Group } from '../Group/Group'; 
 
 export class User {
   public id: number;

@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { AppComponent } from '../app.component';
-import { User } from '../Class/User';
 import { Router } from "@angular/router";
 
+import { AppComponent } from '../app.component';
+import { User } from '../User/User';
+
 @Component({
-  selector: 'app-mon-compte',
-  templateUrl: './mon-compte.component.html',
-  styleUrls: ['./mon-compte.component.css']
+  templateUrl: './mon-compte.component.html'
 })
 export class MonCompteComponent implements OnInit {
   private _currentUser: User;

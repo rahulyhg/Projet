@@ -3,19 +3,16 @@ import { Router, ActivatedRoute} from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 
 import { AppComponent } from '../app.component';
-import { UserManagementComponent } from '../user-management/user-management.component';
 
-import { User } from '../Class/User';
-import { Group } from '../Class/Group';
+import { User } from '../User/User';
+import { Group } from '../Group/Group';
 
-import { UserService } from '../user.service';
-import { GroupService } from '../group.service';
+import { UserService } from '../User/user.service';
+import { GroupService } from '../Group/group.service';
 
 
 @Component({
-  selector: 'app-selected-user-management',
-  templateUrl: './selected-user-management.component.html',
-  styleUrls: ['./selected-user-management.component.css']
+  templateUrl: './selected-user-management.component.html'
 })
 export class SelectedUserManagementComponent implements OnInit {
   private _currentUser: User;
@@ -28,9 +25,12 @@ export class SelectedUserManagementComponent implements OnInit {
 
   constructor(private route: ActivatedRoute, private app: AppComponent, private userApi: UserService, private router: Router,
     private fb: FormBuilder, private groupApi: GroupService) { 
-      this.user = new User(null);
       this._currentUser = new User(null);
       this._RightEdit = false;
+      this.GroupList = null;
+      this.post = null;
+      this.SelectedUserManagementForm = null;
+      this.user = new User(null);
       this.isPassword = true;
     }
 
@@ -58,7 +58,6 @@ export class SelectedUserManagementComponent implements OnInit {
   }
 
   private initData(): void {
-    this._RightEdit = false;
     this.SelectedUserManagementForm = this.fb.group({
       'id': this.user.id,
       'statut': this.user.statut,
@@ -78,21 +77,21 @@ export class SelectedUserManagementComponent implements OnInit {
 
     for (var group of this.GroupList) {
       if(group.id === this.user.group.id) 
-      this.SelectedUserManagementForm.get('group').setValue(group);
+        this.SelectedUserManagementForm.get('group').setValue(group);
     }
   }
 
   private ConvertDate(date: string): string {
     if(date !== null) {
-      var date_t = (date.split(' ')[0]).split('-');
-      var time_t = (date.split(' ')[1]).split(':');
+      var date_t: string[] = (date.split(' ')[0]).split('-');
+      var time_t: string[] = (date.split(' ')[1]).split(':');
       return date_t[0]+"-"+date_t[1]+"-"+date_t[2]+"T"+time_t[0]+":"+time_t[1]+":"+time_t[2];
     }
   }
 
   private ConvertDateInverse(date: string): string {
     if(date !== null) {
-      var date_tab = date.split('T');
+      var date_tab: string[] = date.split('T');
       return date_tab[0] + " " + date_tab[1];
     }
   }
@@ -111,7 +110,7 @@ export class SelectedUserManagementComponent implements OnInit {
       this.app.logOut();
   }
 
-  private showPassword() {
+  private showPassword(): void {
     this.isPassword = !(this.isPassword);
   }
 }

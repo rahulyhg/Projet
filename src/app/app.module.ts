@@ -4,10 +4,10 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { Data } from './Data';
+import { RouterModule, Routes } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { AccueilComponent } from './accueil/accueil.component';
-import { AppRoutingModule } from './routing/routing.module';
 import { DraggableModule } from './draggable/draggable.module';
 import { LoginComponent } from './login/login.component';
 import { MonCompteComponent } from './mon-compte/mon-compte.component';
@@ -15,6 +15,16 @@ import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 import { UserManagementComponent } from './user-management/user-management.component';
 import { SelectedUserManagementComponent } from './selected-user-management/selected-user-management.component';
+
+
+const routes: Routes = [
+  { path: '', redirectTo: '/Accueil', pathMatch: 'full' },
+  { path: 'Accueil', component: AccueilComponent },
+  { path: 'Login', component: LoginComponent },
+  { path: 'MonCompte', component: MonCompteComponent },
+  { path: 'UserManagement', component: UserManagementComponent},
+  { path: 'UserManagement/:id', component: SelectedUserManagementComponent }
+];
 
 @NgModule({
   declarations: [
@@ -27,7 +37,7 @@ import { SelectedUserManagementComponent } from './selected-user-management/sele
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
+    RouterModule.forRoot(routes),
     DraggableModule,
     HttpClientModule,
     FormsModule,
@@ -36,6 +46,7 @@ import { SelectedUserManagementComponent } from './selected-user-management/sele
     LoadingBarRouterModule
   ],
   providers: [DatePipe, Data],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  exports: [ RouterModule ]
 })
 export class AppModule { }

@@ -1,14 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { AppComponent } from '../app.component';
-import { User } from '../Class/User';
-import { UserService } from '../user.service';
 import { Router } from "@angular/router";
 
+import { AppComponent } from '../app.component';
+import { User } from '../User/User';
+import { UserService } from '../User/user.service';
 
 @Component({
-  selector: 'app-user-management',
-  templateUrl: './user-management.component.html',
-  styleUrls: ['./user-management.component.css']
+  templateUrl: './user-management.component.html'
 })
 export class UserManagementComponent implements OnInit {
   private _currentUser: User;
@@ -16,6 +14,7 @@ export class UserManagementComponent implements OnInit {
 
   constructor(private app:AppComponent, private router: Router, private userApi: UserService) {
     this._currentUser = new User(null);
+    this.UserList = null;
   }
 
   ngOnInit(): void { 

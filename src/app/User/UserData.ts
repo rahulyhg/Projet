@@ -1,5 +1,5 @@
-import { User } from './Class/User';
-import { GROUP } from './GroupData';
+import { User } from './User';
+import { GROUP } from '../Group/GroupData';
 
 export const USER: User[] = [
     {

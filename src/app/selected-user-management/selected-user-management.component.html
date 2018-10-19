@@ -24,7 +24,8 @@
         </div>
         <div class="button" (click)="ChangeRightEdit()">Modifier les doits de l'utilisateur</div>
         <div *ngIf="_RightEdit" class="RightEdit">
-            <li>RightEdit</li>
+            <li>(La modification des droits de cette utilisateur va créer un group + un group de droit pour cette utilisateurs uniquement)</li>
+            
         </div>
         <button type="submit" [disabled]="!SelectedUserManagementForm.valid">Valider</button>
     </form>
