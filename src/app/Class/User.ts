@@ -17,36 +17,57 @@ export class User {
   constructor(value: any) {
     if(value === null) { value = "" }
 
-    this.id = this.IsEmpty(value.id, 1),
-    this.login = this.IsEmpty(value.login, "default"),
-    this.password = this.IsEmpty(value.password, "c21f969b5f03d33d43e04f8f136e7682"),
-    this.group = this.IsEmpty(value.group, new Group(null)),
-    this.profile = this.IsEmpty(value.profile, "default.jpg"),
-    this.statut = this.IsEmptyBoolean(value.statut),
-    this.date_time_logIn = this.IsEmpty(value.date_time_logIn, "2000-01-01 01:01:01"),
-    this.date_time_signIn = this.IsEmpty(value.date_time_signIn, "2000-01-01 01:01:01"),
-    this.gameTag = this.IsEmpty(value.gameTag, "@default"), 
-    this.name = this.IsEmpty(value.name, "default"),
-    this.firstName = this.IsEmpty(value.firstName, "default"),
-    this.birthDate = this.IsEmpty(value.birthDate, "2000-01-01")
-  }
+    this.id = value.id;
+    if(value.id === null || value.id === undefined || value === "")
+      this.id = 1;
 
-  private IsEmpty(value: any, default_value: any): any {
-    if(value !== null && value !== undefined)
-      return value;
-    else
-      return default_value;
-  }
+    this.login = value.login;
+    if(value.login === null || value.login === undefined || value === "")
+      this.login = "default";
 
-  private IsEmptyBoolean(value: any): boolean {
-    if(value !== null && value !== undefined) {
-      if(value || !value) 
-        return value;
-      if(value === "0")
-        return false;
-      if(value === "1")
-        return true;
-    } else
-      return false;
+    this.password = value.password;
+    if(value.password === null || value.password === undefined || value === "")
+      this.password = "c21f969b5f03d33d43e04f8f136e7682";
+
+    this.group = value.group;
+    if(value.group === null || value.group === undefined || value === "")
+      this.group = new Group(null);
+
+    this.profile = value.profile;
+    if(value.profile === null || value.profile === undefined || value === "")
+      this.profile = "default.jpg";
+
+    if(value.statut || !value.statut) 
+      this.statut = value.statut;
+    if(value.statut === "0")
+      this.statut = false;
+    if(value.statut === "1")
+      this.statut = true;
+    if(value.statut === null || value.statut === undefined || value === "")
+      this.statut = false;
+
+    this.date_time_logIn = value.date_time_logIn;
+    if(value.date_time_logIn === null || value.date_time_logIn === undefined || value === "")
+      this.date_time_logIn = "2000-01-01 01:01:01";
+
+    this.date_time_signIn = value.date_time_signIn;
+    if(value.date_time_signIn === null || value.date_time_signIn === undefined || value === "")
+      this.date_time_signIn = "2000-01-01 01:01:01";
+
+    this.gameTag = value.gameTag;
+    if(value.gameTag === null || value.gameTag === undefined || value === "")
+      this.gameTag = "@default";
+
+    this.name= value.name;
+    if(value.name === null || value.name === undefined || value === "")
+      this.name = "default";
+
+    this.firstName = value.firstName;
+    if(value.firstName === null || value.firstName === undefined || value === "")
+      this.firstName = "default";
+
+    this.birthDate = value.birthDate;
+    if(value.birthDate === null || value.birthDate === undefined || value === "")
+      this.birthDate = "2000-01-01";
   }
 }

@@ -83,6 +83,13 @@ export class SelectedUserManagementComponent implements OnInit {
     }
   }
 
+  private ConvertDateInverse(date: string): string {
+    if(date !== null) {
+      var date_tab = date.split('T');
+      return date_tab[0] + " " + date_tab[1];
+    }
+  }
+
   private ChangeRightEdit(): void {
     if(!this._RightEdit) {
       this._RightEdit = true;
@@ -92,7 +99,12 @@ export class SelectedUserManagementComponent implements OnInit {
   }
 
   private editUse(post: any): void {
+    post.date_time_logIn = this.ConvertDateInverse(post.date_time_logIn);
+    post.date_time_signIn = this.ConvertDateInverse(post.date_time_signIn);
     this.user = new User(post);
-    console.log(this.user);
+    this.userApi.putUser(post.id, this.user);
+    this.router.navigate(['/UserManagement']);
+    if(this.user.id === this._currentUser.id)
+      this.app.logOut();
   }
 }

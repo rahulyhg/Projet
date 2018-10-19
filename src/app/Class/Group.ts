@@ -8,15 +8,16 @@ export class Group {
   constructor(value: any) {
     if(value === null) { value = "" }
 
-    this.id = this.IsEmpty(value.id, 1),
-    this.name = this.IsEmpty(value.name, "default"), 
-    this.rightGroupPage = this.IsEmpty(value.rightGroupPage, new RightGroupPage(null))
-  }
+    this.id = value.id;
+    if(value.id !== null || value.id !== undefined || value === "")
+      this.id = 1;
 
-  private IsEmpty(value: any, default_value: any): any {
-    if(value !== null && value !== undefined)
-      return value;
-    else
-      return default_value;
+    this.name = value.name;
+    if(value.name !== null || value.name !== undefined || value === "")
+      this.name = "default";
+
+    this.rightGroupPage = value.rightGroupPage;
+    if(value.rightGroupPage !== null || value.rightGroupPage !== undefined || value === "")
+      this.rightGroupPage = new RightGroupPage(null);
   }
 }

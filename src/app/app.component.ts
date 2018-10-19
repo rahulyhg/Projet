@@ -21,7 +21,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.getCurrentUser();
-    console.log("Refresh APP");
+    console.log(this._currentUser);
   }
 
   private getCurrentUser(): void {
@@ -33,18 +33,19 @@ export class AppComponent implements OnInit {
         // var login = user[1];
         // var password = user[2];
         this._currentUser =  this.userApi.getUserById(id);
-        if(!this._currentUser.statut) {
+        if(!this._currentUser.statut)
           this.logOut();
-        }
       }
     } else {
       this._currentUser = new User(null);
     }
   }
 
-  private logOut(): void {
-    // Mise à jours dans la base de données pour que user.statut valle false
+  public logOut(): void {
+    this._currentUser.statut = false;
+    this.userApi.putUser(this._currentUser.id, this._currentUser);
     console.log("deconnection");
+    this.GestionSitePopupClose();
     localStorage.clear();
     this.router.navigate(['/Accueil']);
     this.ngOnInit();

@@ -7,7 +7,7 @@ interface Api {
   api: boolean;
   auth: boolean;
   ErrorMsg: string;
-  data: Object[];
+  data: Group[];
 }
 
 @Injectable({

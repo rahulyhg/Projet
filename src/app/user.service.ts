@@ -6,7 +6,7 @@ interface Api {
   api: boolean;
   auth: boolean;
   ErrorMsg: string;
-  data: Object[];
+  data: User[];
 }
 
 @Injectable({
@@ -40,7 +40,7 @@ export class UserService {
 
   public getUserList(): User[] {
     var reponse = this.InitReponse(JSON.parse(this.data.getUser()));
-    console.log("getUserById Resquest");
+    console.log("getUserList Resquest");
     var user: User[];
     if(reponse !== null && reponse !== undefined) {
       return user = reponse;
@@ -49,6 +49,11 @@ export class UserService {
         null
       ]
     }
+  }
+
+  public putUser(id: number, user: User): void {
+    this.InitReponse(JSON.parse(this.data.putUser(id, user)));
+    console.log("putUser Resquest");
   }
 
   private InitReponse(api: Api): any {
