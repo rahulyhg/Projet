@@ -6,10 +6,11 @@ import { AppComponent } from '../app.component';
 
 import { User } from '../User/User';
 import { Group } from '../Group/Group';
+import { RightGroupPage } from '../RightGroupPage/RightGroupPage';
 
 import { UserService } from '../User/user.service';
 import { GroupService } from '../Group/group.service';
-
+import { RightGroupPageService } from '../RightGroupPage/RightGroupPage.service';
 
 @Component({
   templateUrl: './selected-user-management.component.html'
@@ -17,6 +18,8 @@ import { GroupService } from '../Group/group.service';
 export class SelectedUserManagementComponent implements OnInit {
   private _currentUser: User;
   private _RightEdit: boolean;
+  private _RightEditSelected: RightGroupPage;
+  private RightGroupPageList: RightGroupPage[];
   private GroupList: Group[];
   private post: any;
   private SelectedUserManagementForm: FormGroup;
@@ -24,9 +27,11 @@ export class SelectedUserManagementComponent implements OnInit {
   private isPassword: boolean;
 
   constructor(private route: ActivatedRoute, private app: AppComponent, private userApi: UserService, private router: Router,
-    private fb: FormBuilder, private groupApi: GroupService) { 
+    private fb: FormBuilder, private groupApi: GroupService, private rightGroupPageApi: RightGroupPageService) { 
       this._currentUser = new User(null);
       this._RightEdit = false;
+      this._RightEditSelected = new RightGroupPage(null);
+      this.RightGroupPageList = null;
       this.GroupList = null;
       this.post = null;
       this.SelectedUserManagementForm = null;
@@ -46,6 +51,7 @@ export class SelectedUserManagementComponent implements OnInit {
 
     this.getUserById();
     this.getGroupList();
+    this.getRightGroupPageList();
     this.initData();
   }
 
@@ -55,6 +61,22 @@ export class SelectedUserManagementComponent implements OnInit {
 
   private getGroupList(): void {
     this.GroupList = this.groupApi.getGroupList();
+  }
+
+  private getRightGroupPageList(): void {
+    this.RightGroupPageList = this.rightGroupPageApi.getRightGroupPageList();
+    this._RightEditSelected = this.RightGroupPageList[0];
+  }
+
+  private setRightEditSelected(id: number): void {
+    var index: number = 0;
+    for (var RightGroupPage_t of this.RightGroupPageList) {
+      if(RightGroupPage_t.id == id) {
+        this._RightEditSelected = this.RightGroupPageList[index];
+      }
+      index++;
+    }
+    this.initData();
   }
 
   private initData(): void {
@@ -71,25 +93,28 @@ export class SelectedUserManagementComponent implements OnInit {
       'name' : this.user.name,
       'firstName' : this.user.firstName,
       'birthDate' : this.user.birthDate,
-      'access_Main' : this.user.group.rightGroupPage.access_Main,
-      'access_Accueil' : this.user.group.rightGroupPage.access_Accueil,
-      'access_MonCompte' : this.user.group.rightGroupPage.access_MonCompte,
-      'access_Main_EditBar' : this.user.group.rightGroupPage.access_Main_EditBar,
-      'access_Main_EditBar_Dev' : this.user.group.rightGroupPage.access_Main_EditBar_Dev,
-      'access_Main_EditBar_Edit' : this.user.group.rightGroupPage.access_Main_EditBar_Edit,
-      'access_SelectedUserManagement' : this.user.group.rightGroupPage.access_SelectedUserManagement,
-      'access_UserManagement' : this.user.group.rightGroupPage.access_UserManagement
+      'RightGroupPage' : this.RightGroupPageList,
+      'access_Main' : this._RightEditSelected.access_Main,
+      'access_Accueil' : this._RightEditSelected.access_Accueil,
+      'access_Login' : this._RightEditSelected.access_Login,
+      'access_MonCompte' : this._RightEditSelected.access_MonCompte,
+      'access_Main_EditBar' : this._RightEditSelected.access_Main_EditBar,
+      'access_Main_EditBar_Dev' : this._RightEditSelected.access_Main_EditBar_Dev,
+      'access_Main_EditBar_Edit' : this._RightEditSelected.access_Main_EditBar_Edit,
+      'access_SelectedUserManagement' : this._RightEditSelected.access_SelectedUserManagement,
+      'access_UserManagement' : this._RightEditSelected.access_UserManagement
     });
 
     this.SelectedUserManagementForm.get('statut').setValue(this.user.statut);
-    this.SelectedUserManagementForm.get('access_Main').setValue(this.user.group.rightGroupPage.access_Main);
-    this.SelectedUserManagementForm.get('access_Accueil').setValue(this.user.group.rightGroupPage.access_Accueil);
-    this.SelectedUserManagementForm.get('access_MonCompte').setValue(this.user.group.rightGroupPage.access_MonCompte);
-    this.SelectedUserManagementForm.get('access_Main_EditBar').setValue(this.user.group.rightGroupPage.access_Main_EditBar);
-    this.SelectedUserManagementForm.get('access_Main_EditBar_Dev').setValue(this.user.group.rightGroupPage.access_Main_EditBar_Dev);
-    this.SelectedUserManagementForm.get('access_Main_EditBar_Edit').setValue(this.user.group.rightGroupPage.access_Main_EditBar_Edit);
-    this.SelectedUserManagementForm.get('access_SelectedUserManagement').setValue(this.user.group.rightGroupPage.access_SelectedUserManagement);
-    this.SelectedUserManagementForm.get('access_UserManagement').setValue(this.user.group.rightGroupPage.access_UserManagement);
+    this.SelectedUserManagementForm.get('access_Main').setValue(this._RightEditSelected.access_Main);
+    this.SelectedUserManagementForm.get('access_Accueil').setValue(this._RightEditSelected.access_Accueil);
+    this.SelectedUserManagementForm.get('access_Login').setValue(this._RightEditSelected.access_Login);
+    this.SelectedUserManagementForm.get('access_MonCompte').setValue(this._RightEditSelected.access_MonCompte);
+    this.SelectedUserManagementForm.get('access_Main_EditBar').setValue(this._RightEditSelected.access_Main_EditBar);
+    this.SelectedUserManagementForm.get('access_Main_EditBar_Dev').setValue(this._RightEditSelected.access_Main_EditBar_Dev);
+    this.SelectedUserManagementForm.get('access_Main_EditBar_Edit').setValue(this._RightEditSelected.access_Main_EditBar_Edit);
+    this.SelectedUserManagementForm.get('access_SelectedUserManagement').setValue(this._RightEditSelected.access_SelectedUserManagement);
+    this.SelectedUserManagementForm.get('access_UserManagement').setValue(this._RightEditSelected.access_UserManagement);
 
     for (var group of this.GroupList) {
       if(group.id === this.user.group.id) 
@@ -117,8 +142,6 @@ export class SelectedUserManagementComponent implements OnInit {
   }
 
   private editUse(post: any): void {
-
-
     post.date_time_logIn = this.ConvertDateInverse(post.date_time_logIn);
     post.date_time_signIn = this.ConvertDateInverse(post.date_time_signIn);
     this.user = new User(post);

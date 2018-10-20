@@ -1,5 +1,6 @@
 export class RightGroupPage {
     public id: number;
+    public name: string;
     public access_Main: boolean;
     public access_Accueil: boolean;
     public access_Login: boolean;
@@ -16,6 +17,10 @@ export class RightGroupPage {
       this.id = value.id;
       if(value.id !== null || value.id !== undefined || value === "")
         this.id = 1;
+
+      this.name = value.name;
+      if(value.name !== null || value.name !== undefined || value === "")
+        this.name = "default";
 
       if(value.access_Main || !value.access_Main) 
         this.access_Main = value.access_Main;

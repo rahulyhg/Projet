@@ -3,6 +3,7 @@ import { RightGroupPage } from './RightGroupPage';
 export const RIGHTGROUPPAGE: RightGroupPage[] = [
     { 
         id: 1, 
+        name: "default",
         access_Main: true, 
         access_Accueil: true, 
         access_Login: true, 
@@ -15,6 +16,7 @@ export const RIGHTGROUPPAGE: RightGroupPage[] = [
     },
     { 
         id: 2, 
+        name : "Développement",
         access_Main: true, 
         access_Accueil: true, 
         access_Login: true, 

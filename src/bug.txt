@@ -1,3 +1,8 @@
 Rajouter un bouton a coté de groupe dans utilisateur pour acceder a la page de modification
 
 Faire en sorte de savoir si il y a eu un nouveau de groupe de droit de page de crée (si il y a une modif alors c'est le cas) et en créer un nouveau
+
+Regarder si on peut ajouter automatiquement des object a une liste d'obet (un peut comme en C# avec .addlist)
+Regarder si on peut pas utiliser .group.rightgrouppage comme pour group
+
+Si on definit un group a un utilisateur qui a des droit personnalisé, alors on prévient la persoone qui mofifie et on supprimer le group personnalisé pour l'utilisatur
