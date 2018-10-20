@@ -1,1 +1,9 @@
 Préciser si il y a un groupe perso a coté de la liste de groupes
+
+Faire en sorte que la page soit afficher que quand les images sont chargé
+
+Créer les différent droit pour la page UserManagement et SelectedUserManagement
+
+Faire en sorte que les utilisateurs puisse modifier les compte (avec les droit de page qui vont avec)
+
+Suprimer le input avec le nom de l'image de profilde d el'utoilisatuer qui est en commetaire
