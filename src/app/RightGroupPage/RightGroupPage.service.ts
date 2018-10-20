@@ -26,6 +26,21 @@ export class RightGroupPageService {
       return [ null ];
   }
 
+  public putRightGroupPage(id: number, rightGroupPage: RightGroupPage): void {
+    console.log("PUT / RIGHTGROUPPAGE / putRightGroupPage");
+    this.InitReponse(JSON.parse(this.data.putRightGroupPage(id, rightGroupPage)));
+  }
+
+  public postRightGroupPage(rightGroupPage: RightGroupPage): void {
+    console.log("POST / RIGHTGROUPPAGE / postRightGroupPage");
+    this.InitReponse(JSON.parse(this.data.postRightGroupPage(rightGroupPage)));
+  }
+
+  public deleteRightGroupPage(id: number): void {
+    console.log("DELETE / RIGHTGROUPPAGE / deleteRightGroupPage");
+    this.InitReponse(JSON.parse(this.data.deleteRightGroupPage(id)));
+  }
+
   private InitReponse(api: Api): RightGroupPage[] {
     if(api !== null && api !== undefined && api.api) {
       if(api.auth) {

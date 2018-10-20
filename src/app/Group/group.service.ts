@@ -25,6 +25,16 @@ export class GroupService {
       return [ null ];
   }
 
+  public postGroup(group: Group): void {
+    console.log("POST / GROUP / postGroup");
+    this.InitReponse(JSON.parse(this.data.postGroup(group)));
+  }
+
+  public deleteGroup(id: number): void {
+    console.log("DELETE / GROUP / deleteGroup");
+    this.InitReponse(JSON.parse(this.data.deleteGroup(id)));
+  }
+
   private InitReponse(api: Api): Group[] {
     if(api !== null && api !== undefined && api.api) {
       if(api.auth) {

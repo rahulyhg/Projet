@@ -9,7 +9,7 @@ import { UserService } from '../User/user.service';
   templateUrl: './user-management.component.html'
 })
 export class UserManagementComponent implements OnInit {
-  private _currentUser: User;
+  public _currentUser: User;
   private UserList: User[];
 
   constructor(private app:AppComponent, private router: Router, private userApi: UserService) {

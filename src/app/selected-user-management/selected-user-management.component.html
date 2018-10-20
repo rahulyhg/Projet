@@ -26,35 +26,35 @@
         <div *ngIf="_RightEdit" class="RightEdit">
             <li>(La modification des droits de cette utilisateur va créer un group + un group de droit pour cette utilisateurs uniquement)</li>
             <li> RightGroupPage :
-                <select (change)="setRightEditSelected(RightGroupPage.value)" #RightGroupPage >
-                    <option *ngFor="let RightGroupPage of RightGroupPageList" [ngValue]="RightGroupPage" value="{{ RightGroupPage.id }}">{{ RightGroupPage.name }}</option>
+                <select formControlName="RightGroupPage" (change)="setRightEditSelected($event.target.value)">
+                    <option *ngFor="let RightGroupPage of RightGroupPageList" [ngValue]="RightGroupPage">{{ RightGroupPage.name }}</option>
                 </select>
             </li>
             <h2>Main Page</h2>
             <label style="font-weight: bold;">Peut affecter le bon fonctionnement du site !</label>
-            <li>access_Main : <input type="checkbox" formControlName="access_Main"/></li>
+            <li>access_Main : <input type="checkbox" formControlName="access_Main" (change)="this.change_defaut_rightGroupPage = true"/></li>
 
             <h2>Accueil Page</h2>
             <label style="font-weight: bold;">Peut affecter le bon fonctionnement du site !</label>
-            <li>access_Accueil : <input type="checkbox" formControlName="access_Accueil"/></li>
+            <li>access_Accueil : <input type="checkbox" formControlName="access_Accueil" (change)="this.change_defaut_rightGroupPage = true"/></li>
 
             <h2>Login Page</h2>
             <label style="font-weight: bold;">Peut affecter le bon fonctionnement du site !</label>
-            <li>access_Login : <input type="checkbox" formControlName="access_Login"/></li>
+            <li>access_Login : <input type="checkbox" formControlName="access_Login" (change)="this.change_defaut_rightGroupPage = true"/></li>
 
             <h2>MonCompte Page</h2>
-            <li>access_MonCompte : <input type="checkbox" formControlName="access_MonCompte"/></li>
+            <li>access_MonCompte : <input type="checkbox" formControlName="access_MonCompte" (change)="this.change_defaut_rightGroupPage = true"/></li>
 
             <h2>EditBar</h2>
-            <li>access_Main_EditBar : <input type="checkbox" formControlName="access_Main_EditBar"/></li>
-            <li>access_Main_EditBar_Dev : <input type="checkbox" formControlName="access_Main_EditBar_Dev"/></li>
-            <li>access_Main_EditBar_Edit : <input type="checkbox" formControlName="access_Main_EditBar_Edit"/></li>
+            <li>access_Main_EditBar : <input type="checkbox" formControlName="access_Main_EditBar" (change)="this.change_defaut_rightGroupPage = true"/></li>
+            <li>access_Main_EditBar_Dev : <input type="checkbox" formControlName="access_Main_EditBar_Dev" (change)="this.change_defaut_rightGroupPage = true"/></li>
+            <li>access_Main_EditBar_Edit : <input type="checkbox" formControlName="access_Main_EditBar_Edit" (change)="this.change_defaut_rightGroupPage = true"/></li>
 
             <h2>SelectedUserManagement Page</h2>
-            <li>access_SelectedUserManagement : <input type="checkbox" formControlName="access_SelectedUserManagement"/></li>
+            <li>access_SelectedUserManagement : <input type="checkbox" formControlName="access_SelectedUserManagement" (change)="this.change_defaut_rightGroupPage = true"/></li>
 
             <h2>UserManagement Page</h2>
-            <li>access_UserManagement : <input type="checkbox" formControlName="access_UserManagement"/></li>
+            <li>access_UserManagement : <input type="checkbox" formControlName="access_UserManagement" (change)="this.change_defaut_rightGroupPage = true"/></li>
         </div>
         <button type="submit" [disabled]="!SelectedUserManagementForm.valid">Valider</button>
     </form>

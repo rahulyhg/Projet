@@ -9,7 +9,7 @@ import { Router } from "@angular/router";
 })
 export class AppComponent implements OnInit {
   public _currentUser: User;
-  private _GestionSitePopupStatut: boolean;
+  public _GestionSitePopupStatut: boolean;
   
   constructor(private userApi: UserService, private router: Router) { 
     this._currentUser = new User(null);

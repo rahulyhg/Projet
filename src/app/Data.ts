@@ -110,6 +110,43 @@ export class Data {
     return JSON.stringify(api);
   }
 
+  public postGroup(group: Group): string {
+    var l: number = this.group.length;
+    var ErrorMsg: string = null;
+    this.group.push(group);
+    if(this.group[l + 1] === group) {
+      ErrorMsg = "Impossible de créer le Group de droit de page";
+    }
+    var api: Api;
+    api = {
+      api: true,
+      auth: true,
+      ErrorMsg: ErrorMsg,
+      data: null
+    }
+    return JSON.stringify(api);
+  }
+
+  public deleteGroup(id: number): string {
+    var api: Api;
+    var ErrorMsg: string = null;
+
+    var t: number = this.group.length;
+    var index = this.group.findIndex(d => d.id === id);
+    this.group.splice(index, 1);
+
+    if(t === this.group.length) {
+      ErrorMsg = "Impossible de supprimer de group";
+    }
+    api = {
+      api: true,
+      auth: true,
+      ErrorMsg: ErrorMsg,
+      data: null
+    }
+    return JSON.stringify(api);
+  }
+
   // ------ RIGHTGROUP PAGE ---------
   // ------- GET ---------
 
@@ -133,6 +170,68 @@ export class Data {
       auth: true,
       ErrorMsg: null,
       data: this.rightGroupPage
+    }
+    return JSON.stringify(api);
+  }
+
+  public postRightGroupPage(rightGroupPage: RightGroupPage): string {
+    var l: number = this.rightGroupPage.length;
+    var ErrorMsg: string = null;
+    this.rightGroupPage.push(rightGroupPage);
+    if(this.rightGroupPage[l + 1] === rightGroupPage) {
+      ErrorMsg = "Impossible de créer le Group de droit de page";
+    }
+    var api: Api;
+    api = {
+      api: true,
+      auth: true,
+      ErrorMsg: ErrorMsg,
+      data: null
+    }
+    return JSON.stringify(api);
+  }
+
+  public putRightGroupPage(id: number, rightGroupPage: RightGroupPage): string {
+    var index: number = 0;
+    var rightGroupPage_index: number = 0;
+    for (var rightGroupPage_t of this.rightGroupPage) {
+      if(rightGroupPage_t.id === id) 
+      rightGroupPage_index = index;
+      index++;
+    }
+
+    this.rightGroupPage[rightGroupPage_index] = rightGroupPage;
+
+    var ErrorMsg: string = null;
+    if(this.rightGroupPage[id] !== rightGroupPage) { ErrorMsg = "Impossible de mettre à jour le groupe de droit de page" }
+    var api: Api;
+    api = {
+      api: true,
+      auth: true,
+      ErrorMsg: null,
+      data: [
+        null
+      ]
+    }
+    return JSON.stringify(api);
+  }
+
+  public deleteRightGroupPage(id: number): string {
+    var api: Api;
+    var ErrorMsg: string = null;
+
+    var t: number = this.rightGroupPage.length;
+    var index = this.rightGroupPage.findIndex(d => d.id === id);
+    this.rightGroupPage.splice(index, 1);
+
+    if(t === this.rightGroupPage.length) {
+      ErrorMsg = "Impossible de supprimer de rightGroupPage";
+    }
+    api = {
+      api: true,
+      auth: true,
+      ErrorMsg: ErrorMsg,
+      data: null
     }
     return JSON.stringify(api);
   }

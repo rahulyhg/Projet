@@ -6,3 +6,5 @@ Regarder si on peut ajouter automatiquement des object a une liste d'obet (un pe
 Regarder si on peut pas utiliser .group.rightgrouppage comme pour group
 
 Si on definit un group a un utilisateur qui a des droit personnalisé, alors on prévient la persoone qui mofifie et on supprimer le group personnalisé pour l'utilisatur
+
+Préciser si il y a un groupe perso a coté de la liste de groupes

@@ -8,7 +8,7 @@ import { User } from '../User/User';
   templateUrl: './accueil.component.html'
 })
 export class AccueilComponent implements OnInit {
-  private _currentUser: User;
+  public _currentUser: User;
 
   constructor(private app:AppComponent, private router: Router) {
     this._currentUser = new User(null);

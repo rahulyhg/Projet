@@ -10,7 +10,7 @@ import { AppComponent } from '../app.component';
   templateUrl: './login.component.html'
 })
 export class LoginComponent implements OnInit {
-  private _currentUser: User;
+  public _currentUser: User;
   private LoginForm : FormGroup;
   private post: any;
   private ErrorMsg: string;
