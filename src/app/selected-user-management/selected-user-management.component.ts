@@ -26,6 +26,7 @@ export class SelectedUserManagementComponent implements OnInit {
   private user: User;
   private initial_user: User;
   private isPassword: boolean;
+  private MsgGroupDelete: string;
 
   constructor(private route: ActivatedRoute, private app: AppComponent, private userApi: UserService, private router: Router,
     private fb: FormBuilder, private groupApi: GroupService, private rightGroupPageApi: RightGroupPageService) { 
@@ -37,8 +38,9 @@ export class SelectedUserManagementComponent implements OnInit {
       this.post = null;
       this.SelectedUserManagementForm = null;
       this.user = new User(null);
-      this.initial_user = new User(null);
+      this.initial_user = new User(this.userApi.getUserById(Number(this.route.snapshot.paramMap.get('id'))));
       this.isPassword = true;
+      this.MsgGroupDelete = null;
     }
 
   ngOnInit(): void { 
@@ -51,7 +53,10 @@ export class SelectedUserManagementComponent implements OnInit {
       this.ngOnInit();
     }
 
-    this.getUserById();
+    //this.getUserById();
+    this.user = new User(this.userApi.getUserById(Number(this.route.snapshot.paramMap.get('id'))));
+    //this.initial_user = this.user;
+
     this.getGroupList();
     this.getRightGroupPageList();
     this.initData();
@@ -61,8 +66,7 @@ export class SelectedUserManagementComponent implements OnInit {
   }
 
   private getUserById(): void {
-    this.user = new User(this.userApi.getUserById(Number(this.route.snapshot.paramMap.get('id'))));
-    this.initial_user = this.user;
+    
   }
 
   private getGroupList(): void {
@@ -77,6 +81,12 @@ export class SelectedUserManagementComponent implements OnInit {
     this.change_defaut_rightGroupPage = false;
     var id: number = this.test(idd);
     this.user.group.rightGroupPage = this.RightGroupPageList[id];
+    this.initData();
+  }
+
+  private setGroupSelected(idd: any): void {
+    var id: number = this.test(idd);
+    this.user.group = this.GroupList[id];
     this.initData();
   }
 
@@ -114,8 +124,12 @@ export class SelectedUserManagementComponent implements OnInit {
     var index: number = this.GroupList.findIndex(d => d.id === this.user.group.id);
     this.SelectedUserManagementForm.get('group').setValue(this.GroupList[index]);
 
-    index = this.RightGroupPageList.findIndex(d => d.id === this.user.group.rightGroupPage.id);
+    var index = this.RightGroupPageList.findIndex(d => d.id === this.user.group.rightGroupPage.id);
     this.SelectedUserManagementForm.get('RightGroupPage').setValue(this.RightGroupPageList[index]);
+
+    if(this.initial_user.group.rightGroupPage.name.split('_')[1] === "user" && this.user.group.rightGroupPage.name.split('_').length === 1) {
+      this.MsgGroupDelete = "En séléctionnant un group prédefinit, vous allez supprimer le groupe personnalisé de l'utiliateur";
+    }
   }
 
   private ConvertDate(date: string): string {

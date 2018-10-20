@@ -15,6 +15,8 @@ import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 import { UserManagementComponent } from './user-management/user-management.component';
 import { SelectedUserManagementComponent } from './selected-user-management/selected-user-management.component';
+import { GroupManagementComponent } from './group-management/group-management.component';
+import { SelectedGroupManagementComponent } from './selected-group-management/selected-group-management.component';
 
 
 const routes: Routes = [
@@ -23,7 +25,9 @@ const routes: Routes = [
   { path: 'Login', component: LoginComponent },
   { path: 'MonCompte', component: MonCompteComponent },
   { path: 'UserManagement', component: UserManagementComponent},
-  { path: 'UserManagement/:id', component: SelectedUserManagementComponent }
+  { path: 'UserManagement/:id', component: SelectedUserManagementComponent },
+  { path: 'GroupManagement', component: GroupManagementComponent },
+  { path: 'GroupManagement/:id', component: SelectedGroupManagementComponent },
 ];
 
 @NgModule({
@@ -33,7 +37,9 @@ const routes: Routes = [
     LoginComponent,
     MonCompteComponent,
     UserManagementComponent,
-    SelectedUserManagementComponent
+    SelectedUserManagementComponent,
+    GroupManagementComponent,
+    SelectedGroupManagementComponent
   ],
   imports: [
     BrowserModule,

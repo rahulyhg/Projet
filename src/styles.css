@@ -368,3 +368,15 @@ margin-top: 60px;
   /* -webkit-writing-mode: horizontal-tb !important; */
   -webkit-appearance: button;
 }
+
+.EditBar{
+  bottom: 0;
+  position: fixed;
+  background-color: white;
+  padding: 20px;
+  border: 2px solid;
+  left: 0;
+  left: 302Px;
+  text-align: center;
+  right: 0;
+}

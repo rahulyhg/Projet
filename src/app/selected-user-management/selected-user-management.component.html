@@ -8,9 +8,12 @@
                 <li>Login : <input type="text" formControlName="login"/></li>
                 <li>Mot de passe : <input type="{{isPassword ? 'password' : 'text' }}" formControlName="password"/><div class="button" (click)="showPassword()">Voir le mot de passe</div></li>
                 <li> Group :
-                    <select formControlName="group">
+                    <select formControlName="group" (change)="setGroupSelected($event.target.value)">
                         <option *ngFor="let group of GroupList" [ngValue]="group">{{ group.name}}</option>
                     </select>
+                    <div class="button" routerLink="/GroupManagement/{{ user.group.id }}">Editer ce groupe</div>
+                    <div>{{ MsgGroupDelete }}</div>
+                    
                 </li>
                 <li>Image de profil : <input type="text" formControlName="profile"/></li>
                 <li>Statut de connexion : <input type="checkbox" formControlName="statut"/></li>
@@ -22,7 +25,6 @@
                 <li>BirthDate : <input type="date" formControlName="birthDate"/></li>
             </ul>
         </div>
-        <div class="button" (click)="ChangeRightEdit()">Modifier les doits de l'utilisateur</div>
         <div *ngIf="_RightEdit" class="RightEdit">
             <li>(La modification des droits de cette utilisateur va créer un group + un group de droit pour cette utilisateurs uniquement)</li>
             <li> RightGroupPage :
@@ -56,6 +58,9 @@
             <h2>UserManagement Page</h2>
             <li>access_UserManagement : <input type="checkbox" formControlName="access_UserManagement" (change)="this.change_defaut_rightGroupPage = true"/></li>
         </div>
-        <button type="submit" [disabled]="!SelectedUserManagementForm.valid">Valider</button>
+        <div class="EditBar">
+            <div class="button" (click)="ChangeRightEdit()">Modifier les doits de l'utilisateur</div>
+            <button type="submit" [disabled]="!SelectedUserManagementForm.valid">Valider</button>
+        </div>
     </form>
 </div>
