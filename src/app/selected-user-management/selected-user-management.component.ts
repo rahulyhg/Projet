@@ -50,13 +50,9 @@ export class SelectedUserManagementComponent implements OnInit {
     if(!this._currentUser.group.rightGroupPage.access_MonCompte) {
       console.log("Vous n'avez pas la permission d'accedez à cette page");
       this.router.navigate(['/Accueil']);
-      this.ngOnInit();
     }
 
-    //this.getUserById();
-    this.user = new User(this.userApi.getUserById(Number(this.route.snapshot.paramMap.get('id'))));
-    //this.initial_user = this.user;
-
+    this.getUserById();
     this.getGroupList();
     this.getRightGroupPageList();
     this.initData();
@@ -66,7 +62,7 @@ export class SelectedUserManagementComponent implements OnInit {
   }
 
   private getUserById(): void {
-    
+    this.user = new User(this.userApi.getUserById(Number(this.route.snapshot.paramMap.get('id'))));
   }
 
   private getGroupList(): void {
@@ -79,20 +75,18 @@ export class SelectedUserManagementComponent implements OnInit {
 
   private setRightEditSelected(idd: any): void {
     this.change_defaut_rightGroupPage = false;
-    var id: number = this.test(idd);
+    var value = "" + idd;
+    var id: number = Number(value.split(":")[0]);
     this.user.group.rightGroupPage = this.RightGroupPageList[id];
     this.initData();
   }
 
   private setGroupSelected(idd: any): void {
-    var id: number = this.test(idd);
+    this._RightEdit = true;
+    var value = "" + idd;
+    var id: number = Number(value.split(":")[0]);
     this.user.group = this.GroupList[id];
     this.initData();
-  }
-
-  private test(value: any): number {
-    value = "" + value;
-    return Number(value.split(":")[0]);
   }
 
   private initData(): void {
@@ -101,8 +95,10 @@ export class SelectedUserManagementComponent implements OnInit {
       'statut': this.user.statut,
       'login' : this.user.login,
       'password' : this.user.password,
-      'date_time_signIn' : this.ConvertDate(this.user.date_time_signIn),
-      'date_time_logIn' : this.ConvertDate(this.user.date_time_logIn),
+      'date_signIn' : this.user.date_time_signIn.split(' ')[0],
+      'time_signIn' : this.user.date_time_signIn.split(' ')[1],
+      'date_logIn' : this.user.date_time_logIn.split(' ')[0],
+      'time_logIn' : this.user.date_time_logIn.split(' ')[1],
       'group' : this.user.group,
       'profile' : this.user.profile,
       'gameTag' : this.user.gameTag,
@@ -129,21 +125,8 @@ export class SelectedUserManagementComponent implements OnInit {
 
     if(this.initial_user.group.rightGroupPage.name.split('_')[1] === "user" && this.user.group.rightGroupPage.name.split('_').length === 1) {
       this.MsgGroupDelete = "En séléctionnant un group prédefinit, vous allez supprimer le groupe personnalisé de l'utiliateur";
-    }
-  }
-
-  private ConvertDate(date: string): string {
-    if(date !== null) {
-      var date_t: string[] = (date.split(' ')[0]).split('-');
-      var time_t: string[] = (date.split(' ')[1]).split(':');
-      return date_t[0]+"-"+date_t[1]+"-"+date_t[2]+"T"+time_t[0]+":"+time_t[1]+":"+time_t[2];
-    }
-  }
-
-  private ConvertDateInverse(date: string): string {
-    if(date !== null) {
-      var date_tab: string[] = date.split('T');
-      return date_tab[0] + " " + date_tab[1];
+    } else {
+      this.MsgGroupDelete = null;
     }
   }
 
@@ -152,8 +135,8 @@ export class SelectedUserManagementComponent implements OnInit {
   }
 
   private editUse(post: any): void {
-    post.date_time_logIn = this.ConvertDateInverse(post.date_time_logIn);
-    post.date_time_signIn = this.ConvertDateInverse(post.date_time_signIn);
+    post.date_time_logIn = post.date_logIn + " " + post.time_logIn;
+    post.date_time_signIn = post.date_signIn + " " + post.time_signIn;
 
     this.user = new User(post);
 

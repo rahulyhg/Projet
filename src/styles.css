@@ -281,6 +281,13 @@ margin-top: 60px;
   color: red;
 }
 
+.ErrorMsg {
+  text-align: left;
+  font-size: 20px;
+  font-weight: bold;
+  color: red;
+}
+
 .LoginForm_content {
   text-align: center;
 }
@@ -306,12 +313,14 @@ margin-top: 60px;
   margin: auto;
   padding: 35px;
   padding-top: 0;
+  width: 70%
 }
 
 .profile {
   float: left;
   text-align: center;
   display: flex;
+  width: 20%;
 }
 
 .profile img {

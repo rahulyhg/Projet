@@ -19,7 +19,7 @@
       <td>{{ user.password }}</td>
       <td>{{ user.date_time_signIn }}</td>
       <td>{{ user.date_time_logIn }}</td> 
-      <td><li class="lien"><a routerLink="/SetGroups/{{ user.group }}">{{ user.group.name }}</a></td>
+      <td><li class="lien"><a routerLink="/GroupManagement/{{ user.group.id }}">{{ user.group.name }}</a></td>
       <td>{{ user.profile }}</td>
     </tr>
   </tbody>

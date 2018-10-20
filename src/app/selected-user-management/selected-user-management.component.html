@@ -11,14 +11,12 @@
                     <select formControlName="group" (change)="setGroupSelected($event.target.value)">
                         <option *ngFor="let group of GroupList" [ngValue]="group">{{ group.name}}</option>
                     </select>
-                    <div class="button" routerLink="/GroupManagement/{{ user.group.id }}">Editer ce groupe</div>
-                    <div>{{ MsgGroupDelete }}</div>
-                    
+                    <div class="button" routerLink="/GroupManagement/{{ user.group.id }}">Editer ce groupe</div> <div class="ErrorMsg">{{ MsgGroupDelete }}</div>
                 </li>
                 <li>Image de profil : <input type="text" formControlName="profile"/></li>
                 <li>Statut de connexion : <input type="checkbox" formControlName="statut"/></li>
-                <li>Date de dernière connexion : <input type="datetime-local" formControlName="date_time_logIn"/></li>
-                <li>Datse d'Inscription : <input type="datetime-local" formControlName="date_time_signIn"/></li>
+                <li>Date de dernière connexion : <input type="date" formControlName="date_logIn"/><input type="time" formControlName="time_logIn"/></li>
+                <li>Datse d'Inscription : <input type="date" formControlName="date_signIn"/><input type="time" formControlName="time_signIn"/></li>
                 <li>Game Tag : <input type="text" formControlName="gameTag"/></li>
                 <li>Name : <input type="text" formControlName="name"/></li>
                 <li>FirstName : <input type="text" formControlName="firstName"/></li>
