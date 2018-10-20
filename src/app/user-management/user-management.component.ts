@@ -42,4 +42,8 @@ export class UserManagementComponent implements OnInit {
       i++
     }
   }
+
+  private AddUser(): void {
+    console.log("Ajouter un nouvelle utilisateur");
+  }
 }

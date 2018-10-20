@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Md5 } from 'ts-md5/dist/md5';
 
 import { User } from './User';
 import { Data } from '../Data';
@@ -27,7 +28,8 @@ export class UserService {
 
   public Auth(login: string, password: string): User {
     console.log("GET:AUTH / USER / AuthUser");
-    var reponse: User[] = this.InitReponse(JSON.parse(this.data.AuthUser(login, password)));
+
+    var reponse: User[] = this.InitReponse(JSON.parse(this.data.AuthUser(login, this.create_md5(password))));
     if(reponse !== null && reponse !== undefined)
       return new User(reponse);
     else
@@ -48,6 +50,16 @@ export class UserService {
     this.InitReponse(JSON.parse(this.data.putUser(id, user)));
   }
 
+  public deleteUser(id: number): void {
+    console.log("DELETE / USER / deleteUser");
+    this.InitReponse(JSON.parse(this.data.deleteUser(id)));
+  }
+
+  public postUser(user: User): void {
+    console.log("POST / USER / postUser");
+    this.InitReponse(JSON.parse(this.data.postUser(user)));
+  }
+
   private InitReponse(api: Api): User[] {
     if(api !== null && api !== undefined && api.api) {
       if(api.auth) {
@@ -61,5 +73,10 @@ export class UserService {
         console.log("Error: Authentification False");
     } else
       console.log("Error: Api false");
+  }
+
+  private create_md5(attrib: string): any {
+    const md5 = new Md5();
+    return md5.appendStr(attrib).end();
   }
 }

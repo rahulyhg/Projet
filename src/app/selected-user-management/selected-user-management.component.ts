@@ -135,53 +135,73 @@ export class SelectedUserManagementComponent implements OnInit {
   }
 
   private editUse(post: any): void {
-    post.date_time_logIn = post.date_logIn + " " + post.time_logIn;
-    post.date_time_signIn = post.date_signIn + " " + post.time_signIn;
+    if(this.route.snapshot.paramMap.get('id') === "New") {
 
-    this.user = new User(post);
+      post.date_time_logIn = post.date_logIn + " " + post.time_logIn;
+      post.date_time_signIn = post.date_signIn + " " + post.time_signIn;
+  
+      this.user = new User(post);
+      this.user.id = 3;
 
-    if(this.initial_user.group.rightGroupPage.name.split('_')[1] === "user" && this.change_defaut_rightGroupPage) {
-      console.log("modification du groupe perso de d'utilisateur");
-      var rightGroupPage: RightGroupPage = new RightGroupPage(post);
-      rightGroupPage.id = this.initial_user.group.rightGroupPage.id,
-      rightGroupPage.name = this.initial_user.group.rightGroupPage.name;
-      this.rightGroupPageApi.putRightGroupPage(this.initial_user.group.rightGroupPage.id, rightGroupPage);
-    }
-    if(this.change_defaut_rightGroupPage && this.initial_user.group.rightGroupPage.name.split('_')[1] !== "user") {
-      console.log("Nouveau groupe perso pour l'utilisateur");
-
-      var index = this.RightGroupPageList.findIndex(d => d.name === "_user_" + this.initial_user.id);
-      if(index === -1) {
+      this.userApi.postUser(this.user);
+      this.router.navigate(['/UserManagement']);
+    } else {
+      post.date_time_logIn = post.date_logIn + " " + post.time_logIn;
+      post.date_time_signIn = post.date_signIn + " " + post.time_signIn;
+  
+      this.user = new User(post);
+  
+      if(this.initial_user.group.rightGroupPage.name.split('_')[1] === "user" && this.change_defaut_rightGroupPage) {
+        console.log("modification du groupe perso de d'utilisateur");
         var rightGroupPage: RightGroupPage = new RightGroupPage(post);
-        rightGroupPage.id = 3,
-        rightGroupPage.name = "_user_" + this.initial_user.id;
-        this.rightGroupPageApi.postRightGroupPage(rightGroupPage);
+        rightGroupPage.id = this.initial_user.group.rightGroupPage.id,
+        rightGroupPage.name = this.initial_user.group.rightGroupPage.name;
+        this.rightGroupPageApi.putRightGroupPage(this.initial_user.group.rightGroupPage.id, rightGroupPage);
       }
-
-      index = this.GroupList.findIndex(d => d.name === "_user_" + this.initial_user.id);
-      if(index === -1) {
-        var group: Group = new Group(null);
-        group.id = 3;
-        group.name = "_user_" + this.initial_user.id;
-        group.rightGroupPage = rightGroupPage;
-        this.groupApi.postGroup(group);
+      if(this.change_defaut_rightGroupPage && this.initial_user.group.rightGroupPage.name.split('_')[1] !== "user") {
+        console.log("Nouveau groupe perso pour l'utilisateur");
+  
+        var index = this.RightGroupPageList.findIndex(d => d.name === "_user_" + this.initial_user.id);
+        if(index === -1) {
+          var rightGroupPage: RightGroupPage = new RightGroupPage(post);
+          rightGroupPage.id = 3,
+          rightGroupPage.name = "_user_" + this.initial_user.id;
+          this.rightGroupPageApi.postRightGroupPage(rightGroupPage);
+        }
+  
+        index = this.GroupList.findIndex(d => d.name === "_user_" + this.initial_user.id);
+        if(index === -1) {
+          var group: Group = new Group(null);
+          group.id = 3;
+          group.name = "_user_" + this.initial_user.id;
+          group.rightGroupPage = rightGroupPage;
+          this.groupApi.postGroup(group);
+        }
+  
+        this.user.group = group;
       }
-
-      this.user.group = group;
+      if(this.user.group.rightGroupPage.name.split('_')[1] !== "user" && this.initial_user.group.rightGroupPage.name.split('_')[1] === "user") {
+        console.log("Attribution d'un group générique à l'utilisateur");
+        this.groupApi.deleteGroup(this.initial_user.group.id);
+        this.rightGroupPageApi.deleteRightGroupPage(this.initial_user.group.rightGroupPage.id);
+      }
+  
+      this.userApi.putUser(post.id, this.user);
+      this.router.navigate(['/UserManagement']);
+      if(this.user.id === this._currentUser.id)
+        this.app.logOut();
     }
-    if(this.user.group.rightGroupPage.name.split('_')[1] !== "user" && this.initial_user.group.rightGroupPage.name.split('_')[1] === "user") {
-      console.log("Attribution d'un group générique à l'utilisateur");
-      this.groupApi.deleteGroup(this.initial_user.group.id);
-      this.rightGroupPageApi.deleteRightGroupPage(this.initial_user.group.rightGroupPage.id);
-    }
-
-    this.userApi.putUser(post.id, this.user);
-    this.router.navigate(['/UserManagement']);
-    if(this.user.id === this._currentUser.id)
-      this.app.logOut();
   }
 
   private showPassword(): void {
     this.isPassword = !(this.isPassword);
+  }
+
+  private DeleteUser(): void {
+    this.userApi.deleteUser(this.user.id);
+
+    this.router.navigate(['/UserManagement']);
+    if(this.user.id === this._currentUser.id)
+      this.app.logOut();
   }
 }

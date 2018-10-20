@@ -58,7 +58,8 @@
         </div>
         <div class="EditBar">
             <div class="button" (click)="ChangeRightEdit()">Modifier les doits de l'utilisateur</div>
-            <button type="submit" [disabled]="!SelectedUserManagementForm.valid">Valider</button>
+            <div class="button" (click)="DeleteUser()">Supprimer l'utilisateur</div>
+            <button type="submit" [disabled]="!SelectedUserManagementForm.valid">Valider les modifications</button>
         </div>
     </form>
 </div>
