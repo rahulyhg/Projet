@@ -1,7 +1,14 @@
 <div *ngIf="_currentUser.group.rightGroupPage.access_SelectedUserManagement">
     <form [formGroup]="SelectedUserManagementForm" (ngSubmit)="editUse(SelectedUserManagementForm.value)">
         <div class="profile">
-            <img src="assets/uploads/images/{{ user.profile }}">
+            <input style="display: none" type="file" (change)="imageChangeClick($event)" #File>
+            <file-drop (onFileDrop)="imageChangeDrag($event)" (click)="File.click()">
+                <div class="InfoProfileEdit">
+                    <li class="drop">Drop File to Edit</li>
+                    <li class="click">Click to Edit</li>
+                </div>
+            </file-drop>
+            <img src="{{ user.profile }}">
         </div>
         <div class="Account_content">
             <ul>
@@ -13,7 +20,7 @@
                     </select>
                     <div class="button" routerLink="/GroupManagement/{{ user.group.id }}">Editer ce groupe</div> <div class="ErrorMsg">{{ MsgGroupDelete }}</div>
                 </li>
-                <li>Image de profil : <input type="text" formControlName="profile"/></li>
+                <!-- <li>Image de profil : <input type="text" formControlName="profile"/></li> -->
                 <li>Statut de connexion : <input type="checkbox" formControlName="statut"/></li>
                 <li>Date de dernière connexion : <input type="date" formControlName="date_logIn"/><input type="time" formControlName="time_logIn"/></li>
                 <li>Datse d'Inscription : <input type="date" formControlName="date_signIn"/><input type="time" formControlName="time_signIn"/></li>
@@ -62,4 +69,4 @@
             <button type="submit" [disabled]="!SelectedUserManagementForm.valid">Valider les modifications</button>
         </div>
     </form>
-</div>
+</div> 

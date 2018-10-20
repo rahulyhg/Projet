@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute} from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { UploadEvent, FileSystemFileEntry } from '../../../node_modules/ngx-file-drop';
 
 import { AppComponent } from '../app.component';
 
@@ -27,9 +29,10 @@ export class SelectedUserManagementComponent implements OnInit {
   private initial_user: User;
   private isPassword: boolean;
   private MsgGroupDelete: string;
+  private selectedFile: File;
 
   constructor(private route: ActivatedRoute, private app: AppComponent, private userApi: UserService, private router: Router,
-    private fb: FormBuilder, private groupApi: GroupService, private rightGroupPageApi: RightGroupPageService) { 
+    private fb: FormBuilder, private groupApi: GroupService, private rightGroupPageApi: RightGroupPageService, private http: HttpClient) { 
       this._currentUser = new User(null);
       this._RightEdit = false;
       this.change_defaut_rightGroupPage = false;
@@ -185,7 +188,10 @@ export class SelectedUserManagementComponent implements OnInit {
         this.groupApi.deleteGroup(this.initial_user.group.id);
         this.rightGroupPageApi.deleteRightGroupPage(this.initial_user.group.rightGroupPage.id);
       }
-  
+
+      if(this.selectedFile !== null && this.selectedFile !== undefined)
+        this.onUpload();
+
       this.userApi.putUser(post.id, this.user);
       this.router.navigate(['/UserManagement']);
       if(this.user.id === this._currentUser.id)
@@ -203,5 +209,30 @@ export class SelectedUserManagementComponent implements OnInit {
     this.router.navigate(['/UserManagement']);
     if(this.user.id === this._currentUser.id)
       this.app.logOut();
+  }
+
+  private imageChangeClick(event): void {
+    this.selectedFile = event.target.files[0];
+    this.onUpload();
+  }
+
+  private onUpload(): void {
+    var uploadData: FormData = new FormData();
+    var name: string = "profile" + Math.random() * 1000 + ".jpg";
+    uploadData.append('myFile', this.selectedFile, name);
+    this.http.post('https://dev.kevin-c.fr/api/file.php', uploadData, { observe: 'events' })
+    .subscribe(event => {
+      if(event)
+        this.newImage(event, name);
+    });
+  }
+
+  private newImage(ok: any, name: string): void {
+    if(ok.ok)
+      this.user.profile = "https://dev.kevin-c.fr/api/uploads/" + name;
+  }
+
+  public imageChangeDrag(event: UploadEvent): void {
+    (event.files[0].fileEntry as FileSystemFileEntry).file((file: File) => { this.selectedFile = file; this.onUpload(); });
   }
 }

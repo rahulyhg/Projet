@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { Data } from './Data';
 import { RouterModule, Routes } from '@angular/router';
+import { FileDropModule } from 'ngx-file-drop';
 
 import { AppComponent } from './app.component';
 import { AccueilComponent } from './accueil/accueil.component';
@@ -49,7 +50,8 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     LoadingBarHttpClientModule,
-    LoadingBarRouterModule
+    LoadingBarRouterModule,
+    FileDropModule
   ],
   providers: [DatePipe, Data],
   bootstrap: [AppComponent],

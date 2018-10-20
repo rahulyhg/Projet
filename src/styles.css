@@ -40,7 +40,11 @@ cursor: pointer;
 
 .profile_nav img {
   max-height: 30px;
-  border-radius: 30px;
+  border-radius: 50%;
+  z-index: 100;
+  height: 30px;
+  max-width: 30px;
+  width: 30px;
 }
 
 
@@ -320,13 +324,22 @@ margin-top: 60px;
   float: left;
   text-align: center;
   display: flex;
-  width: 20%;
+  cursor: pointer;
 }
 
 .profile img {
-  height: 200px;
-  width: 200px;
+  height: 204px;
+  width: 204px;
   border-radius: 50%;
+}
+
+.profile:hover {
+  opacity: 0.5;
+  transition: 1s;
+}
+
+.profile:hover file-drop {
+  border: 2px dotted #000;
 }
 
 .col_gauche,
@@ -389,3 +402,55 @@ margin-top: 60px;
   text-align: center;
   right: 0;
 }
+
+  file-drop {
+    height: 200px;
+    width: 200px;
+    position: absolute;
+    border: 2px dotted transparent;
+    border-radius: 50%;
+  }
+
+  .drop-zone[_ngcontent-c1],
+  .content[_ngcontent-c1] {
+    height: 200px !important;
+    width: 200px !important;
+    border: none !important;
+    border-radius: initial !important;
+  }
+
+  .InfoProfileEdit {
+    height: 100%;
+    width: 100%;
+  }
+
+  .InfoProfileEdit .drop {
+    border: 2px dotted #000;
+    border-top-left-radius: 50%;
+    border-top-right-radius: 50%;
+    padding-top: 20px;
+    padding-bottom: 156px;
+    border-bottom: none;
+    border-right: none;
+    border-left: none;
+    position: absolute;
+    width: 203px;
+    margin-top: -2px;
+    margin-left: -1px;
+    color: #AFAFAF;
+  }
+
+  .InfoProfileEdit .click {
+    border: 2px dotted #000;
+    border-bottom-left-radius: 50%;
+    border-bottom-right-radius: 50%;
+    padding-top: 156px;
+    padding-bottom: 20px;
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    position: absolute;
+    width: 202px;
+    margin-left: -1px;
+    color: #AFAFAF;
+  }

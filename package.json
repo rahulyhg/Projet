@@ -24,6 +24,7 @@
     "@ngx-loading-bar/router": "^2.2.0",
     "core-js": "^2.5.4",
     "md5-typescript": "^1.0.5",
+    "ngx-file-drop": "^4.0.6",
     "rxjs": "~6.2.0",
     "ts-md5": "^1.2.4",
     "zone.js": "~0.8.26"
