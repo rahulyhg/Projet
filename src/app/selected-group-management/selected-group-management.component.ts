@@ -33,7 +33,8 @@ export class SelectedGroupManagementComponent implements OnInit {
       this.post = null;
       this.SelectedGroupManagementForm = null;
       this.group = new Group(null);
-      this.initial_group = new Group(this.groupApi.getGroupById(Number(this.route.snapshot.paramMap.get('id'))));
+      if(this.route.snapshot.paramMap.get('id') !== "New")
+        this.initial_group = new Group(this.groupApi.getGroupById(Number(this.route.snapshot.paramMap.get('id'))));
       this.MsgRightGroupPageDelete = null;
     }
 
@@ -63,6 +64,9 @@ export class SelectedGroupManagementComponent implements OnInit {
 
     var index: number = this.RightGroupPageList.findIndex(d => d.id === this.group.rightGroupPage.id);
     this.setRightEditSelected(index, null);
+
+    if(this.route.snapshot.paramMap.get('id') === "New" || this.route.snapshot.paramMap.get('id') === "1")
+      this._currentUser.group.rightGroupPage.SelectedGroupManagement_DeleteGroup = false; //Pour enlever le bouton supprimer
   }
 
   private getGroupById(): void {

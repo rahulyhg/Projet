@@ -42,7 +42,8 @@ export class SelectedUserManagementComponent implements OnInit {
       this.post = null;
       this.SelectedUserManagementForm = null;
       this.user = new User(null);
-      this.initial_user = new User(this.userApi.getUserById(Number(this.route.snapshot.paramMap.get('id'))));
+      if(this.route.snapshot.paramMap.get('id') !== "New")
+        this.initial_user = new User(this.userApi.getUserById(Number(this.route.snapshot.paramMap.get('id'))));
       this.isPassword = true;
       this.MsgGroupDelete = null;
       this.MsgGroupPerso = null;
@@ -66,9 +67,9 @@ export class SelectedUserManagementComponent implements OnInit {
       console.log("Vous n'avez pas la permission d'accedez à cette page");
       this.router.navigate(['/Accueil']);
     }
-    
-    this.getUserById();
 
+    this.getUserById();
+    
     if(!this._currentUser.group.rightGroupPage.SelectedUserManagement_ViewPassword) {
       this.user.password = "";
       this.initial_user.password = "";
@@ -82,19 +83,25 @@ export class SelectedUserManagementComponent implements OnInit {
     var index: number = this.RightGroupPageList.findIndex(d => d.id === this.user.group.rightGroupPage.id);
     this.setRightEditSelected(index);
 
-    if(this.initial_user.group.rightGroupPage.name.split('_')[1] === "user") {
-      var index: number = this.GroupList.findIndex(d => d.id === this.user.group.id);
-      var index1: number = this.RightGroupPageList.findIndex(d => d.id === this.user.group.rightGroupPage.id);
-      this.GroupList[index].name = this.user.login;
-      this.RightGroupPageList[index1].name = this.user.login;
-      this.SelectedUserManagementForm.get('group').setValue(this.GroupList[index]);
-      this.SelectedUserManagementForm.get('rightGroupPage').setValue(this.RightGroupPageList[index1]);
-      this.MsgGroupPerso = "Groupe personnel de droit";
+    if(this.route.snapshot.paramMap.get('id') !== "New") {
+      if(this.initial_user.group.rightGroupPage.name.split('_')[1] === "user") {
+        var index: number = this.GroupList.findIndex(d => d.id === this.user.group.id);
+        var index1: number = this.RightGroupPageList.findIndex(d => d.id === this.user.group.rightGroupPage.id);
+        this.GroupList[index].name = this.user.login;
+        this.RightGroupPageList[index1].name = this.user.login;
+        this.SelectedUserManagementForm.get('group').setValue(this.GroupList[index]);
+        this.SelectedUserManagementForm.get('rightGroupPage').setValue(this.RightGroupPageList[index1]);
+        this.MsgGroupPerso = "Groupe personnel de droit";
+      }
     }
+
+    if(this.route.snapshot.paramMap.get('id') === "New" || this.route.snapshot.paramMap.get('id') === "1")
+      this._currentUser.group.rightGroupPage.SelectedUserManagement_DeleteUser = false; //Pour enlever le bouton supprimer
   }
 
   private getUserById(): void {
-    this.user = new User(this.userApi.getUserById(Number(this.route.snapshot.paramMap.get('id'))));
+    if(this.route.snapshot.paramMap.get('id') !== "New")
+      this.user = new User(this.userApi.getUserById(Number(this.route.snapshot.paramMap.get('id'))));
   }
 
   private getGroupList(): void {
@@ -176,10 +183,12 @@ export class SelectedUserManagementComponent implements OnInit {
       var index: number = this.GroupList.findIndex(d => d.id === this.user.group.id);
       this.SelectedUserManagementForm.get('group').setValue(this.GroupList[index]);
 
-      if(this.initial_user.group.rightGroupPage.name.split('_')[1] === "user" && this.user.group.rightGroupPage.name.split('_').length === 1) {
-        this.MsgGroupDelete = "En séléctionnant un group prédefinit, vous allez supprimer le groupe personnalisé de l'utiliateur";
-      } else {
-        this.MsgGroupDelete = null;
+      if(this.route.snapshot.paramMap.get('id') !== "New") {
+        if(this.initial_user.group.rightGroupPage.name.split('_')[1] === "user" && this.user.group.rightGroupPage.name.split('_').length === 1) {
+          this.MsgGroupDelete = "En séléctionnant un group prédefinit, vous allez supprimer le groupe personnalisé de l'utiliateur";
+        } else {
+          this.MsgGroupDelete = null;
+        }
       }
     }
 
@@ -220,7 +229,7 @@ export class SelectedUserManagementComponent implements OnInit {
         post.date_time_signIn = post.date_signIn + " " + post.time_signIn;
     
         this.user = new User(post);
-        this.user.id = 3;
+        this.user.id = 1;
   
         this.userApi.postUser(this.user);
         this.router.navigate(['/UserManagement']);
@@ -243,7 +252,7 @@ export class SelectedUserManagementComponent implements OnInit {
           var index = this.RightGroupPageList.findIndex(d => d.name === "_user_" + this.initial_user.id);
           if(index === -1) {
             var rightGroupPage: RightGroupPage = new RightGroupPage(post);
-            rightGroupPage.id = 3,
+            rightGroupPage.id = 1,
             rightGroupPage.name = "_user_" + this.initial_user.id;
             this.rightGroupPageApi.postRightGroupPage(rightGroupPage);
           }
@@ -251,7 +260,7 @@ export class SelectedUserManagementComponent implements OnInit {
           index = this.GroupList.findIndex(d => d.name === "_user_" + this.initial_user.id);
           if(index === -1) {
             var group: Group = new Group(null);
-            group.id = 3;
+            group.id = 1;
             group.name = "_user_" + this.initial_user.id;
             group.rightGroupPage = rightGroupPage;
             this.groupApi.postGroup(group);

@@ -30,4 +30,18 @@ export const USER: User[] = [
         firstName: "Carlier", 
         birthDate: "1997-11-17"
     },
+    { 
+        id: 3,
+        login: "lucas",
+        password: "c21f969b5f03d33d43e04f8f136e7682",
+        group: GROUP[0], 
+        profile: "assets/uploads/images/lucas.jpg",
+        statut: false,
+        date_time_logIn: "2018-10-18 11:49:48", 
+        date_time_signIn: "2018-10-15 18:38:01",
+        gameTag: "@lucas", 
+        name: "lucas", 
+        firstName: "default", 
+        birthDate: "2000-01-01"
+    }
 ];

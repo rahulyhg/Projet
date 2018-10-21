@@ -99,10 +99,8 @@ export class Data {
 
     if(user !== null && user !== undefined) {
       var l: number = this.user.length;
+      user.id = l + 1;
       this.user.push(user);
-
-      if(this.user[l + 1] === user)
-        ErrorMsg = "Impossible de créer l'utilisateur";
     }
 
     var api: Api = {
@@ -218,10 +216,9 @@ export class Data {
 
     if(group !== null && group !== undefined) {
       var l: number = this.group.length;
+      group.id = l + 1;
       this.group.push(group);
 
-      if(this.group[l + 1] === group)
-        ErrorMsg = "Impossible de créer le Groupe";
     }
 
     var api: Api = {
@@ -337,10 +334,9 @@ export class Data {
 
     if(rightGroupPage !== null && rightGroupPage !== undefined) {
       var l: number = this.rightGroupPage.length;
+      rightGroupPage.id = l + 1;
       this.rightGroupPage.push(rightGroupPage);
 
-      if(this.rightGroupPage[l + 1] === rightGroupPage)
-        ErrorMsg = "Impossible de créer le rightGroupPage";
     }
 
     var api: Api = {

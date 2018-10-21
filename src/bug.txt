@@ -4,6 +4,8 @@ Faire en sorte que les utilisateurs puisse modifier les compte (avec les droit d
 
 Voir pour des droit sur autre personne et sur soit meme en fonction des cas
 
-voir pour gerer l'auto increment de l'id dpuis data pour les POST
-
 mettre en automatique que si on coche ajouter ou modifier par defaut, que l'on ai acces  au Selected
+
+mettre des propriete differente sur la phote de profile dans mon compte
+
+Faire page de Modification de mon compte (la meme que pour voia la page de compte d'une autre personne mise a part le bouton modifier)
