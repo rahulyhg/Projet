@@ -3,12 +3,9 @@
         <div class="profile">
             <input style="display: none" type="file" (change)="imageChangeClick($event)" #File>
             <file-drop (onFileDrop)="imageChangeDrag($event)" (click)="File.click()">
-                <div class="InfoProfileEdit">
-                    <li class="drop">Drop File to Edit</li>
-                    <li class="click">Click to Edit</li>
-                </div>
+                <img src="{{ user.profile }}" appHighlight>
+                <div class="drop">Drop picture here</div>
             </file-drop>
-            <img src="{{ user.profile }}">
         </div>
         <div class="Account_content">
             <ul>

@@ -7,3 +7,5 @@ Créer les différent droit pour la page UserManagement et SelectedUserManagemen
 Faire en sorte que les utilisateurs puisse modifier les compte (avec les droit de page qui vont avec)
 
 Suprimer le input avec le nom de l'image de profilde d el'utoilisatuer qui est en commetaire
+
+pour mon compte faire deux div avec chaquun un boolean avce si c'est en edition ou en affichache

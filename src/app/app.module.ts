@@ -18,7 +18,7 @@ import { UserManagementComponent } from './user-management/user-management.compo
 import { SelectedUserManagementComponent } from './selected-user-management/selected-user-management.component';
 import { GroupManagementComponent } from './group-management/group-management.component';
 import { SelectedGroupManagementComponent } from './selected-group-management/selected-group-management.component';
-
+import { HighlightDirective } from './highlight.directive';
 
 const routes: Routes = [
   { path: '', redirectTo: '/Accueil', pathMatch: 'full' },
@@ -40,7 +40,8 @@ const routes: Routes = [
     UserManagementComponent,
     SelectedUserManagementComponent,
     GroupManagementComponent,
-    SelectedGroupManagementComponent
+    SelectedGroupManagementComponent,
+    HighlightDirective
   ],
   imports: [
     BrowserModule,
