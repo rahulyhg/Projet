@@ -8,6 +8,12 @@ export class HighlightDirective {
 
   @HostListener('dragover') ondragover() {
     this.el.nativeElement.style.filter = "blur(4px)";
+    console.log("hover");
+  }
+
+  @HostListener('dragleave') ondragleave() {
+    this.el.nativeElement.style.filter = "blur(0px)";
+    console.log("leave");
   }
 
   @HostListener('drop') ondrop() {
