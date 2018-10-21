@@ -35,7 +35,7 @@ export class User {
 
     this.profile = value.profile;
     if(value.profile === null || value.profile === undefined || value === "")
-      this.profile = "default.jpg";
+      this.profile = "assets/uploads/images/default.jpg";
 
     if(value.statut || !value.statut) 
       this.statut = value.statut;

@@ -21,7 +21,7 @@ export class UserManagementComponent implements OnInit {
     this.app.ngOnInit();
     this._currentUser = this.app._currentUser;
 
-    if(!this._currentUser.group.rightGroupPage.access_UserManagement) {
+    if(!this._currentUser.group.rightGroupPage.UserManagement_Access) {
       console.log("Vous n'avez pas la permission d'accedez à cette page");
       this.router.navigate(['/Accueil']);
     }
@@ -41,9 +41,5 @@ export class UserManagementComponent implements OnInit {
       this.UserList[i].password = pass;
       i++
     }
-  }
-
-  private AddUser(): void {
-    console.log("Ajouter un nouvelle utilisateur");
   }
 }

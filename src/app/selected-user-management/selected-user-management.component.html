@@ -1,69 +1,90 @@
-<div *ngIf="_currentUser.group.rightGroupPage.access_SelectedUserManagement">
-    <form [formGroup]="SelectedUserManagementForm" (ngSubmit)="editUse(SelectedUserManagementForm.value)">
+<div *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_Access">
+    <div *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_EditUser">
+        <form [formGroup]="SelectedUserManagementForm" (ngSubmit)="editUse(SelectedUserManagementForm.value)">
+            <div class="profile">
+                <input style="display: none" type="file" (change)="imageChangeClick($event)" #File>
+                <file-drop (onFileDrop)="imageChangeDrag($event)" (click)="File.click()">
+                    <img src="{{ user.profile }}" appHighlight>
+                    <div class="drop">Drop picture here</div>
+                </file-drop>
+            </div>
+            <div class="Account_content">
+                <ul>
+                    <li>Login : <input type="text" formControlName="login"/></li>
+                    <li *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_ViewPassword">Mot de passe : <input type="{{isPassword ? 'password' : 'text' }}" formControlName="password"/><div *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_ShowPasswordButton" class="button" (click)="showPassword()">Voir le mot de passe</div></li>
+                    <li *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser">Group :
+                        <select formControlName="group" (change)="setGroupSelected($event.target.value)">
+                            <option *ngFor="let group of GroupList" [ngValue]="group">{{ group.name}}</option>
+                        </select>
+                        <div class="button" routerLink="/GroupManagement/{{ user.group.id }}">Editer ce groupe</div> <div class="ErrorMsg">{{ MsgGroupDelete }}</div>
+                    </li>
+                    <li *ngIf="!_currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser">Group : {{ user.group.name }}</li>
+                    <li>Statut de connexion : <input type="checkbox" formControlName="statut"/></li>
+                    <li>Date de dernière connexion : <input type="date" formControlName="date_logIn"/><input type="time" formControlName="time_logIn"/></li>
+                    <li>Datse d'Inscription : <input type="date" formControlName="date_signIn"/><input type="time" formControlName="time_signIn"/></li>
+                    <li>Game Tag : <input type="text" formControlName="gameTag"/></li>
+                    <li>Name : <input type="text" formControlName="name"/></li>
+                    <li>FirstName : <input type="text" formControlName="firstName"/></li>
+                    <li>BirthDate : <input type="date" formControlName="birthDate"/></li>
+                </ul>
+            </div>
+            <div *ngIf="_RightEdit && SelectedUserManagement_EditRightGroupPageUser" class="RightEdit">
+                <li>(La modification des droits de cette utilisateur va créer un group + un group de droit pour cette utilisateurs uniquement)</li>
+                <li> RightGroupPage :
+                    <select formControlName="RightGroupPage" (change)="setRightEditSelected($event.target.value)">
+                        <option *ngFor="let RightGroupPage of RightGroupPageList" [ngValue]="RightGroupPage">{{ RightGroupPage.name }}</option>
+                    </select>
+                </li>
+                <h2>Main Page</h2>
+                <label style="font-weight: bold;">Peut affecter le bon fonctionnement du site !</label>
+                <li>access_Main : <input type="checkbox" formControlName="access_Main" (change)="this.change_defaut_rightGroupPage = true"/></li>
+    
+                <h2>Accueil Page</h2>
+                <label style="font-weight: bold;">Peut affecter le bon fonctionnement du site !</label>
+                <li>access_Accueil : <input type="checkbox" formControlName="access_Accueil" (change)="this.change_defaut_rightGroupPage = true"/></li>
+    
+                <h2>Login Page</h2>
+                <label style="font-weight: bold;">Peut affecter le bon fonctionnement du site !</label>
+                <li>access_Login : <input type="checkbox" formControlName="access_Login" (change)="this.change_defaut_rightGroupPage = true"/></li>
+    
+                <h2>MonCompte Page</h2>
+                <li>access_MonCompte : <input type="checkbox" formControlName="access_MonCompte" (change)="this.change_defaut_rightGroupPage = true"/></li>
+    
+                <h2>EditBar</h2>
+                <li>access_Main_EditBar : <input type="checkbox" formControlName="access_Main_EditBar" (change)="this.change_defaut_rightGroupPage = true"/></li>
+                <li>access_Main_EditBar_Dev : <input type="checkbox" formControlName="access_Main_EditBar_Dev" (change)="this.change_defaut_rightGroupPage = true"/></li>
+                <li>access_Main_EditBar_Edit : <input type="checkbox" formControlName="access_Main_EditBar_Edit" (change)="this.change_defaut_rightGroupPage = true"/></li>
+    
+                <h2>SelectedUserManagement Page</h2>
+                <li>SelectedUserManagement_Access : <input type="checkbox" formControlName="SelectedUserManagement_Access" (change)="this.change_defaut_rightGroupPage = true"/></li>
+    
+                <h2>UserManagement Page</h2>
+                <li>UserManagement_Access : <input type="checkbox" formControlName="UserManagement_Access" (change)="this.change_defaut_rightGroupPage = true"/></li>
+            </div>
+            <div class="EditBar">
+                <div *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser" class="button" (click)="ChangeRightEdit()">Modifier les doits de l'utilisateur</div>
+                <div *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_DeleteUser" class="button" (click)="DeleteUser()">Supprimer l'utilisateur</div>
+                <button *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_EditUser" type="submit" [disabled]="!SelectedUserManagementForm.valid">Valider les modifications</button>
+            </div>
+        </form>
+    </div>
+    <div *ngIf="!_currentUser.group.rightGroupPage.SelectedUserManagement_EditUser">
         <div class="profile">
-            <input style="display: none" type="file" (change)="imageChangeClick($event)" #File>
-            <file-drop (onFileDrop)="imageChangeDrag($event)" (click)="File.click()">
-                <img src="{{ user.profile }}" appHighlight>
-                <div class="drop">Drop picture here</div>
-            </file-drop>
+            <img src="{{ user.profile }}">
         </div>
         <div class="Account_content">
             <ul>
-                <li>Login : <input type="text" formControlName="login"/></li>
-                <li>Mot de passe : <input type="{{isPassword ? 'password' : 'text' }}" formControlName="password"/><div class="button" (click)="showPassword()">Voir le mot de passe</div></li>
-                <li> Group :
-                    <select formControlName="group" (change)="setGroupSelected($event.target.value)">
-                        <option *ngFor="let group of GroupList" [ngValue]="group">{{ group.name}}</option>
-                    </select>
-                    <div class="button" routerLink="/GroupManagement/{{ user.group.id }}">Editer ce groupe</div> <div class="ErrorMsg">{{ MsgGroupDelete }}</div>
-                </li>
-                <!-- <li>Image de profil : <input type="text" formControlName="profile"/></li> -->
-                <li>Statut de connexion : <input type="checkbox" formControlName="statut"/></li>
-                <li>Date de dernière connexion : <input type="date" formControlName="date_logIn"/><input type="time" formControlName="time_logIn"/></li>
-                <li>Datse d'Inscription : <input type="date" formControlName="date_signIn"/><input type="time" formControlName="time_signIn"/></li>
-                <li>Game Tag : <input type="text" formControlName="gameTag"/></li>
-                <li>Name : <input type="text" formControlName="name"/></li>
-                <li>FirstName : <input type="text" formControlName="firstName"/></li>
-                <li>BirthDate : <input type="date" formControlName="birthDate"/></li>
+                <li>Login : {{ user.login }}</li>
+                <li *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_ViewPassword">Mot de passe : {{ user.password }}</li>
+                <li>Group : {{ user.group.name }}</li>
+                <li>Statut de connexion : {{ user.statut }}</li>
+                <li>Date de dernière connexion : {{ user.date_time_logIn }}</li>
+                <li>Datse d'Inscription : {{ user.date_time_signIn }}</li>
+                <li>Game Tag : {{ user.gameTag }}</li>
+                <li>Name : {{ user.name }}</li>
+                <li>FirstName : {{ user.firstName }}</li>
+                <li>BirthDate : {{ user.birthDate }}</li>
             </ul>
         </div>
-        <div *ngIf="_RightEdit" class="RightEdit">
-            <li>(La modification des droits de cette utilisateur va créer un group + un group de droit pour cette utilisateurs uniquement)</li>
-            <li> RightGroupPage :
-                <select formControlName="RightGroupPage" (change)="setRightEditSelected($event.target.value)">
-                    <option *ngFor="let RightGroupPage of RightGroupPageList" [ngValue]="RightGroupPage">{{ RightGroupPage.name }}</option>
-                </select>
-            </li>
-            <h2>Main Page</h2>
-            <label style="font-weight: bold;">Peut affecter le bon fonctionnement du site !</label>
-            <li>access_Main : <input type="checkbox" formControlName="access_Main" (change)="this.change_defaut_rightGroupPage = true"/></li>
-
-            <h2>Accueil Page</h2>
-            <label style="font-weight: bold;">Peut affecter le bon fonctionnement du site !</label>
-            <li>access_Accueil : <input type="checkbox" formControlName="access_Accueil" (change)="this.change_defaut_rightGroupPage = true"/></li>
-
-            <h2>Login Page</h2>
-            <label style="font-weight: bold;">Peut affecter le bon fonctionnement du site !</label>
-            <li>access_Login : <input type="checkbox" formControlName="access_Login" (change)="this.change_defaut_rightGroupPage = true"/></li>
-
-            <h2>MonCompte Page</h2>
-            <li>access_MonCompte : <input type="checkbox" formControlName="access_MonCompte" (change)="this.change_defaut_rightGroupPage = true"/></li>
-
-            <h2>EditBar</h2>
-            <li>access_Main_EditBar : <input type="checkbox" formControlName="access_Main_EditBar" (change)="this.change_defaut_rightGroupPage = true"/></li>
-            <li>access_Main_EditBar_Dev : <input type="checkbox" formControlName="access_Main_EditBar_Dev" (change)="this.change_defaut_rightGroupPage = true"/></li>
-            <li>access_Main_EditBar_Edit : <input type="checkbox" formControlName="access_Main_EditBar_Edit" (change)="this.change_defaut_rightGroupPage = true"/></li>
-
-            <h2>SelectedUserManagement Page</h2>
-            <li>access_SelectedUserManagement : <input type="checkbox" formControlName="access_SelectedUserManagement" (change)="this.change_defaut_rightGroupPage = true"/></li>
-
-            <h2>UserManagement Page</h2>
-            <li>access_UserManagement : <input type="checkbox" formControlName="access_UserManagement" (change)="this.change_defaut_rightGroupPage = true"/></li>
-        </div>
-        <div class="EditBar">
-            <div class="button" (click)="ChangeRightEdit()">Modifier les doits de l'utilisateur</div>
-            <div class="button" (click)="DeleteUser()">Supprimer l'utilisateur</div>
-            <button type="submit" [disabled]="!SelectedUserManagementForm.valid">Valider les modifications</button>
-        </div>
-    </form>
+    </div>
 </div> 
