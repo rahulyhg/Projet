@@ -30,6 +30,7 @@ export class SelectedUserManagementComponent implements OnInit {
   private isPassword: boolean;
   private MsgGroupDelete: string;
   private selectedFile: File;
+  private MsgGroupPerso: string;
 
   constructor(private route: ActivatedRoute, private app: AppComponent, private userApi: UserService, private router: Router,
     private fb: FormBuilder, private groupApi: GroupService, private rightGroupPageApi: RightGroupPageService, private http: HttpClient) { 
@@ -44,6 +45,7 @@ export class SelectedUserManagementComponent implements OnInit {
       this.initial_user = new User(this.userApi.getUserById(Number(this.route.snapshot.paramMap.get('id'))));
       this.isPassword = true;
       this.MsgGroupDelete = null;
+      this.MsgGroupPerso = null;
     }
 
   ngOnInit(): void { 
@@ -79,6 +81,16 @@ export class SelectedUserManagementComponent implements OnInit {
 
     var index: number = this.RightGroupPageList.findIndex(d => d.id === this.user.group.rightGroupPage.id);
     this.setRightEditSelected(index);
+
+    if(this.initial_user.group.rightGroupPage.name.split('_')[1] === "user") {
+      var index: number = this.GroupList.findIndex(d => d.id === this.user.group.id);
+      var index1: number = this.RightGroupPageList.findIndex(d => d.id === this.user.group.rightGroupPage.id);
+      this.GroupList[index].name = this.user.login;
+      this.RightGroupPageList[index1].name = this.user.login;
+      this.SelectedUserManagementForm.get('group').setValue(this.GroupList[index]);
+      this.SelectedUserManagementForm.get('rightGroupPage').setValue(this.RightGroupPageList[index1]);
+      this.MsgGroupPerso = "Groupe personnel de droit";
+    }
   }
 
   private getUserById(): void {
@@ -109,12 +121,16 @@ export class SelectedUserManagementComponent implements OnInit {
       var id: number = Number(value.split(":")[0]);
       this.user.group = this.GroupList[id];
       this.initData();
+
+      if(this.GroupList[id].name === this.user.login)
+        this.MsgGroupPerso = "Groupe personnel de droit";
+      else
+        this.MsgGroupPerso = null;
     } else
       console.log("Vous n'avez pas la permission pour effectuer cette action");
   }
 
   private initData(): void {
-    console.log(this.user);
     this.SelectedUserManagementForm = this.fb.group({
       'id': this.user.id,
       'statut': this.user.statut,
@@ -172,6 +188,19 @@ export class SelectedUserManagementComponent implements OnInit {
 
     if(!this._currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser) {
       this.SelectedUserManagementForm.disable();
+      this.SelectedUserManagementForm.get('id').enable();
+      this.SelectedUserManagementForm.get('statut').enable();
+      this.SelectedUserManagementForm.get('login').enable();
+      this.SelectedUserManagementForm.get('password').enable();
+      this.SelectedUserManagementForm.get('date_signIn').enable();
+      this.SelectedUserManagementForm.get('time_signIn').enable();
+      this.SelectedUserManagementForm.get('date_logIn').enable();
+      this.SelectedUserManagementForm.get('time_logIn').enable();
+      this.SelectedUserManagementForm.get('group').enable();
+      this.SelectedUserManagementForm.get('gameTag').enable();
+      this.SelectedUserManagementForm.get('name').enable();
+      this.SelectedUserManagementForm.get('firstName').enable();
+      this.SelectedUserManagementForm.get('birthDate').enable();
       this._RightEdit = true;
     }
   }

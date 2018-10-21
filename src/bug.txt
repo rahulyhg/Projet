@@ -1,15 +1,9 @@
-Préciser si il y a un groupe perso a coté de la liste de groupes
-
 Faire en sorte que la page soit afficher que quand les images sont chargé
 
 Faire en sorte que les utilisateurs puisse modifier les compte (avec les droit de page qui vont avec)
 
-Voir pour cache les lien si on a pas acces ca qu'il y a derniere
-
 Voir pour des droit sur autre personne et sur soit meme en fonction des cas
 
-Voir pour afficher les droit de page en mode affichage avec case a cocher que l'on peut pas activer ou desactiver
+voir pour gerer l'auto increment de l'id dpuis data pour les POST
 
-voir pour gerer l'auto increment dpuis data
-
-si je supprime mon groupe je suis deco ok mais quand je me reco, j'ai toujours les droits
+mettre en automatique que si on coche ajouter ou modifier par defaut, que l'on ai acces  au Selected

@@ -40,6 +40,9 @@ export class UserManagementComponent implements OnInit {
       }
       this.UserList[i].password = pass;
       i++
+      if(user.group.rightGroupPage.name.split('_')[1] === "user") {
+        user.group.name = "Groupe personnel de droit de " + user.login;
+      }
     }
   }
 }

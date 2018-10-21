@@ -120,8 +120,8 @@ export class SelectedGroupManagementComponent implements OnInit {
     this.SelectedGroupManagementForm.get('RightGroupPage').setValue(this.RightGroupPageList[index]);
 
     if(!this._currentUser.group.rightGroupPage.SelectedGroupManagement_EditRightPage) {
-      this.SelectedGroupManagementForm.get('name').enable();
       this.SelectedGroupManagementForm.disable();
+      this.SelectedGroupManagementForm.get('name').enable();
     }
   }
 

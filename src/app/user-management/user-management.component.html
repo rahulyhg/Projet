@@ -11,14 +11,16 @@
   <tbody>
     <tr *ngFor="let user of UserList">
       <td>#{{ user.id }}</td>
-      <td><li class="lien"><a routerLink="/UserManagement/{{ user.id }}">{{ user.login }}</a></td>
+      <td *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_Access"><li class="lien"><a routerLink="/UserManagement/{{ user.id }}">{{ user.login }}</a></td>
+      <td style="color: #555;" *ngIf="!_currentUser.group.rightGroupPage.SelectedUserManagement_Access">{{ user.login }}</td>
       <td>{{ user.date_time_signIn }}</td>
       <td>{{ user.date_time_logIn }}</td> 
-      <td><li class="lien"><a routerLink="/GroupManagement/{{ user.group.id }}">{{ user.group.name }}</a></td>
+      <td *ngIf="_currentUser.group.rightGroupPage.SelectedGroupManagement_Access"><li class="lien"><a routerLink="/GroupManagement/{{ user.group.id }}">{{ user.group.name }}</a></td>
+      <td style="color: #555;" *ngIf="!_currentUser.group.rightGroupPage.SelectedGroupManagement_Access">{{ user.group.name }}</td>
     </tr>
   </tbody>
 </table>
-<div class="EditBar">
+<div *ngIf="_currentUser.group.rightGroupPage.SelectedGroupManagement_Access" class="EditBar">
   <div *ngIf="_currentUser.group.rightGroupPage.UserManagement_AddUser" class="button" routerLink="/UserManagement/New">Ajouter un utilisateur</div>
   <div *ngIf="_currentUser.group.rightGroupPage.UserManagement_EditDefaultUser" class="button" routerLink="/UserManagement/1">Modifier l'utilisateur par défaut</div>
 </div>

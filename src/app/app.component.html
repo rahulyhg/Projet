@@ -6,8 +6,10 @@
     </div>
     <div class="page_header_block_droite">
       <div *ngIf="_currentUser.statut">
-        <a class="profile_nav" routerLink="/MonCompte"><img src="{{ _currentUser.profile }}"></a>
-        <li class="lien"><a routerLink="/MonCompte">Mon Compte ({{ _currentUser.login }})</a></li>
+        <a *ngIf="_currentUser.group.rightGroupPage.access_MonCompte" class="profile_nav" routerLink="/MonCompte"><img src="{{ _currentUser.profile }}"></a>
+        <a *ngIf="!_currentUser.group.rightGroupPage.access_MonCompte" class="profile_nav" ><img src="{{ _currentUser.profile }}"></a>
+        <li *ngIf="_currentUser.group.rightGroupPage.access_MonCompte" class="lien"><a routerLink="/MonCompte">Mon Compte ({{ _currentUser.login }})</a></li>
+        <li *ngIf="!_currentUser.group.rightGroupPage.access_MonCompte" style="color: #555;">Mon Compte ({{ _currentUser.login }})</li>
         <li class="lien" (click)="logOut()">Se déconnecter</li>
       </div>
       <div *ngIf="!_currentUser.statut">
@@ -45,8 +47,10 @@
       </div>
     </div>
     <div class="devPopup_content">
-      <li class='lien'><a routerLink="/UserManagement">Gestion des utilisateurs</a></li>
-      <li class='lien'><a routerLink="/GroupManagement">Gestion des groupes</a></li>
+      <li *ngIf="_currentUser.group.rightGroupPage.UserManagement_Access" class='lien'><a routerLink="/UserManagement">Gestion des utilisateurs</a></li>
+      <li *ngIf="!_currentUser.group.rightGroupPage.UserManagement_Access" style="color: #555;">Gestion des utilisateurs</li>
+      <li *ngIf="_currentUser.group.rightGroupPage.GroupManagement_Access" class='lien'><a routerLink="/GroupManagement">Gestion des groupes</a></li>
+      <li *ngIf="!_currentUser.group.rightGroupPage.GroupManagement_Access" style="color: #555;">Gestion des groupes</li>
     </div>
   </div>
 
