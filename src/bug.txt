@@ -12,4 +12,4 @@ Voir pour afficher les droit de page en mode affichage avec case a cocher que l'
 
 voir pour gerer l'auto increment dpuis data
 
-si je supprime mon groupe je suis deco ok mais quand je me reco, j'ai toujours les droit
+si je supprime mon groupe je suis deco ok mais quand je me reco, j'ai toujours les droits

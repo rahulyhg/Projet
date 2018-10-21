@@ -1,29 +1,39 @@
 <div *ngIf="_currentUser.group.rightGroupPage.SelectedGroupManagement_Access">
-    <div *ngIf="_currentUser.group.rightGroupPage.SelectedGroupManagement_EditGroup || _currentUser.group.rightGroupPage.GroupManagement_AddGroup || _currentUser.group.rightGroupPage.GroupManagement_EditDefaultGroup">
         <form [formGroup]="SelectedGroupManagementForm" (ngSubmit)="editUse(SelectedGroupManagementForm.value)">
-          <li>Name : <input type="text" formControlName="name" (keyup)="NameChange($event.target.value)"/></li>
 
-          <div *ngIf="_currentUser.group.rightGroupPage.SelectedGroupManagement_EditRightPage" class="RightEdit">
+          <div *ngIf="_currentUser.group.rightGroupPage.SelectedGroupManagement_EditGroup || _currentUser.group.rightGroupPage.GroupManagement_AddGroup || _currentUser.group.rightGroupPage.GroupManagement_EditDefaultGroup">
+              <li>Name : <input type="text" formControlName="name" (keyup)="NameChange($event.target.value)"/></li>
+          </div>
+
+          <div *ngIf="!_currentUser.group.rightGroupPage.SelectedGroupManagement_EditGroup && !_currentUser.group.rightGroupPage.GroupManagement_AddGroup && !_currentUser.group.rightGroupPage.GroupManagement_EditDefaultGroup">
+            <ul>
+                <li>Name : {{ group.name }} </li>
+                <li>RightGroupPage : {{ group.rightGroupPage.name }}</li>
+            </ul>
+          </div>
+
+          <div class="RightEdit">
             <li> Template de RightGroupPage :
                 <select formControlName="RightGroupPage" (change)="setRightEditSelected($event.target.value, SelectedGroupManagementForm.value)">
                     <option *ngFor="let RightGroupPage of RightGroupPageList" [ngValue]="RightGroupPage">{{ RightGroupPage.name }}</option>
                 </select>
             </li>
+
             <h2>Main Page</h2>
             <label style="font-weight: bold;">Peut affecter le bon fonctionnement du site !</label>
             <li>access_Main : <input type="checkbox" formControlName="access_Main" (change)="this.change_defaut_rightGroupPage = true"/></li>
-
+            
             <h2>Accueil Page</h2>
             <label style="font-weight: bold;">Peut affecter le bon fonctionnement du site !</label>
             <li>access_Accueil : <input type="checkbox" formControlName="access_Accueil" (change)="this.change_defaut_rightGroupPage = true"/></li>
-
+            
             <h2>Login Page</h2>
             <label style="font-weight: bold;">Peut affecter le bon fonctionnement du site !</label>
             <li>access_Login : <input type="checkbox" formControlName="access_Login" (change)="this.change_defaut_rightGroupPage = true"/></li>
-
+            
             <h2>MonCompte Page</h2>
             <li>access_MonCompte : <input type="checkbox" formControlName="access_MonCompte" (change)="this.change_defaut_rightGroupPage = true"/></li>
-
+            
             <h2>EditBar</h2>
             <li>access_Main_EditBar : <input type="checkbox" formControlName="access_Main_EditBar" (change)="this.change_defaut_rightGroupPage = true"/></li>
             <li>access_Main_EditBar_Dev : <input type="checkbox" formControlName="access_Main_EditBar_Dev" (change)="this.change_defaut_rightGroupPage = true"/></li>
@@ -31,20 +41,31 @@
 
             <h2>SelectedUserManagement Page</h2>
             <li>SelectedUserManagement_Access : <input type="checkbox" formControlName="SelectedUserManagement_Access" (change)="this.change_defaut_rightGroupPage = true"/></li>
-
+            <li>SelectedUserManagement_ViewPassword : <input type="checkbox" formControlName="SelectedUserManagement_ViewPassword" (change)="this.change_defaut_rightGroupPage = true"/></li>
+            <li>SelectedUserManagement_ShowPasswordButton : <input type="checkbox" formControlName="SelectedUserManagement_ShowPasswordButton" (change)="this.change_defaut_rightGroupPage = true"/></li>
+            <li>SelectedUserManagement_EditRightGroupPageUser : <input type="checkbox" formControlName="SelectedUserManagement_EditRightGroupPageUser" (change)="this.change_defaut_rightGroupPage = true"/></li>
+            <li>SelectedUserManagement_DeleteUser : <input type="checkbox" formControlName="SelectedUserManagement_DeleteUser" (change)="this.change_defaut_rightGroupPage = true"/></li>
+            <li>SelectedUserManagement_EditUser : <input type="checkbox" formControlName="SelectedUserManagement_EditUser" (change)="this.change_defaut_rightGroupPage = true"/></li>
+            
             <h2>UserManagement Page</h2>
             <li>UserManagement_Access : <input type="checkbox" formControlName="UserManagement_Access" (change)="this.change_defaut_rightGroupPage = true"/></li>
+            <li>UserManagement_AddUser : <input type="checkbox" formControlName="UserManagement_AddUser" (change)="this.change_defaut_rightGroupPage = true"/></li>
+            <li>UserManagement_EditDefaultUser : <input type="checkbox" formControlName="UserManagement_EditDefaultUser" (change)="this.change_defaut_rightGroupPage = true"/></li>
+            
+            <h2>GroupManagement Page</h2>
+            <li>GroupManagement_Access : <input type="checkbox" formControlName="GroupManagement_Access" (change)="this.change_defaut_rightGroupPage = true"/></li>
+            <li>GroupManagement_AddGroup : <input type="checkbox" formControlName="GroupManagement_AddGroup" (change)="this.change_defaut_rightGroupPage = true"/></li>
+            <li>GroupManagement_EditDefaultGroup : <input type="checkbox" formControlName="GroupManagement_EditDefaultGroup" (change)="this.change_defaut_rightGroupPage = true"/></li>
+            
+            <h2>SelectedGroupManagement Page</h2>
+            <li>SelectedGroupManagement_Access : <input type="checkbox" formControlName="SelectedGroupManagement_Access" (change)="this.change_defaut_rightGroupPage = true"/></li>
+            <li>SelectedGroupManagement_EditGroup : <input type="checkbox" formControlName="SelectedGroupManagement_EditGroup" (change)="this.change_defaut_rightGroupPage = true"/></li>
+            <li>SelectedGroupManagement_DeleteGroup : <input type="checkbox" formControlName="SelectedGroupManagement_DeleteGroup" (change)="this.change_defaut_rightGroupPage = true"/></li>
+            <li>SelectedGroupManagement_EditRightPage : <input type="checkbox" formControlName="SelectedGroupManagement_EditRightPage" (change)="this.change_defaut_rightGroupPage = true"/></li>
           </div>
-          <div class="EditBar">
+          <div class="EditBar" *ngIf="_currentUser.group.rightGroupPage.SelectedGroupManagement_EditGroup || _currentUser.group.rightGroupPage.GroupManagement_AddGroup || _currentUser.group.rightGroupPage.GroupManagement_EditDefaultGroup">
               <div *ngIf="_currentUser.group.rightGroupPage.SelectedGroupManagement_DeleteGroup" class="button" (click)="DeleteGroup()">Supprimer le groupe</div>
               <button *ngIf="_currentUser.group.rightGroupPage.SelectedGroupManagement_EditGroup || _currentUser.group.rightGroupPage.GroupManagement_AddGroup || _currentUser.group.rightGroupPage.GroupManagement_EditDefaultGroup" type="submit" [disabled]="!SelectedGroupManagementForm.valid">Valider les modifications</button>
           </div>
         </form>
-    </div>
-    <div *ngIf="!_currentUser.group.rightGroupPage.SelectedGroupManagement_EditGroup && !_currentUser.group.rightGroupPage.GroupManagement_AddGroup && !_currentUser.group.rightGroupPage.GroupManagement_EditDefaultGroup">
-      <ul>
-          <li>Name : {{ group.name }} </li>
-          <li>RightGroupPage : {{ group.rightGroupPage.name }}</li>
-      </ul>
-    </div>
 </div> 

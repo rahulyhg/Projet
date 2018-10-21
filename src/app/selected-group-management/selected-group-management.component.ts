@@ -57,16 +57,12 @@ export class SelectedGroupManagementComponent implements OnInit {
     if(this.route.snapshot.paramMap.get('id') !== "New")
       this.getGroupById();
 
-    if(this._currentUser.group.rightGroupPage.SelectedGroupManagement_EditRightPage) {
-      this.getRightGroupPageList();
-    }
+    this.getRightGroupPageList();
       
     this.initData();
 
-    if(this._currentUser.group.rightGroupPage.SelectedGroupManagement_EditRightPage) {
-      var index: number = this.RightGroupPageList.findIndex(d => d.id === this.group.rightGroupPage.id);
-      this.setRightEditSelected(index, null);
-    }
+    var index: number = this.RightGroupPageList.findIndex(d => d.id === this.group.rightGroupPage.id);
+    this.setRightEditSelected(index, null);
   }
 
   private getGroupById(): void {
@@ -74,8 +70,7 @@ export class SelectedGroupManagementComponent implements OnInit {
   }
 
   private getRightGroupPageList(): void {
-    if(this._currentUser.group.rightGroupPage.SelectedGroupManagement_EditRightPage)
-      this.RightGroupPageList = this.rightGroupPageApi.getRightGroupPageList();
+    this.RightGroupPageList = this.rightGroupPageApi.getRightGroupPageList();
   }
 
   private setRightEditSelected(idd: any, post: any): void {
@@ -101,15 +96,32 @@ export class SelectedGroupManagementComponent implements OnInit {
       'access_Login' : this.group.rightGroupPage.access_Login,
       'access_MonCompte' : this.group.rightGroupPage.access_MonCompte,
       'access_Main_EditBar' : this.group.rightGroupPage.access_Main_EditBar,
-      'access_Main_EditBar_Dev' : this.group.rightGroupPage.access_Main_EditBar_Dev,
-      'access_Main_EditBar_Edit' : this.group.rightGroupPage.access_Main_EditBar_Edit,
       'SelectedUserManagement_Access' : this.group.rightGroupPage.SelectedUserManagement_Access,
-      'UserManagement_Access' : this.group.rightGroupPage.UserManagement_Access
+      'SelectedUserManagement_ViewPassword' : this.group.rightGroupPage.SelectedUserManagement_ViewPassword,
+      'SelectedUserManagement_ShowPasswordButton' : this.group.rightGroupPage.SelectedUserManagement_ShowPasswordButton,
+      'SelectedUserManagement_EditRightGroupPageUser' : this.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser,
+      'SelectedUserManagement_DeleteUser' : this.group.rightGroupPage.SelectedUserManagement_DeleteUser,
+      'SelectedUserManagement_EditUser' : this.group.rightGroupPage.SelectedUserManagement_EditUser,
+      'UserManagement_Access' : this.group.rightGroupPage.UserManagement_Access,
+      'UserManagement_AddUser' : this.group.rightGroupPage.UserManagement_AddUser,
+      'UserManagement_EditDefaultUser' : this.group.rightGroupPage.UserManagement_EditDefaultUser,
+      'GroupManagement_Access' : this.group.rightGroupPage.GroupManagement_Access,
+      'GroupManagement_AddGroup' : this.group.rightGroupPage.GroupManagement_AddGroup,
+      'GroupManagement_EditDefaultGroup' : this.group.rightGroupPage.GroupManagement_EditDefaultGroup,
+      'SelectedGroupManagement_Access' : this.group.rightGroupPage.SelectedGroupManagement_Access,
+      'SelectedGroupManagement_EditGroup' : this.group.rightGroupPage.SelectedGroupManagement_EditGroup,
+      'SelectedGroupManagement_DeleteGroup' : this.group.rightGroupPage.SelectedGroupManagement_DeleteGroup,
+      'SelectedGroupManagement_EditRightPage' : this.group.rightGroupPage.SelectedGroupManagement_EditRightPage,
+      'access_Main_EditBar_Dev' : this.group.rightGroupPage.access_Main_EditBar_Dev,
+      'access_Main_EditBar_Edit' : new FormControl (this.group.rightGroupPage.access_Main_EditBar_Edit)
     });
 
-    if(this._currentUser.group.rightGroupPage.SelectedGroupManagement_EditRightPage) {
-      var index = this.RightGroupPageList.findIndex(d => d.id === this.group.rightGroupPage.id);
-      this.SelectedGroupManagementForm.get('RightGroupPage').setValue(this.RightGroupPageList[index]);
+    var index = this.RightGroupPageList.findIndex(d => d.id === this.group.rightGroupPage.id);
+    this.SelectedGroupManagementForm.get('RightGroupPage').setValue(this.RightGroupPageList[index]);
+
+    if(!this._currentUser.group.rightGroupPage.SelectedGroupManagement_EditRightPage) {
+      this.SelectedGroupManagementForm.get('name').enable();
+      this.SelectedGroupManagementForm.disable();
     }
   }
 
@@ -123,7 +135,12 @@ export class SelectedGroupManagementComponent implements OnInit {
   private editUse(post: any): void {
     // ##
     if(this._currentUser.group.rightGroupPage.SelectedGroupManagement_EditGroup || this._currentUser.group.rightGroupPage.GroupManagement_AddGroup || this._currentUser.group.rightGroupPage.GroupManagement_EditDefaultGroup) {
-      var rightGroupPage: RightGroupPage = new RightGroupPage(post);
+      if(this._currentUser.group.rightGroupPage.SelectedGroupManagement_EditRightPage)
+        var rightGroupPage: RightGroupPage = new RightGroupPage(post);
+      else {
+        console.log("Vous n'avez pas la permission pour effectuer cette action");
+        var rightGroupPage: RightGroupPage = new RightGroupPage(null);
+      }
       this.group = new Group(post);
       this.group.rightGroupPage = rightGroupPage;
       this.group.rightGroupPage.name = this.group.name;
@@ -133,8 +150,11 @@ export class SelectedGroupManagementComponent implements OnInit {
         this.groupApi.postGroup(this.group);
         this.router.navigate(['/GroupManagement']);
       } else {
+        if(this._currentUser.group.rightGroupPage.SelectedGroupManagement_EditRightPage)
+          this.rightGroupPageApi.putRightGroupPage(this.group.rightGroupPage.id, this.group.rightGroupPage);
+        else
+          console.log("Vous n'avez pas la permission pour effectuer cette action");
         this.groupApi.putGroup(this.group.id, this.group);
-        this.rightGroupPageApi.putRightGroupPage(this.group.rightGroupPage.id, this.group.rightGroupPage);
         this.router.navigate(['/GroupManagement']);
         if(this.group.id === this._currentUser.group.id)
           this.app.logOut();
