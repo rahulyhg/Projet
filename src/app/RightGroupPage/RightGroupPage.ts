@@ -22,6 +22,11 @@ export class RightGroupPage {
     public GroupManagement_AddGroup: boolean;
     public GroupManagement_EditDefaultGroup: boolean;
 
+    public SelectedGroupManagement_Access: boolean;
+    public SelectedGroupManagement_EditGroup: boolean;
+    public SelectedGroupManagement_DeleteGroup: boolean;
+    public SelectedGroupManagement_EditRightPage: boolean;
+
     public access_Main_EditBar_Edit: boolean;
     public access_Main_EditBar_Dev: boolean;
     
@@ -196,6 +201,43 @@ export class RightGroupPage {
       if(value.GroupManagement_EditDefaultGroup === null || value.GroupManagement_EditDefaultGroup === undefined || value === "")
         this.GroupManagement_EditDefaultGroup = false;
 
+
+      
+      if(value.SelectedGroupManagement_Access || !value.SelectedGroupManagement_Access) 
+        this.SelectedGroupManagement_Access = value.SelectedGroupManagement_Access;
+      if(value.SelectedGroupManagement_Access === "0")
+        this.SelectedGroupManagement_Access = false;
+      if(value.SelectedGroupManagement_Access === "1")
+        this.SelectedGroupManagement_Access = true;
+      if(value.SelectedGroupManagement_Access === null || value.SelectedGroupManagement_Access === undefined || value === "")
+        this.SelectedGroupManagement_Access = false;
+
+      if(value.SelectedGroupManagement_EditGroup || !value.SelectedGroupManagement_EditGroup) 
+        this.SelectedGroupManagement_EditGroup = value.SelectedGroupManagement_EditGroup;
+      if(value.SelectedGroupManagement_EditGroup === "0")
+        this.SelectedGroupManagement_EditGroup = false;
+      if(value.SelectedGroupManagement_EditGroup === "1")
+        this.SelectedGroupManagement_EditGroup = true;
+      if(value.SelectedGroupManagement_EditGroup === null || value.SelectedGroupManagement_EditGroup === undefined || value === "")
+        this.SelectedGroupManagement_EditGroup = false;
+
+      if(value.SelectedGroupManagement_DeleteGroup || !value.SelectedGroupManagement_DeleteGroup) 
+        this.SelectedGroupManagement_DeleteGroup = value.SelectedGroupManagement_DeleteGroup;
+      if(value.SelectedGroupManagement_DeleteGroup === "0")
+        this.SelectedGroupManagement_DeleteGroup = false;
+      if(value.SelectedGroupManagement_DeleteGroup === "1")
+        this.SelectedGroupManagement_DeleteGroup = true;
+      if(value.SelectedGroupManagement_DeleteGroup === null || value.SelectedGroupManagement_DeleteGroup === undefined || value === "")
+        this.SelectedGroupManagement_DeleteGroup = false;
+
+      if(value.SelectedGroupManagement_EditRightPage || !value.SelectedGroupManagement_EditRightPage) 
+        this.SelectedGroupManagement_EditRightPage = value.SelectedGroupManagement_EditRightPage;
+      if(value.SelectedGroupManagement_EditRightPage === "0")
+        this.SelectedGroupManagement_EditRightPage = false;
+      if(value.SelectedGroupManagement_EditRightPage === "1")
+        this.SelectedGroupManagement_EditRightPage = true;
+      if(value.SelectedGroupManagement_EditRightPage === null || value.SelectedGroupManagement_EditRightPage === undefined || value === "")
+        this.SelectedGroupManagement_EditRightPage = false;
 
 
         

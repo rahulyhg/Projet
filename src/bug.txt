@@ -8,4 +8,8 @@ Voir pour cache les lien si on a pas acces ca qu'il y a derniere
 
 Voir pour des droit sur autre personne et sur soit meme en fonction des cas
 
-Bug: on peux plus modifier les droit de page
+Voir pour afficher les droit de page en mode affichage avec case a cocher que l'on peut pas activer ou desactiver
+
+voir pour gerer l'auto increment dpuis data
+
+si je supprime mon groupe je suis deco ok mais quand je me reco, j'ai toujours les droit

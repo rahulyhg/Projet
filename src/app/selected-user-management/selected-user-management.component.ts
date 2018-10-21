@@ -136,7 +136,7 @@ export class SelectedUserManagementComponent implements OnInit {
       'name' : this.user.name,
       'firstName' : this.user.firstName,
       'birthDate' : this.user.birthDate,
-      'RightGroupPage' : this.user.group.rightGroupPage,
+      'rightGroupPage' : this.user.group.rightGroupPage,
       'access_Main' : this.user.group.rightGroupPage.access_Main,
       'access_Accueil' : this.user.group.rightGroupPage.access_Accueil,
       'access_Login' : this.user.group.rightGroupPage.access_Login,
@@ -153,7 +153,7 @@ export class SelectedUserManagementComponent implements OnInit {
       this.SelectedUserManagementForm.get('group').setValue(this.GroupList[index]);
 
       var index = this.RightGroupPageList.findIndex(d => d.id === this.user.group.rightGroupPage.id);
-      this.SelectedUserManagementForm.get('RightGroupPage').setValue(this.RightGroupPageList[index]);
+      this.SelectedUserManagementForm.get('rightGroupPage').setValue(this.RightGroupPageList[index]);
 
       if(this.initial_user.group.rightGroupPage.name.split('_')[1] === "user" && this.user.group.rightGroupPage.name.split('_').length === 1) {
         this.MsgGroupDelete = "En séléctionnant un group prédefinit, vous allez supprimer le groupe personnalisé de l'utiliateur";
@@ -171,7 +171,7 @@ export class SelectedUserManagementComponent implements OnInit {
   }
 
   private editUse(post: any): void {
-    if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditUser) {
+    if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditUser || this._currentUser.group.rightGroupPage.UserManagement_AddUser || this._currentUser.group.rightGroupPage.UserManagement_EditDefaultUser) {
       if(this.route.snapshot.paramMap.get('id') === "New") {
 
         post.date_time_logIn = post.date_logIn + " " + post.time_logIn;

@@ -16,6 +16,15 @@ interface Api {
 export class GroupService {
   constructor(private data: Data) { }
 
+  public getGroupById(id: number): Group {
+    console.log("GET / GROUP / getGroupById");
+    var reponse: Group[] = this.InitReponse(JSON.parse(this.data.getGroupById(id)));
+    if(reponse !== null && reponse !== undefined)
+      return new Group(reponse[0]);
+    else
+      return new Group(null);
+  }
+
   public getGroupList(): Group[] {
     console.log("GET / GROUP / getGroupList");
     var reponse: Group[] = this.InitReponse(JSON.parse(this.data.getGroup()));
@@ -23,6 +32,11 @@ export class GroupService {
       return reponse;
     else
       return [ null ];
+  }
+
+  public putGroup(id: number, group: Group): void {
+    console.log("PUT / GROUP / putGroup");
+    this.InitReponse(JSON.parse(this.data.putGroup(id, group)));
   }
 
   public postGroup(group: Group): void {
@@ -46,7 +60,7 @@ export class GroupService {
           return [ null ];
       } else
         console.log("Error: Authentification False");
-    } else
+    } else
       console.log("Error: Api false");
   }
 }

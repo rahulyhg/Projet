@@ -185,7 +185,7 @@ export class Data {
 
   public putGroup(id: number, group: Group): string {
     var ErrorMsg: string = null;
-
+    
     if(id !== null && id !== undefined && id !== 0) {
       if(group !== null && group !== undefined) {
         var index: number = this.group.findIndex(d => d.id === id);
@@ -311,7 +311,7 @@ export class Data {
         if(index !== -1) {
           this.rightGroupPage[index] = rightGroupPage;
 
-          if(this.rightGroupPage[id] !== rightGroupPage)
+          if(this.rightGroupPage[index] !== rightGroupPage)
             ErrorMsg = "Impossible de mettre à jour le rightGroupPage";
         }
         else 

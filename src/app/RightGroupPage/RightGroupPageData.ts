@@ -21,6 +21,10 @@ export const RIGHTGROUPPAGE: RightGroupPage[] = [
         GroupManagement_Access: false,
         GroupManagement_AddGroup: false,
         GroupManagement_EditDefaultGroup: false,
+        SelectedGroupManagement_Access: false,
+        SelectedGroupManagement_EditGroup: false,
+        SelectedGroupManagement_DeleteGroup: false,
+        SelectedGroupManagement_EditRightPage: false,
         access_Main_EditBar_Dev: false, 
         access_Main_EditBar_Edit: false
     },
@@ -44,6 +48,10 @@ export const RIGHTGROUPPAGE: RightGroupPage[] = [
         GroupManagement_Access: true,
         GroupManagement_AddGroup: true,
         GroupManagement_EditDefaultGroup: true,
+        SelectedGroupManagement_Access: true,
+        SelectedGroupManagement_EditGroup: true,
+        SelectedGroupManagement_DeleteGroup: true,
+        SelectedGroupManagement_EditRightPage: true,
         access_Main_EditBar_Dev: true, 
         access_Main_EditBar_Edit: true
     }

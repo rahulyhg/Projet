@@ -1,5 +1,5 @@
 <div *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_Access">
-    <div *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_EditUser">
+    <div *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_EditUser || _currentUser.group.rightGroupPage.UserManagement_AddUser || _currentUser.group.rightGroupPage.UserManagement_EditDefaultUser">
         <form [formGroup]="SelectedUserManagementForm" (ngSubmit)="editUse(SelectedUserManagementForm.value)">
             <div class="profile">
                 <input style="display: none" type="file" (change)="imageChangeClick($event)" #File>
@@ -28,10 +28,10 @@
                     <li>BirthDate : <input type="date" formControlName="birthDate"/></li>
                 </ul>
             </div>
-            <div *ngIf="_RightEdit && SelectedUserManagement_EditRightGroupPageUser" class="RightEdit">
+            <div *ngIf="_RightEdit && _currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser" class="RightEdit">
                 <li>(La modification des droits de cette utilisateur va créer un group + un group de droit pour cette utilisateurs uniquement)</li>
                 <li> RightGroupPage :
-                    <select formControlName="RightGroupPage" (change)="setRightEditSelected($event.target.value)">
+                    <select formControlName="rightGroupPage" (change)="setRightEditSelected($event.target.value)">
                         <option *ngFor="let RightGroupPage of RightGroupPageList" [ngValue]="RightGroupPage">{{ RightGroupPage.name }}</option>
                     </select>
                 </li>
@@ -64,11 +64,11 @@
             <div class="EditBar">
                 <div *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser" class="button" (click)="ChangeRightEdit()">Modifier les doits de l'utilisateur</div>
                 <div *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_DeleteUser" class="button" (click)="DeleteUser()">Supprimer l'utilisateur</div>
-                <button *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_EditUser" type="submit" [disabled]="!SelectedUserManagementForm.valid">Valider les modifications</button>
+                <button *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_EditUser || _currentUser.group.rightGroupPage.UserManagement_AddUser || _currentUser.group.rightGroupPage.UserManagement_EditDefaultUser" type="submit" [disabled]="!SelectedUserManagementForm.valid">Valider les modifications</button>
             </div>
         </form>
     </div>
-    <div *ngIf="!_currentUser.group.rightGroupPage.SelectedUserManagement_EditUser">
+    <div *ngIf="!_currentUser.group.rightGroupPage.SelectedUserManagement_EditUser && !_currentUser.group.rightGroupPage.UserManagement_AddUser && !_currentUser.group.rightGroupPage.UserManagement_EditDefaultUser">
         <div class="profile">
             <img src="{{ user.profile }}">
         </div>
