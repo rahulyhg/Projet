@@ -9,3 +9,9 @@ mettre en automatique que si on coche ajouter ou modifier par defaut, que l'on a
 mettre des propriete differente sur la phote de profile dans mon compte
 
 Faire page de Modification de mon compte (la meme que pour voia la page de compte d'une autre personne mise a part le bouton modifier)
+
+Quand on survol l'image avec un fichier et que l'on passe sur "Drop picture here", le blur l'enlève
+
+faire en sorte que lorsque l'on supprimer le groupe personnel d'un compte, que ce dernier reprenne le groupe par defaut
+
+faire en sorte que le routelink se fasse sur le li (avec la class "lien") et non que sur le <a>

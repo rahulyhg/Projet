@@ -205,7 +205,6 @@ export class SelectedUserManagementComponent implements OnInit {
       this.SelectedUserManagementForm.get('time_signIn').enable();
       this.SelectedUserManagementForm.get('date_logIn').enable();
       this.SelectedUserManagementForm.get('time_logIn').enable();
-      this.SelectedUserManagementForm.get('group').enable();
       this.SelectedUserManagementForm.get('gameTag').enable();
       this.SelectedUserManagementForm.get('name').enable();
       this.SelectedUserManagementForm.get('firstName').enable();
