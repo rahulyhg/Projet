@@ -153,11 +153,11 @@ export class SelectedUserManagementComponent implements OnInit {
       'firstName' : this.user.firstName,
       'birthDate' : this.user.birthDate,
       'rightGroupPage' : this.user.group.rightGroupPage,
-      'access_Main' : this.user.group.rightGroupPage.access_Main,
-      'access_Accueil' : this.user.group.rightGroupPage.access_Accueil,
-      'access_Login' : this.user.group.rightGroupPage.access_Login,
-      'access_MonCompte' : this.user.group.rightGroupPage.access_MonCompte,
-      'access_Main_EditBar' : this.user.group.rightGroupPage.access_Main_EditBar,
+      'Main_Access' : this.user.group.rightGroupPage.Main_Access,
+      'Accueil_Access' : this.user.group.rightGroupPage.Accueil_Access,
+      'Login_Access' : this.user.group.rightGroupPage.Login_Access,
+      'MonCompte_Access' : this.user.group.rightGroupPage.MonCompte_Access,
+      'EditBar_Access' : this.user.group.rightGroupPage.EditBar_Access,
       'SelectedUserManagement_Access' : this.user.group.rightGroupPage.SelectedUserManagement_Access,
       'SelectedUserManagement_ViewPassword' : this.user.group.rightGroupPage.SelectedUserManagement_ViewPassword,
       'SelectedUserManagement_ShowPasswordButton' : this.user.group.rightGroupPage.SelectedUserManagement_ShowPasswordButton,
@@ -174,9 +174,9 @@ export class SelectedUserManagementComponent implements OnInit {
       'SelectedGroupManagement_EditGroup' : this.user.group.rightGroupPage.SelectedGroupManagement_EditGroup,
       'SelectedGroupManagement_DeleteGroup' : this.user.group.rightGroupPage.SelectedGroupManagement_DeleteGroup,
       'SelectedGroupManagement_EditRightPage' : this.user.group.rightGroupPage.SelectedGroupManagement_EditRightPage,
-      'access_Main_EditBar_Dev' : this.user.group.rightGroupPage.access_Main_EditBar_Dev,
-      'access_Main_EditBar_Edit' : this.user.group.rightGroupPage.access_Main_EditBar_Edit
-      //'access_Main_EditBar_Edit' : 
+      'EditBar_Dev' : this.user.group.rightGroupPage.EditBar_Dev,
+      'EditBar_Edit' : this.user.group.rightGroupPage.EditBar_Edit
+      //'EditBar_Edit' : 
     });
 
     if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser) {

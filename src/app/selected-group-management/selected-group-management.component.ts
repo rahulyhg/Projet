@@ -95,11 +95,11 @@ export class SelectedGroupManagementComponent implements OnInit {
       'id': this.group.id,
       'name': this.group.name,
       'RightGroupPage' : this.group.rightGroupPage,
-      'access_Main' : this.group.rightGroupPage.access_Main,
-      'access_Accueil' : this.group.rightGroupPage.access_Accueil,
-      'access_Login' : this.group.rightGroupPage.access_Login,
-      'access_MonCompte' : this.group.rightGroupPage.access_MonCompte,
-      'access_Main_EditBar' : this.group.rightGroupPage.access_Main_EditBar,
+      'Main_Access' : this.group.rightGroupPage.Main_Access,
+      'Accueil_Access' : this.group.rightGroupPage.Accueil_Access,
+      'Login_Access' : this.group.rightGroupPage.Login_Access,
+      'MonCompte_Access' : this.group.rightGroupPage.MonCompte_Access,
+      'EditBar_Access' : this.group.rightGroupPage.EditBar_Access,
       'SelectedUserManagement_Access' : this.group.rightGroupPage.SelectedUserManagement_Access,
       'SelectedUserManagement_ViewPassword' : this.group.rightGroupPage.SelectedUserManagement_ViewPassword,
       'SelectedUserManagement_ShowPasswordButton' : this.group.rightGroupPage.SelectedUserManagement_ShowPasswordButton,
@@ -116,8 +116,8 @@ export class SelectedGroupManagementComponent implements OnInit {
       'SelectedGroupManagement_EditGroup' : this.group.rightGroupPage.SelectedGroupManagement_EditGroup,
       'SelectedGroupManagement_DeleteGroup' : this.group.rightGroupPage.SelectedGroupManagement_DeleteGroup,
       'SelectedGroupManagement_EditRightPage' : this.group.rightGroupPage.SelectedGroupManagement_EditRightPage,
-      'access_Main_EditBar_Dev' : this.group.rightGroupPage.access_Main_EditBar_Dev,
-      'access_Main_EditBar_Edit' : new FormControl (this.group.rightGroupPage.access_Main_EditBar_Edit)
+      'EditBar_Dev' : this.group.rightGroupPage.EditBar_Dev,
+      'EditBar_Edit' : new FormControl (this.group.rightGroupPage.EditBar_Edit)
     });
 
     var index = this.RightGroupPageList.findIndex(d => d.id === this.group.rightGroupPage.id);

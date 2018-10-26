@@ -1,4 +1,4 @@
-<div class="LoginForm_content" *ngIf="_currentUser.group.rightGroupPage.access_Login">
+<div class="LoginForm_content" *ngIf="_currentUser.group.rightGroupPage.Login_Access">
 
     <h1>Sign In : </h1>
     <form [formGroup]="LoginForm" (ngSubmit)="logIn(LoginForm.value)" class="LoginForm">

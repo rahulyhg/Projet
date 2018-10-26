@@ -5,13 +5,47 @@ Faire en sorte que les utilisateurs puisse modifier les compte (avec les droit d
 Voir pour des droit sur autre personne et sur soit meme en fonction des cas
 
 mettre en automatique que si on coche ajouter ou modifier par defaut, que l'on ai acces  au Selected
-
-mettre des propriete differente sur la phote de profile dans mon compte
+=> faire une class a l'event (change) avec en parametre la valeur + sur quelle input on est et dans cette fonction definir toute les dependance
 
 Faire page de Modification de mon compte (la meme que pour voia la page de compte d'une autre personne mise a part le bouton modifier)
-
-Quand on survol l'image avec un fichier et que l'on passe sur "Drop picture here", le blur l'enlève
 
 faire en sorte que lorsque l'on supprimer le groupe personnel d'un compte, que ce dernier reprenne le groupe par defaut
 
 faire en sorte que le routelink se fasse sur le li (avec la class "lien") et non que sur le <a>
+
+séparer en deux group pour group et user (group user)
+
+Faire une table avec les parametre par page
+=> interval de refresh
+=> logo
+=> titre
+
+Faire une table avec les parametre globaux du site
+=> possibilite de modifier l'interval de refresh
+=> logo site + logo dans bare navigateur
+=> titre
+=> image arriere plan
+
+Pour la modification des infomration logo et titre dans la barre, mise en place d'un sytem de visionnage instantané sur simulation 
+(genre un screen d'un onglet chrome ou le titre et le logo on rajouté par dessus et ou l'on compte le nombre de caractere du titre pour savoir si on met des '...' a la fin pour pas que ca depasse)
+
+Créer un class avec directive pour tout les importation de fichier comme pour les photo de profile (avec drap and drop)
+
+Mise en place d'un hotorique + analytique
+=> a chaque changement de page metre a jour ma date de dernier activité (donc logIn) de l'utilisateur plus son historique + mettre a jour les données de la page (son nombre de vue ...)
+
+Mise en place d'une bare ou l'on peux voir les membre actif, innactif (un peux comme discord)
+=> la requete va determiner si un utilisateur est actif que si sa sate de connection (logIn) est plus récente que 1 minutes
+
+Création d'une table fichier avec historique plus notion de modification + propriétaire, taille, date d'upload ...
+
+voir pour un system de script qui tourne sur le serveur (en puton) qui met a jours les staut user en fonction de leur heure de logIn
+
+les requete avec interval ne doivent pas mettre a jour le statut de l'utilisateur
+
+structurer le peus de CSS présent  (par page)
+=> a la limite, remettre les fichiers de base ppour la gestion du Css par conponent et ne mettre dans le style.css que les propriérté de base
+
+Mise en place d'in system de report de bug dans le footer
+
+le click droit sur le popup dev active le drop

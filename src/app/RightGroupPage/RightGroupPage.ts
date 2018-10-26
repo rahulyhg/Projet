@@ -1,11 +1,11 @@
 export class RightGroupPage {
     public id: number;
     public name: string;
-    public access_Main: boolean;
-    public access_Accueil: boolean;
-    public access_Login: boolean;
-    public access_MonCompte: boolean;
-    public access_Main_EditBar: boolean;
+    public Main_Access: boolean;
+    public Accueil_Access: boolean;
+    public Login_Access: boolean;
+    public MonCompte_Access: boolean;
+    public EditBar_Access: boolean;
 
     public SelectedUserManagement_Access: boolean;
     public SelectedUserManagement_ViewPassword: boolean;
@@ -27,8 +27,8 @@ export class RightGroupPage {
     public SelectedGroupManagement_DeleteGroup: boolean;
     public SelectedGroupManagement_EditRightPage: boolean;
 
-    public access_Main_EditBar_Edit: boolean;
-    public access_Main_EditBar_Dev: boolean;
+    public EditBar_Edit: boolean;
+    public EditBar_Dev: boolean;
     
 
     constructor(value: any) {
@@ -42,50 +42,50 @@ export class RightGroupPage {
       if(value.name !== null || value.name !== undefined || value === "")
         this.name = "default";
 
-      if(value.access_Main || !value.access_Main) 
-        this.access_Main = value.access_Main;
-      if(value.access_Main === "0")
-        this.access_Main = false;
-      if(value.access_Main === "1")
-        this.access_Main = true;
-      if(value.access_Main === null || value.access_Main === undefined || value === "")
-        this.access_Main = true;
+      if(value.Main_Access || !value.Main_Access) 
+        this.Main_Access = value.Main_Access;
+      if(value.Main_Access === "0")
+        this.Main_Access = false;
+      if(value.Main_Access === "1")
+        this.Main_Access = true;
+      if(value.Main_Access === null || value.Main_Access === undefined || value === "")
+        this.Main_Access = true;
 
-      if(value.access_Accueil || !value.access_Accueil) 
-        this.access_Accueil = value.access_Accueil;
-      if(value.access_Accueil === "0")
-        this.access_Accueil = false;
-      if(value.access_Accueil === "1")
-        this.access_Accueil = true;
-      if(value.access_Accueil === null || value.access_Accueil === undefined || value === "")
-        this.access_Accueil = true;
+      if(value.Accueil_Access || !value.Accueil_Access) 
+        this.Accueil_Access = value.Accueil_Access;
+      if(value.Accueil_Access === "0")
+        this.Accueil_Access = false;
+      if(value.Accueil_Access === "1")
+        this.Accueil_Access = true;
+      if(value.Accueil_Access === null || value.Accueil_Access === undefined || value === "")
+        this.Accueil_Access = true;
 
-      if(value.access_Login || !value.access_Login) 
-        this.access_Login = value.access_Login;
-      if(value.access_Login === "0")
-        this.access_Login = false;
-      if(value.access_Login === "1")
-        this.access_Login = true;
-      if(value.access_Login === null || value.access_Login === undefined || value === "")
-        this.access_Login = true;
+      if(value.Login_Access || !value.Login_Access) 
+        this.Login_Access = value.Login_Access;
+      if(value.Login_Access === "0")
+        this.Login_Access = false;
+      if(value.Login_Access === "1")
+        this.Login_Access = true;
+      if(value.Login_Access === null || value.Login_Access === undefined || value === "")
+        this.Login_Access = true;
 
-      if(value.access_MonCompte || !value.access_MonCompte) 
-        this.access_MonCompte = value.access_MonCompte;
-      if(value.access_MonCompte === "0")
-        this.access_MonCompte = false;
-      if(value.access_MonCompte === "1")
-        this.access_MonCompte = true;
-      if(value.access_MonCompte === null || value.access_MonCompte === undefined || value === "")
-        this.access_MonCompte = false;
+      if(value.MonCompte_Access || !value.MonCompte_Access) 
+        this.MonCompte_Access = value.MonCompte_Access;
+      if(value.MonCompte_Access === "0")
+        this.MonCompte_Access = false;
+      if(value.MonCompte_Access === "1")
+        this.MonCompte_Access = true;
+      if(value.MonCompte_Access === null || value.MonCompte_Access === undefined || value === "")
+        this.MonCompte_Access = false;
 
-      if(value.access_Main_EditBar || !value.access_Main_EditBar) 
-        this.access_Main_EditBar = value.access_Main_EditBar;
-      if(value.access_Main_EditBar === "0")
-        this.access_Main_EditBar = false;
-      if(value.access_Main_EditBar === "1")
-        this.access_Main_EditBar = true;
-      if(value.access_Main_EditBar === null || value.access_Main_EditBar === undefined || value === "")
-        this.access_Main_EditBar = false;
+      if(value.EditBar_Access || !value.EditBar_Access) 
+        this.EditBar_Access = value.EditBar_Access;
+      if(value.EditBar_Access === "0")
+        this.EditBar_Access = false;
+      if(value.EditBar_Access === "1")
+        this.EditBar_Access = true;
+      if(value.EditBar_Access === null || value.EditBar_Access === undefined || value === "")
+        this.EditBar_Access = false;
 
         
 
@@ -241,23 +241,23 @@ export class RightGroupPage {
 
 
         
-      if(value.access_Main_EditBar_Edit || !value.access_Main_EditBar_Edit) 
-        this.access_Main_EditBar_Edit = value.access_Main_EditBar_Edit;
-      if(value.access_Main_EditBar_Edit === "0")
-        this.access_Main_EditBar_Edit = false;
-      if(value.access_Main_EditBar_Edit === "1")
-        this.access_Main_EditBar_Edit = true;
-      if(value.access_Main_EditBar_Edit === null || value.access_Main_EditBar_Edit === undefined || value === "")
-        this.access_Main_EditBar_Edit = false;
+      if(value.EditBar_Edit || !value.EditBar_Edit) 
+        this.EditBar_Edit = value.EditBar_Edit;
+      if(value.EditBar_Edit === "0")
+        this.EditBar_Edit = false;
+      if(value.EditBar_Edit === "1")
+        this.EditBar_Edit = true;
+      if(value.EditBar_Edit === null || value.EditBar_Edit === undefined || value === "")
+        this.EditBar_Edit = false;
 
-      if(value.access_Main_EditBar_Dev || !value.access_Main_EditBar_Dev) 
-        this.access_Main_EditBar_Dev = value.access_Main_EditBar_Dev;
-      if(value.access_Main_EditBar_Dev === "0")
-        this.access_Main_EditBar_Dev = false;
-      if(value.access_Main_EditBar_Dev === "1")
-        this.access_Main_EditBar_Dev = true;
-      if(value.access_Main_EditBar_Dev === null || value.access_Main_EditBar_Dev === undefined || value === "")
-        this.access_Main_EditBar_Dev = false;
+      if(value.EditBar_Dev || !value.EditBar_Dev) 
+        this.EditBar_Dev = value.EditBar_Dev;
+      if(value.EditBar_Dev === "0")
+        this.EditBar_Dev = false;
+      if(value.EditBar_Dev === "1")
+        this.EditBar_Dev = true;
+      if(value.EditBar_Dev === null || value.EditBar_Dev === undefined || value === "")
+        this.EditBar_Dev = false;
 
       
     }

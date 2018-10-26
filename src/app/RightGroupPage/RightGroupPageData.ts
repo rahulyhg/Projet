@@ -4,11 +4,11 @@ export const RIGHTGROUPPAGE: RightGroupPage[] = [
     { 
         id: 1, 
         name: "default",
-        access_Main: true, 
-        access_Accueil: true, 
-        access_Login: true, 
-        access_MonCompte: false, 
-        access_Main_EditBar: false, 
+        Main_Access: true, 
+        Accueil_Access: true, 
+        Login_Access: true, 
+        MonCompte_Access: false, 
+        EditBar_Access: false, 
         SelectedUserManagement_Access: false, 
         SelectedUserManagement_ViewPassword: false,
         SelectedUserManagement_ShowPasswordButton: false,
@@ -25,17 +25,17 @@ export const RIGHTGROUPPAGE: RightGroupPage[] = [
         SelectedGroupManagement_EditGroup: false,
         SelectedGroupManagement_DeleteGroup: false,
         SelectedGroupManagement_EditRightPage: false,
-        access_Main_EditBar_Dev: false, 
-        access_Main_EditBar_Edit: false
+        EditBar_Dev: false, 
+        EditBar_Edit: false
     },
     { 
         id: 2, 
         name : "Développement",
-        access_Main: true, 
-        access_Accueil: true, 
-        access_Login: true, 
-        access_MonCompte: true, 
-        access_Main_EditBar: true, 
+        Main_Access: true, 
+        Accueil_Access: true, 
+        Login_Access: true, 
+        MonCompte_Access: true, 
+        EditBar_Access: true, 
         SelectedUserManagement_Access: true, 
         SelectedUserManagement_ViewPassword: true,
         SelectedUserManagement_ShowPasswordButton: true,
@@ -52,7 +52,7 @@ export const RIGHTGROUPPAGE: RightGroupPage[] = [
         SelectedGroupManagement_EditGroup: true,
         SelectedGroupManagement_DeleteGroup: true,
         SelectedGroupManagement_EditRightPage: true,
-        access_Main_EditBar_Dev: true, 
-        access_Main_EditBar_Edit: true
+        EditBar_Dev: true, 
+        EditBar_Edit: true
     }
 ];
