@@ -9,6 +9,7 @@ import { User } from '../User/User';
 import { Group } from '../Group/Group';
 import { RightGroupPage } from '../RightGroupPage/RightGroupPage';
 
+import { UserService } from '../User/user.service';
 import { GroupService } from '../Group/group.service';
 import { RightGroupPageService } from '../RightGroupPage/RightGroupPage.service';
 
@@ -26,7 +27,7 @@ export class SelectedGroupManagementComponent implements OnInit {
   private MsgRightGroupPageDelete: string;
 
   constructor(private route: ActivatedRoute, private app: AppComponent, private router: Router,
-    private fb: FormBuilder, private groupApi: GroupService, private rightGroupPageApi: RightGroupPageService) { 
+    private fb: FormBuilder, private groupApi: GroupService, private rightGroupPageApi: RightGroupPageService,private userApi: UserService) { 
       this._currentUser = new User(null);
       this.change_defaut_rightGroupPage = false;
       this.RightGroupPageList = null;
@@ -169,6 +170,13 @@ export class SelectedGroupManagementComponent implements OnInit {
 
   private DeleteGroup(): void {
     if(this._currentUser.group.rightGroupPage.SelectedGroupManagement_DeleteGroup) {
+
+      if(this.group.name.split('_')[1] === "user") {
+        var user = this.userApi.getUserById(Number(this.group.name.split('_')[2]));
+        user.group = new Group(null);
+        this.userApi.putUser(user.id, user);
+      }
+
       this.groupApi.deleteGroup(this.group.id);
 
       this.router.navigate(['/GroupManagement']);

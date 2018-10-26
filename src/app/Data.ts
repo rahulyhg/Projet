@@ -1,10 +1,12 @@
 import { Group } from './Group/Group'; 
 import { User } from './User/User'; 
 import { RightGroupPage } from './RightGroupPage/RightGroupPage'; 
+import { Page } from './Page/Page';
 
 import { USER } from './User/UserData';
 import { GROUP } from './Group/GroupData';
 import { RIGHTGROUPPAGE } from './RightGroupPage/RightGroupPageData';
+import { PAGE } from './Page/PageData';
 
 interface Api {
   api: boolean;
@@ -17,11 +19,13 @@ export class Data {
   private user: User[];
   private group: Group[];
   private rightGroupPage: RightGroupPage[];
+  private page: Page[]
 
   constructor() {
     this.rightGroupPage = RIGHTGROUPPAGE;
     this.group = GROUP;
     this.user = USER;
+    this.page = PAGE;
   }
 
   // --------------------- USER ---------------------
@@ -379,6 +383,146 @@ export class Data {
     return JSON.stringify(api);
   }
 
+  // --------------------- PAGE ---------------------
+  // ------- GET ---------
+
+  public getPageById(id: number): string {
+    var ErrorMsg: string = null;
+
+    if(id !== null && id !== undefined && id !== 0) {
+      var index: number = this.page.findIndex(d => d.id === id);
+      var page_return: Page = new Page(null);
+
+      if(index !== -1)
+        page_return = this.page[index];
+      else
+        ErrorMsg = "Index non valide";
+    } else
+      ErrorMsg = "Id non valide";
+
+    var api: Api = {
+      api: true,
+      auth: true,
+      ErrorMsg: ErrorMsg,
+      data: [ page_return ]
+    }
+    return JSON.stringify(api);
+  }
+
+  public getPageByRoute(route: string): string {
+    var ErrorMsg: string = null;
+
+    if(route !== null && route !== undefined && route !== "") {
+      var index: number = this.page.findIndex(d => d.route === route);
+      var page_return: Page = new Page(null);
+
+      if(index !== -1)
+        page_return = this.page[index];
+      else
+        ErrorMsg = "Index non valide";
+    } else
+      ErrorMsg = "Id non valide";
+
+    var api: Api = {
+      api: true,
+      auth: true,
+      ErrorMsg: ErrorMsg,
+      data: [ page_return ]
+    }
+    return JSON.stringify(api);
+  }
+
+  public getPage(): string {
+    var api: Api = {
+      api: true,
+      auth: true,
+      ErrorMsg: null,
+      data: this.page
+    }
+    return JSON.stringify(api);
+  }
+
+  // ------- PUT ---------
+
+  public putPage(id: number, page: Page): string {
+    var ErrorMsg: string = null;
+
+    if(id !== null && id !== undefined && id !== 0) {
+      if(page !== null && page !== undefined) {
+        var index: number = this.group.findIndex(d => d.id === id);
+        if(index !== -1) {
+          this.page[index] = page;
+
+          if(this.page[index] !== page)
+            ErrorMsg = "Impossible de mettre à jour le page";
+        }
+        else 
+          ErrorMsg = "Index non valide";
+      } else 
+      ErrorMsg = "Page non valide";
+    } else 
+      ErrorMsg = "Id non valide";
+
+    var api: Api = {
+      api: true,
+      auth: true,
+      ErrorMsg: ErrorMsg,
+      data: [ null ]
+    }
+    return JSON.stringify(api);
+  }
+
+  // ------- POST ---------
+
+  public postPage(page: Page): string {
+    var ErrorMsg: string = null;
+
+    if(page !== null && page !== undefined) {
+      var l: number = this.page.length;
+      page.id = l + 1;
+      this.page.push(page);
+
+    }
+
+    var api: Api = {
+      api: true,
+      auth: true,
+      ErrorMsg: ErrorMsg,
+      data: null
+    }
+    return JSON.stringify(api);
+  }
+
+  // ------- DELETE ---------
+
+  public deletePage(id: number): string {
+    var ErrorMsg: string = null;
+
+    if(id !== null && id !== undefined && id !== 0) {
+      var t: number = this.page.length;
+      if(t !== null && t !== undefined && t !== 0) {
+        var index: number = this.page.findIndex(d => d.id === id);
+
+        if(index !== null && index !== undefined && index !== -1) {
+          this.page.splice(index, 1);
+
+          if(t === this.page.length)
+            ErrorMsg = "Impossible de supprimer le pages";
+        } else 
+          ErrorMsg = "Index non valide";
+      } else 
+        ErrorMsg = "Index non valide";
+    } else
+      ErrorMsg = "Id non valide";
+
+    var api: Api = {
+      api: true,
+      auth: true,
+      ErrorMsg: ErrorMsg,
+      data: null
+    }
+    return JSON.stringify(api);
+  }
   // ------ AUTRE ---------
   // ------ AUTH ---------
 

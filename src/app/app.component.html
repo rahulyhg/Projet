@@ -51,6 +51,8 @@
       <li *ngIf="!_currentUser.group.rightGroupPage.UserManagement_Access" style="color: #555;">Gestion des utilisateurs</li>
       <li *ngIf="_currentUser.group.rightGroupPage.GroupManagement_Access" class='lien'><a routerLink="/GroupManagement">Gestion des groupes</a></li>
       <li *ngIf="!_currentUser.group.rightGroupPage.GroupManagement_Access" style="color: #555;">Gestion des groupes</li>
+      <li class='lien'><a routerLink="/PageManagement/{{ _currentPage.id }}">Editer les Parametres de cette page</a></li>
+      <!-- <li style="color: #555;">Editer les Parametres de cette page</li> -->
     </div>
   </div>
 

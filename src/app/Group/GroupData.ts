@@ -11,5 +11,11 @@ export const GROUP: Group[] = [
         id: 2, 
         name: "Développement", 
         rightGroupPage: RIGHTGROUPPAGE[1] 
+    },
+    { 
+        id: 3, 
+        name: "_user_3", 
+        rightGroupPage: RIGHTGROUPPAGE[2] 
     }
+    
 ];

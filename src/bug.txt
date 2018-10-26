@@ -9,16 +9,7 @@ mettre en automatique que si on coche ajouter ou modifier par defaut, que l'on a
 
 Faire page de Modification de mon compte (la meme que pour voia la page de compte d'une autre personne mise a part le bouton modifier)
 
-faire en sorte que lorsque l'on supprimer le groupe personnel d'un compte, que ce dernier reprenne le groupe par defaut
-
-faire en sorte que le routelink se fasse sur le li (avec la class "lien") et non que sur le <a>
-
 séparer en deux group pour group et user (group user)
-
-Faire une table avec les parametre par page
-=> interval de refresh
-=> logo
-=> titre
 
 Faire une table avec les parametre globaux du site
 => possibilite de modifier l'interval de refresh
@@ -49,3 +40,14 @@ structurer le peus de CSS présent  (par page)
 Mise en place d'in system de report de bug dans le footer
 
 le click droit sur le popup dev active le drop
+
+verifier les format de fichier que l'on upload
+=> que des .ico pour les icone
+=> que les format image pour les images ...
+
+bug : ExpressionChangedAfterItHasBeenCheckedError: Expression has changed after it was checked lorsque l'on change de page avec le popup ouvert
+
+faire page d'erreur par default pour page inconue
+
+voir pour mettre de la transparence sur le blanc dans les logo de page
+=> via methode automatique

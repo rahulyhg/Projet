@@ -54,5 +54,32 @@ export const RIGHTGROUPPAGE: RightGroupPage[] = [
         SelectedGroupManagement_EditRightPage: true,
         EditBar_Dev: true, 
         EditBar_Edit: true
+    },
+    { 
+        id: 3, 
+        name: "_user_3",
+        Main_Access: true, 
+        Accueil_Access: true, 
+        Login_Access: true, 
+        MonCompte_Access: true, 
+        EditBar_Access: false, 
+        SelectedUserManagement_Access: false, 
+        SelectedUserManagement_ViewPassword: false,
+        SelectedUserManagement_ShowPasswordButton: false,
+        SelectedUserManagement_EditRightGroupPageUser: false,
+        SelectedUserManagement_DeleteUser: false,
+        SelectedUserManagement_EditUser: false,
+        UserManagement_Access: false, 
+        UserManagement_AddUser: false,
+        UserManagement_EditDefaultUser: false,
+        GroupManagement_Access: false,
+        GroupManagement_AddGroup: false,
+        GroupManagement_EditDefaultGroup: false,
+        SelectedGroupManagement_Access: false,
+        SelectedGroupManagement_EditGroup: false,
+        SelectedGroupManagement_DeleteGroup: false,
+        SelectedGroupManagement_EditRightPage: false,
+        EditBar_Dev: false, 
+        EditBar_Edit: false
     }
 ];

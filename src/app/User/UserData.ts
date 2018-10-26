@@ -34,7 +34,7 @@ export const USER: User[] = [
         id: 3,
         login: "lucas",
         password: "c21f969b5f03d33d43e04f8f136e7682",
-        group: GROUP[0], 
+        group: GROUP[2], 
         profile: "assets/uploads/images/lucas.jpg",
         statut: false,
         date_time_logIn: "2018-10-18 11:49:48", 

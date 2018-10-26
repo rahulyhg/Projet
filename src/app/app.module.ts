@@ -19,6 +19,8 @@ import { SelectedUserManagementComponent } from './selected-user-management/sele
 import { GroupManagementComponent } from './group-management/group-management.component';
 import { SelectedGroupManagementComponent } from './selected-group-management/selected-group-management.component';
 import { HighlightDirective } from './highlight.directive';
+import { PageManagementComponent } from './page-management/page-management.component';
+import { SelectedPageManagementComponent } from './selected-page-management/selected-page-management.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/Accueil', pathMatch: 'full' },
@@ -29,6 +31,8 @@ const routes: Routes = [
   { path: 'UserManagement/:id', component: SelectedUserManagementComponent },
   { path: 'GroupManagement', component: GroupManagementComponent },
   { path: 'GroupManagement/:id', component: SelectedGroupManagementComponent },
+  { path: 'PageManagement/:id', component: SelectedPageManagementComponent },
+  { path: 'PageManagement/:id', component: SelectedPageManagementComponent },
 ];
 
 @NgModule({
@@ -41,7 +45,9 @@ const routes: Routes = [
     SelectedUserManagementComponent,
     GroupManagementComponent,
     SelectedGroupManagementComponent,
-    HighlightDirective
+    HighlightDirective,
+    PageManagementComponent,
+    SelectedPageManagementComponent
   ],
   imports: [
     BrowserModule,
