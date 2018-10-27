@@ -24,6 +24,7 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    //console.log(this.userApi.test(4));
     this.Init();
     this.getCurrentUser();
   }
@@ -39,7 +40,7 @@ export class AppComponent implements OnInit {
 		linkElement.setAttribute( "id", "favicon" );
 		linkElement.setAttribute( "rel", "icon" );
 		linkElement.setAttribute( "type", "image/x-icon" );
-		linkElement.setAttribute( "href", "assets/uploads/favicon/" + this._currentPage.favicon );
+		linkElement.setAttribute( "href", this._currentPage.favicon );
     document.head.appendChild( linkElement );
   }
 

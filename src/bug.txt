@@ -28,7 +28,7 @@ Mise en place d'un hotorique + analytique
 Mise en place d'une bare ou l'on peux voir les membre actif, innactif (un peux comme discord)
 => la requete va determiner si un utilisateur est actif que si sa sate de connection (logIn) est plus récente que 1 minutes
 
-Création d'une table fichier avec historique plus notion de modification + propriétaire, taille, date d'upload ...
+Création d'une table fichier avec historique plus notion de modification + propriétaire, taille, date d'upload, extention
 
 voir pour un system de script qui tourne sur le serveur (en puton) qui met a jours les staut user en fonction de leur heure de logIn
 
@@ -51,3 +51,7 @@ faire page d'erreur par default pour page inconue
 
 voir pour mettre de la transparence sur le blanc dans les logo de page
 => via methode automatique
+
+mettre dans une seul requete l'initialisation de la page (user + page)
+
+dans le SelectedPageManagement, mettre une liste deroulante avec la liste de fichier icone

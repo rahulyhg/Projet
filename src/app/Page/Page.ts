@@ -18,7 +18,7 @@ export class Page {
 
     this.favicon = value.favicon;
     if(value.favicon === null || value.favicon === undefined || value === "")
-      this.favicon = "default.ico";
+      this.favicon = "assets/uploads/favicon/favicon.ico";
 
     this.refresh = value.refresh;
     if(value.refresh === null || value.refresh === undefined || value === "")
@@ -26,7 +26,7 @@ export class Page {
 
     this.route = value.route;
     if(value.route === null || value.route === undefined || value === "")
-      this.route = "default.ico";
+      this.route = "default";
 
   }
 }
