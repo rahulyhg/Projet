@@ -93,4 +93,18 @@ export class SelectedPageManagementComponent implements OnInit {
     }
   }
 
+  private editPage(value: any): void {
+    console.log("Edition");
+  }
+
+  private DeletePage(): void {
+    //#
+    // if(this._currentUser.group.rightGroupPage.SelectedUserManagement_DeleteUser) {
+      this.pageApi.deletePage(this.page.id);
+
+      this.router.navigate(['/PageManagement']);
+    // } else 
+    //   console.log("Vous n'avez pas la permission pour effectuer cette action");
+  }
+
 }

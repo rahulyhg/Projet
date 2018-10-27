@@ -1,6 +1,7 @@
 <div >
   <form [formGroup]="SelectedPageManagementForm" (ngSubmit)="editPage(SelectedPageManagementForm.value)">
     <div class="edit_page_gauche">
+      <label>Icone de la page :</label>
         <div class="favicon">
             <input style="display: none" type="file" (change)="imageChangeClick($event)" #File>
             <file-drop (onFileDrop)="imageChangeDrag($event)" (click)="File.click()">
@@ -16,6 +17,10 @@
       <img class="onglet" src="assets/uploads/images/PageNotVoid.jpg">
       <div class="edit_page_logo"><img src="{{ page.favicon }}"></div>
       <div class="edit_page_title">{{ new_title }}</div>
+    </div>
+    <div class="EditBar">
+        <div class="button" (click)="DeletePage()">Supprimer la page</div>
+        <button type="submit" [disabled]="!SelectedPageManagementForm.valid">Valider les modifications</button>
     </div>
   </form>
 </div>

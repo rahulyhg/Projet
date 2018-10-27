@@ -31,7 +31,7 @@ const routes: Routes = [
   { path: 'UserManagement/:id', component: SelectedUserManagementComponent },
   { path: 'GroupManagement', component: GroupManagementComponent },
   { path: 'GroupManagement/:id', component: SelectedGroupManagementComponent },
-  { path: 'PageManagement/:id', component: SelectedPageManagementComponent },
+  { path: 'PageManagement', component: PageManagementComponent },
   { path: 'PageManagement/:id', component: SelectedPageManagementComponent },
 ];
 

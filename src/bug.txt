@@ -55,3 +55,6 @@ mettre dans une seul requete l'initialisation de la page (user + page)
 dans le SelectedPageManagement, mettre une liste deroulante avec la liste de fichier icone
 
 Mettre un fichier valide dans le contructeur de l'object Upload
+
+Si on supprime un User/Group/page, et que l'on fait page arriere, ca met page par defaut
+Avant de lancer la page, regarder si l'object que l'on veux editer existe

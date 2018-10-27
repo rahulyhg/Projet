@@ -550,3 +550,8 @@ margin-top: 60px;
     max-width: 200px;
     transition: 0.3s;
   }
+
+  .edit_page_gauche label {
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
