@@ -5,17 +5,17 @@
             <input style="display: none" type="file" (change)="imageChangeClick($event)" #File>
             <file-drop (onFileDrop)="imageChangeDrag($event)" (click)="File.click()">
                 <img src="{{ page.favicon }}" appHighlight>
-                <div class="drop">Drop picture here</div>
+                <div class="drop">Drop icon here</div>
             </file-drop>
         </div>
-      <li></li>
+      <li>Title : <input type="text" formControlName="title" (keyup)="TitleChange($event.target.value)"/></li>
       <li></li>
       <li></li>
     </div>
     <div class="edit_page_droite">
       <img class="onglet" src="assets/uploads/images/PageNotVoid.jpg">
       <div class="edit_page_logo"><img src="{{ page.favicon }}"></div>
-      <div class="edit_page_title">{{ page.title }}</div>
+      <div class="edit_page_title">{{ new_title }}</div>
     </div>
   </form>
 </div>

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from "@angular/router";
 import { HttpClient } from '@angular/common/http';
 import { UploadEvent, FileSystemFileEntry } from '../../../node_modules/ngx-file-drop';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 
 import { AppComponent } from '../app.component';
 
@@ -18,10 +19,17 @@ export class SelectedPageManagementComponent implements OnInit {
   public _currentUser: User;
   public page: Page;
   private selectedFile: File;
+  public new_title: string;
+  private post: any;
+  private SelectedPageManagementForm: FormGroup;
 
-  constructor(private app:AppComponent, private router: Router, private pageApi: PageService, private route: ActivatedRoute, private http: HttpClient) { 
+  constructor(private app:AppComponent, private router: Router, private pageApi: PageService, private route: ActivatedRoute,
+    private http: HttpClient, private fb: FormBuilder) { 
     this._currentUser = new User(null);
     this.page = new Page(null);
+    this.new_title = this.page.title;
+    this.post = null;
+    this.SelectedPageManagementForm = null;
   }
 
   ngOnInit(): void { 
@@ -30,11 +38,21 @@ export class SelectedPageManagementComponent implements OnInit {
     
     this.getPageById();
 
+    this.new_title = this.page.title;
+
     //#
     //if(!this._currentUser.group.rightGroupPage.MonCompte_Access) {
       // console.log("Vous n'avez pas la permission d'accedez à cette page");
       // this.router.navigate(['/Accueil']);
     //}
+
+    this.initData();
+  }
+
+  private initData(): void {
+    this.SelectedPageManagementForm = this.fb.group({
+      'title': this.page.title
+    });
   }
 
   private getPageById(): void {
@@ -64,6 +82,15 @@ export class SelectedPageManagementComponent implements OnInit {
 
   public imageChangeDrag(event: UploadEvent): void {
     (event.files[0].fileEntry as FileSystemFileEntry).file((file: File) => { this.selectedFile = file; this.onUpload(); });
+  }
+
+  private TitleChange(value: any): void {
+    this.page.title = value;
+    if(value.length > 24) {
+      this.new_title = value.substring(0,21) + " ...";
+    } else {
+      this.new_title = value;
+    }
   }
 
 }

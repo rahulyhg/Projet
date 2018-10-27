@@ -481,6 +481,7 @@ margin-top: 60px;
 
   .edit_page_gauche {
     float: left;
+    display: grid;
   } 
 
   .edit_page_droite {
@@ -520,6 +521,7 @@ margin-top: 60px;
     text-align: center;
     display: flex;
     cursor: pointer;
+    margin-bottom: 30px;
   }
   
   .favicon img {
