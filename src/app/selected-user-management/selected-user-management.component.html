@@ -32,7 +32,7 @@
                     <li>Login : <input type="text" formControlName="login"/></li>
                     <li *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_ViewPassword">Mot de passe : <input type="{{isPassword ? 'password' : 'text' }}" formControlName="password"/><div *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_ShowPasswordButton" class="button" (click)="showPassword()">Voir le mot de passe</div></li>
                     <li *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser">Group :
-                        <select formControlName="group" (change)="setGroupSelected($event.target.value)">
+                        <select formControlName="group" (change)="setGroupSelected($event.target.value, SelectedUserManagementForm.value)">
                             <option *ngFor="let group of GroupList" [ngValue]="group">{{ group.name}}</option>
                         </select>
                         <div *ngIf="_currentUser.group.rightGroupPage.SelectedGroupManagement_Access" class="button" routerLink="/GroupManagement/{{ user.group.id }}">Editer ce groupe {{ MsgGroupPerso }}</div> <div class="ErrorMsg">{{ MsgGroupDelete }}</div>
@@ -51,53 +51,53 @@
         <div *ngIf="_RightEdit" class="RightEdit">
             <li>(La modification des droits de cette utilisateur va créer un group + un group de droit pour cette utilisateurs uniquement)</li>
             <li> RightGroupPage :
-            <select formControlName="rightGroupPage" (change)="setRightEditSelected($event.target.value)">
+            <select formControlName="rightGroupPage" (change)="setRightGroupPageSelected($event.target.value, SelectedUserManagementForm.value)">
             <option *ngFor="let RightGroupPage of RightGroupPageList" [ngValue]="RightGroupPage">{{ RightGroupPage.name }}</option>
             </select>
             </li>
             <h2>Main Page</h2>
             <label style="font-weight: bold;">Peut affecter le bon fonctionnement du site !</label>
-            <li>Main_Access : <input type="checkbox" formControlName="Main_Access" (change)="this.change_defaut_rightGroupPage = true"/></li>
+            <li class="disabledCheck">Main_Access : <input type="checkbox" formControlName="Main_Access" (click)="setRightSelected(SelectedUserManagementForm.value, $event.target.attributes[0].nodeValue)"/></li>
 
             <h2>Accueil Page</h2>
             <label style="font-weight: bold;">Peut affecter le bon fonctionnement du site !</label>
-            <li>Accueil_Access : <input type="checkbox" formControlName="Accueil_Access" (change)="this.change_defaut_rightGroupPage = true"/></li>
+            <li>Accueil_Access : <input type="checkbox" formControlName="Accueil_Access" (click)="setRightSelected(SelectedUserManagementForm.value, $event.target.attributes[0].nodeValue)"/></li>
 
             <h2>Login Page</h2>
             <label style="font-weight: bold;">Peut affecter le bon fonctionnement du site !</label>
-            <li>Login_Access : <input type="checkbox" formControlName="Login_Access" (change)="this.change_defaut_rightGroupPage = true"/></li>
+            <li>Login_Access : <input type="checkbox" formControlName="Login_Access" (click)="setRightSelected(SelectedUserManagementForm.value, $event.target.attributes[0].nodeValue)"/></li>
 
             <h2>MonCompte Page</h2>
-            <li>MonCompte_Access : <input type="checkbox" formControlName="MonCompte_Access" (change)="this.change_defaut_rightGroupPage = true"/></li>
+            <li>MonCompte_Access : <input type="checkbox" formControlName="MonCompte_Access" (click)="setRightSelected(SelectedUserManagementForm.value, $event.target.attributes[0].nodeValue)"/></li>
 
             <h2>EditBar</h2>
-            <li>EditBar_Access : <input type="checkbox" formControlName="EditBar_Access" (change)="this.change_defaut_rightGroupPage = true"/></li>
-            <li>EditBar_Dev : <input type="checkbox" formControlName="EditBar_Dev" (change)="this.change_defaut_rightGroupPage = true"/></li>
-            <li>EditBar_Edit : <input type="checkbox" formControlName="EditBar_Edit" (change)="this.change_defaut_rightGroupPage = true"/></li>
+            <li class="disabledCheck">EditBar_Access : <input type="checkbox" formControlName="EditBar_Access" (click)="setRightSelected(SelectedUserManagementForm.value, $event.target.attributes[0].nodeValue)"/></li>
+            <li>EditBar_Dev : <input type="checkbox" formControlName="EditBar_Dev" (click)="setRightSelected(SelectedUserManagementForm.value, $event.target.attributes[0].nodeValue)"/></li>
+            <li class="disabledCheck">EditBar_Edit : <input type="checkbox" formControlName="EditBar_Edit" (click)="setRightSelected(SelectedUserManagementForm.value, $event.target.attributes[0].nodeValue)"/></li>
 
             <h2>SelectedUserManagement Page</h2>
-            <li>SelectedUserManagement_Access : <input type="checkbox" formControlName="SelectedUserManagement_Access" (change)="this.change_defaut_rightGroupPage = true"/></li>
-            <li>SelectedUserManagement_ViewPassword : <input type="checkbox" formControlName="SelectedUserManagement_ViewPassword" (change)="this.change_defaut_rightGroupPage = true"/></li>
-            <li>SelectedUserManagement_ShowPasswordButton : <input type="checkbox" formControlName="SelectedUserManagement_ShowPasswordButton" (change)="this.change_defaut_rightGroupPage = true"/></li>
-            <li>SelectedUserManagement_EditRightGroupPageUser : <input type="checkbox" formControlName="SelectedUserManagement_EditRightGroupPageUser" (change)="this.change_defaut_rightGroupPage = true"/></li>
-            <li>SelectedUserManagement_DeleteUser : <input type="checkbox" formControlName="SelectedUserManagement_DeleteUser" (change)="this.change_defaut_rightGroupPage = true"/></li>
-            <li>SelectedUserManagement_EditUser : <input type="checkbox" formControlName="SelectedUserManagement_EditUser" (change)="this.change_defaut_rightGroupPage = true"/></li>
+            <li>SelectedUserManagement_Access : <input type="checkbox" formControlName="SelectedUserManagement_Access" (click)="setRightSelected(SelectedUserManagementForm.value, $event.target.attributes[0].nodeValue)"/></li>
+            <li>SelectedUserManagement_ViewPassword : <input type="checkbox" formControlName="SelectedUserManagement_ViewPassword" (click)="setRightSelected(SelectedUserManagementForm.value, $event.target.attributes[0].nodeValue)"></li>
+            <li>SelectedUserManagement_ShowPasswordButton : <input type="checkbox" formControlName="SelectedUserManagement_ShowPasswordButton" (click)="setRightSelected(SelectedUserManagementForm.value, $event.target.attributes[0].nodeValue)"/></li>
+            <li>SelectedUserManagement_EditRightGroupPageUser : <input type="checkbox" formControlName="SelectedUserManagement_EditRightGroupPageUser" (click)="setRightSelected(SelectedUserManagementForm.value, $event.target.attributes[0].nodeValue)"/></li>
+            <li>SelectedUserManagement_DeleteUser : <input type="checkbox" formControlName="SelectedUserManagement_DeleteUser" (click)="setRightSelected(SelectedUserManagementForm.value, $event.target.attributes[0].nodeValue)"/></li>
+            <li>SelectedUserManagement_EditUser : <input type="checkbox" formControlName="SelectedUserManagement_EditUser" (click)="setRightSelected(SelectedUserManagementForm.value, $event.target.attributes[0].nodeValue)"/></li>
 
             <h2>UserManagement Page</h2>
-            <li>UserManagement_Access : <input type="checkbox" formControlName="UserManagement_Access" (change)="this.change_defaut_rightGroupPage = true"/></li>
-            <li>UserManagement_AddUser : <input type="checkbox" formControlName="UserManagement_AddUser" (change)="this.change_defaut_rightGroupPage = true"/></li>
-            <li>UserManagement_EditDefaultUser : <input type="checkbox" formControlName="UserManagement_EditDefaultUser" (change)="this.change_defaut_rightGroupPage = true"/></li>
+            <li>UserManagement_Access : <input type="checkbox" formControlName="UserManagement_Access" (click)="setRightSelected(SelectedUserManagementForm.value, $event.target.attributes[0].nodeValue)"/></li>
+            <li>UserManagement_AddUser : <input type="checkbox" formControlName="UserManagement_AddUser" (click)="setRightSelected(SelectedUserManagementForm.value, $event.target.attributes[0].nodeValue)"/></li>
+            <li>UserManagement_EditDefaultUser : <input type="checkbox" formControlName="UserManagement_EditDefaultUser" (click)="setRightSelected(SelectedUserManagementForm.value, $event.target.attributes[0].nodeValue)"/></li>
 
             <h2>GroupManagement Page</h2>
-            <li>GroupManagement_Access : <input type="checkbox" formControlName="GroupManagement_Access" (change)="this.change_defaut_rightGroupPage = true"/></li>
-            <li>GroupManagement_AddGroup : <input type="checkbox" formControlName="GroupManagement_AddGroup" (change)="this.change_defaut_rightGroupPage = true"/></li>
-            <li>GroupManagement_EditDefaultGroup : <input type="checkbox" formControlName="GroupManagement_EditDefaultGroup" (change)="this.change_defaut_rightGroupPage = true"/></li>
+            <li>GroupManagement_Access : <input type="checkbox" formControlName="GroupManagement_Access" (click)="setRightSelected(SelectedUserManagementForm.value, $event.target.attributes[0].nodeValue)"/></li>
+            <li>GroupManagement_AddGroup : <input type="checkbox" formControlName="GroupManagement_AddGroup" (click)="setRightSelected(SelectedUserManagementForm.value, $event.target.attributes[0].nodeValue)"/></li>
+            <li>GroupManagement_EditDefaultGroup : <input type="checkbox" formControlName="GroupManagement_EditDefaultGroup" (click)="setRightSelected(SelectedUserManagementForm.value, $event.target.attributes[0].nodeValue)"/></li>
 
             <h2>SelectedGroupManagement Page</h2>
-            <li>SelectedGroupManagement_Access : <input type="checkbox" formControlName="SelectedGroupManagement_Access" (change)="this.change_defaut_rightGroupPage = true"/></li>
-            <li>SelectedGroupManagement_EditGroup : <input type="checkbox" formControlName="SelectedGroupManagement_EditGroup" (change)="this.change_defaut_rightGroupPage = true"/></li>
-            <li>SelectedGroupManagement_DeleteGroup : <input type="checkbox" formControlName="SelectedGroupManagement_DeleteGroup" (change)="this.change_defaut_rightGroupPage = true"/></li>
-            <li>SelectedGroupManagement_EditRightPage : <input type="checkbox" formControlName="SelectedGroupManagement_EditRightPage" (change)="this.change_defaut_rightGroupPage = true"/></li>
+            <li>SelectedGroupManagement_Access : <input type="checkbox" formControlName="SelectedGroupManagement_Access" (click)="setRightSelected(SelectedUserManagementForm.value, $event.target.attributes[0].nodeValue)"/></li>
+            <li>SelectedGroupManagement_EditGroup : <input type="checkbox" formControlName="SelectedGroupManagement_EditGroup" (click)="setRightSelected(SelectedUserManagementForm.value, $event.target.attributes[0].nodeValue)"/></li>
+            <li>SelectedGroupManagement_DeleteGroup : <input type="checkbox" formControlName="SelectedGroupManagement_DeleteGroup" (click)="setRightSelected(SelectedUserManagementForm.value, $event.target.attributes[0].nodeValue)"/></li>
+            <li>SelectedGroupManagement_EditRightPage : <input type="checkbox" formControlName="SelectedGroupManagement_EditRightPage" (click)="setRightSelected(SelectedUserManagementForm.value, $event.target.attributes[0].nodeValue)"/></li>
         </div>
         <div class="EditBar" *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_EditUser || _currentUser.group.rightGroupPage.UserManagement_AddUser || _currentUser.group.rightGroupPage.UserManagement_EditDefaultUser">
             <div *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser" class="button" (click)="ChangeRightEdit()">Modifier les doits de l'utilisateur</div>

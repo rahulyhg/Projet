@@ -1,0 +1,49 @@
+Main_Access: value.
+Accueil_Access: value.
+Login_Access: value.
+MonCompte_Access: value.
+EditBar_Access: value.
+SelectedUserManagement_Access: value.
+SelectedUserManagement_ViewPassword: value.
+SelectedUserManagement_ShowPasswordButton: value.
+SelectedUserManagement_EditRightGroupPageUser: value.
+SelectedUserManagement_DeleteUser: value.
+SelectedUserManagement_EditUser: value.
+UserManagement_Access: value.
+UserManagement_AddUser: value.
+UserManagement_EditDefaultUser: value.
+GroupManagement_Access: value.
+GroupManagement_AddGroup: value.
+GroupManagement_EditDefaultGroup: value.
+SelectedGroupManagement_Access: value.
+SelectedGroupManagement_EditGroup: value.SelectedGroupManagement_EditGroup
+SelectedGroupManagement_DeleteGroup: value.SelectedGroupManagement_DeleteGroup
+SelectedGroupManagement_EditRightPage: value.SelectedGroupManagement_EditRightPage
+EditBar_Dev: value.EditBar_Dev
+EditBar_Edit: value.EditBar_Edit
+
+: value.
+
+: Main_Access
+Accueil_Access
+Login_Access
+MonCompte_Access
+EditBar_Access
+SelectedUserManagement_Access
+SelectedUserManagement_ViewPassword
+SelectedUserManagement_ShowPasswordButton
+SelectedUserManagement_EditRightGroupPageUser
+SelectedUserManagement_DeleteUser
+SelectedUserManagement_EditUser
+UserManagement_Access
+UserManagement_AddUser
+UserManagement_EditDefaultUser
+GroupManagement_Access
+GroupManagement_AddGroup
+GroupManagement_EditDefaultGroup
+SelectedGroupManagement_Access
+SelectedGroupManagement_EditGroup
+SelectedGroupManagement_DeleteGroup
+SelectedGroupManagement_EditRightPage
+EditBar_Dev
+EditBar_Edit

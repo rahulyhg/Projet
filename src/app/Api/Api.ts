@@ -83,8 +83,6 @@ export class Data {
       ErrorMsg = "User non valide";
     } else 
       ErrorMsg = "Id non valide";
-    
-
 
     var api: Api = {
       api: true,
@@ -101,8 +99,16 @@ export class Data {
     var ErrorMsg: string = null;
 
     if(user !== null && user !== undefined) {
-      var l: number = this.user.length;
-      user.id = l + 1;
+      user.id = this.user.length + 1;
+      if(user.group.id === 0) {
+        user.group.id = this.group.length + 1;
+        user.group.name = "_user_" + user.id;
+        user.group.rightGroupPage.id = this.rightGroupPage.length + 1;
+        user.group.rightGroupPage.name = "_user_" + user.id;
+        this.group.push(user.group);
+        this.rightGroupPage.push(user.group.rightGroupPage)
+      }
+      console.log(user);
       this.user.push(user);
     }
 
@@ -221,7 +227,6 @@ export class Data {
       var l: number = this.group.length;
       group.id = l + 1;
       this.group.push(group);
-
     }
 
     var api: Api = {

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { FileSystemFileEntry } from '../../../node_modules/ngx-file-drop';
 
 import { AppComponent } from '../app.component';
@@ -14,6 +13,7 @@ import { UserService } from '../Services/user.service';
 import { GroupService } from '../Services/group.service';
 import { RightGroupPageService } from '../Services/RightGroupPage.service';
 import { UploadService } from '../Services/uploads.service';
+import { element } from '@angular/core/src/render3/instructions';
 
 @Component({
   templateUrl: './selected-user-management.component.html'
@@ -21,7 +21,8 @@ import { UploadService } from '../Services/uploads.service';
 export class SelectedUserManagementComponent implements OnInit {
   public _currentUser: User;
   private _RightEdit: boolean;
-  private change_defaut_rightGroupPage: boolean;
+  private _ChangeRightPage: boolean;
+  private UserList: User[];
   private RightGroupPageList: RightGroupPage[];
   private GroupList: Group[];
   private post: any;
@@ -30,112 +31,286 @@ export class SelectedUserManagementComponent implements OnInit {
   private initial_user: User;
   private isPassword: boolean;
   private MsgGroupDelete: string;
-  private selectedFile: File;
   private MsgGroupPerso: string;
 
   constructor(private route: ActivatedRoute, private app: AppComponent, private userApi: UserService, private router: Router,
-    private fb: FormBuilder, private groupApi: GroupService, private rightGroupPageApi: RightGroupPageService, private http: HttpClient, private uploadApi: UploadService) { 
+    private fb: FormBuilder, private groupApi: GroupService, private rightGroupPageApi: RightGroupPageService, private uploadApi: UploadService) { 
       this._currentUser = new User(null);
       this._RightEdit = false;
-      this.change_defaut_rightGroupPage = false;
+      this._ChangeRightPage = false;
       this.RightGroupPageList = null;
       this.GroupList = null;
       this.post = null;
       this.SelectedUserManagementForm = null;
       this.user = new User(null);
-      if(this.route.snapshot.paramMap.get('id') !== "New")
-        this.initial_user = new User(this.userApi.getUserById(Number(this.route.snapshot.paramMap.get('id'))));
+      var id: number = 2;
+      if(this.route.snapshot.paramMap.get('id') !== "New") { id = Number(this.route.snapshot.paramMap.get('id')) }
+      this.initial_user = new User(this.userApi.getUserById(id));
       this.isPassword = true;
       this.MsgGroupDelete = null;
       this.MsgGroupPerso = null;
+      this.UserList = null;
     }
 
   ngOnInit(): void { 
+    // Initialisation de la page
     this.app.ngOnInit();
     this._currentUser = this.app._currentUser;
 
-    if(!this._currentUser.group.rightGroupPage.SelectedUserManagement_Access) {
-      console.log("Vous n'avez pas la permission d'accedez à cette page");
-      this.router.navigate(['/Accueil']);
-    }
-
-    if(Number(this.route.snapshot.paramMap.get('id')) === 1 && !this._currentUser.group.rightGroupPage.UserManagement_EditDefaultUser) {
-      console.log("Vous n'avez pas la permission d'accedez à cette page");
-      this.router.navigate(['/Accueil']);
-    }
-
-    if(this.route.snapshot.paramMap.get('id') === "New" && !this._currentUser.group.rightGroupPage.UserManagement_AddUser) {
-      console.log("Vous n'avez pas la permission d'accedez à cette page");
-      this.router.navigate(['/Accueil']);
-    }
-
-    this.getUserById();
-    
-    if(!this._currentUser.group.rightGroupPage.SelectedUserManagement_ViewPassword) {
-      this.user.password = "";
-      this.initial_user.password = "";
-    }
-
-    this.getGroupList();
-    this.getRightGroupPageList();
-      
-    this.initData();
-
-    var index: number = this.RightGroupPageList.findIndex(d => d.id === this.user.group.rightGroupPage.id);
-    this.setRightEditSelected(index);
-
+    // Récupération des données de l'utilisateur que l'on va modifier UNIQUEMENT si ce n'est pas la création d'un nouveau user
+    // On indique également si il sagit d'un groupe perso ou pas
     if(this.route.snapshot.paramMap.get('id') !== "New") {
-      if(this.initial_user.group.rightGroupPage.name.split('_')[1] === "user") {
-        var index: number = this.GroupList.findIndex(d => d.id === this.user.group.id);
-        var index1: number = this.RightGroupPageList.findIndex(d => d.id === this.user.group.rightGroupPage.id);
-        this.GroupList[index].name = this.user.login;
-        this.RightGroupPageList[index1].name = this.user.login;
-        this.SelectedUserManagementForm.get('group').setValue(this.GroupList[index]);
-        this.SelectedUserManagementForm.get('rightGroupPage').setValue(this.RightGroupPageList[index1]);
-        this.MsgGroupPerso = "Groupe personnel de droit";
-      }
-    }
-
-    if(this.route.snapshot.paramMap.get('id') === "New" || this.route.snapshot.paramMap.get('id') === "1")
-      this._currentUser.group.rightGroupPage.SelectedUserManagement_DeleteUser = false; //Pour enlever le bouton supprimer
-  }
-
-  private getUserById(): void {
-    if(this.route.snapshot.paramMap.get('id') !== "New")
       this.user = new User(this.userApi.getUserById(Number(this.route.snapshot.paramMap.get('id'))));
-  }
+      if(this.initial_user.group.name === this.initial_user.login)
+        this.MsgGroupPerso = "Groupe personnel de droit";
+    } else 
+      this.user = new User(this.userApi.getUserById(1));
 
-  private getGroupList(): void {
-    if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser)
-      this.GroupList = this.groupApi.getGroupList();
-  }
+    // Si on modifie un utilisateur ou que l'on edite l'utilisateur par defaut, on enlève le bouton supprimer
+    if(this.route.snapshot.paramMap.get('id') === "New" || this.route.snapshot.paramMap.get('id') === "1")
+      this._currentUser.group.rightGroupPage.SelectedUserManagement_DeleteUser = false;
 
-  private getRightGroupPageList(): void {
+    // Récupération de la liste des groupes
+    this.GroupList = this.groupApi.getGroupList();
+
+    // Récupération de la liste des groupes de droit de pages
     this.RightGroupPageList = this.rightGroupPageApi.getRightGroupPageList();
-  }
 
-  private setRightEditSelected(idd: any): void {
-    this.change_defaut_rightGroupPage = false;
-    var value = "" + idd;
-    var id: number = Number(value.split(":")[0]);
-    this.user.group.rightGroupPage = this.RightGroupPageList[id];
+    // Supprime de la liste les groupes perso (autre que celui en cours) et remplace le nom du groupe perso du user actuel par son login
+    var GroupList: Group[] = [];
+    for(var i: number = 0; i < this.GroupList.length; i++) {
+      if(this.GroupList[i].name.split('_')[1] === "user") {
+        if(Number(this.GroupList[i].name.split('_')[2]) === this.user.id) {
+          this.GroupList[i].name = this.user.login;
+          GroupList.push(this.GroupList[i]);
+        }
+      } else
+        GroupList.push(this.GroupList[i]);
+    }
+    this.GroupList = GroupList;
+
+    // Remplace le nom des groupe de droit perso (_user_:id) par le login de ce meme user
+    var RightGroupPageList: RightGroupPage[] = [];
+    for(var i: number = 0; i < this.RightGroupPageList.length; i++) {
+      if(this.RightGroupPageList[i].name.split('_')[1] === "user") {
+        if(Number(this.RightGroupPageList[i].name.split('_')[2]) === this.user.id) {
+          this.RightGroupPageList[i].name = this.user.login;
+          RightGroupPageList.push(this.RightGroupPageList[i]);
+        }
+      } else
+      RightGroupPageList.push(this.RightGroupPageList[i]);
+    }
+    this.RightGroupPageList = RightGroupPageList;
+
+    // Initialisation des données à afficher dans le formulaire
     this.initData();
   }
 
-  private setGroupSelected(idd: any): void {
-    if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser) {
-      this._RightEdit = true;
-      var value = "" + idd;
-      var id: number = Number(value.split(":")[0]);
-      this.user.group = this.GroupList[id];
-      this.initData();
+  // Permet de changer la valeur du groupe de droit de page de l'utilisateur par celui séléctionné (change l'object)
+  private setRightGroupPageSelected(id: any, value: any): void {
+    // On Met dans l'object user les données que l'on a deja rentré
+    value.date_time_logIn = value.date_logIn + " " + value.time_logIn;
+    value.date_time_signIn = value.date_signIn + " " + value.time_signIn;
+    this.user = new User(value);
 
-      if(this.GroupList[id].name === this.user.login)
-        this.MsgGroupPerso = "Groupe personnel de droit";
-      else
-        this.MsgGroupPerso = null;
-    } else
-      console.log("Vous n'avez pas la permission pour effectuer cette action");
+    this.user.group.rightGroupPage = this.RightGroupPageList[Number(id.split(":")[0])];
+
+    // Initialisation des données à afficher dans le formulaire
+    this.initData();
+  }
+
+  // Permet de changer la valeur du groupe de l'utilisateur par celui séléctionné (change l'object)
+  private setGroupSelected(id: any, value: any): void {
+    // Permet de déplier la liste avec les different droit par page
+    this._RightEdit = true;
+
+    // On Met dans l'object user les données que l'on a deja rentré
+    value.date_time_logIn = value.date_logIn + " " + value.time_logIn;
+    value.date_time_signIn = value.date_signIn + " " + value.time_signIn;
+    this.user = new User(value);
+
+    this.user.group = this.GroupList[Number(id.split(":")[0])];
+    
+    // Affiche en fonction du groupe choisi s'il sagit d'un groupe perso ou non
+    if(this.user.group.name === this.user.login)
+      this.MsgGroupPerso = "Groupe personnel de droit";
+    else
+      this.MsgGroupPerso = null;
+
+    // Initialisation des données à afficher dans le formulaire
+    this.initData();
+  }
+
+  private setRightSelected(value: any, element: any): void {
+    this._ChangeRightPage = true;
+  
+    value.date_time_logIn = value.date_logIn + " " + value.time_logIn;
+    value.date_time_signIn = value.date_signIn + " " + value.time_signIn;
+    this.user = new User(value);
+
+    var rightGroupPage: RightGroupPage = new RightGroupPage(value);
+    rightGroupPage.name = this.initial_user.group.rightGroupPage.name;
+    rightGroupPage.id = this.initial_user.group.rightGroupPage.id;
+
+    // Accueil Page
+    if(element === "Accueil_Access")
+      rightGroupPage.Accueil_Access = !(rightGroupPage.Accueil_Access);
+
+    // Login Page
+    if(element === "Login_Access")
+      rightGroupPage.Login_Access = !(rightGroupPage.Login_Access);
+
+    // MonCompte Page
+    if(element === "MonCompte_Access")
+      rightGroupPage.MonCompte_Access = !(rightGroupPage.MonCompte_Access);
+
+    // SelectedUserManagement Page
+    if(element === "SelectedUserManagement_Access") {
+      if(rightGroupPage.SelectedUserManagement_Access) {
+        rightGroupPage.SelectedUserManagement_DeleteUser = false;
+        rightGroupPage.SelectedUserManagement_EditRightGroupPageUser = false;
+        rightGroupPage.SelectedUserManagement_EditUser = false;
+        rightGroupPage.SelectedUserManagement_ShowPasswordButton = false;
+        rightGroupPage.SelectedUserManagement_ViewPassword = false;
+        rightGroupPage.UserManagement_AddUser = false;
+        rightGroupPage.UserManagement_EditDefaultUser = false;
+      }
+      rightGroupPage.SelectedUserManagement_Access = !(rightGroupPage.SelectedUserManagement_Access);
+    } else if(element === "SelectedUserManagement_ViewPassword") {
+      if(rightGroupPage.SelectedUserManagement_ViewPassword)
+        rightGroupPage.SelectedUserManagement_ShowPasswordButton = false;
+      rightGroupPage.SelectedUserManagement_ViewPassword = !(rightGroupPage.SelectedUserManagement_ViewPassword);
+    } else if(element === "SelectedUserManagement_ShowPasswordButton") {
+      if(!rightGroupPage.SelectedUserManagement_ShowPasswordButton)
+        rightGroupPage.SelectedUserManagement_ViewPassword = true;
+      rightGroupPage.SelectedUserManagement_ShowPasswordButton = !(rightGroupPage.SelectedUserManagement_ShowPasswordButton);
+    } else if(element === "SelectedUserManagement_EditRightGroupPageUser") {
+      if(!rightGroupPage.SelectedUserManagement_EditRightGroupPageUser)
+        rightGroupPage.SelectedUserManagement_EditUser = true;
+      rightGroupPage.SelectedUserManagement_EditRightGroupPageUser = !(rightGroupPage.SelectedUserManagement_EditRightGroupPageUser);
+    } else if(element === "SelectedUserManagement_EditUser") {
+      if(rightGroupPage.SelectedUserManagement_EditUser) {
+        rightGroupPage.SelectedUserManagement_EditRightGroupPageUser = false;
+        rightGroupPage.UserManagement_AddUser = false;
+        rightGroupPage.UserManagement_EditDefaultUser = false;
+      }
+      rightGroupPage.SelectedUserManagement_EditUser = !(rightGroupPage.SelectedUserManagement_EditUser);
+    } else if(element === "SelectedUserManagement_DeleteUser")
+      rightGroupPage.SelectedUserManagement_DeleteUser = !(rightGroupPage.SelectedUserManagement_DeleteUser);
+    if(rightGroupPage.SelectedUserManagement_ViewPassword || rightGroupPage.SelectedUserManagement_ShowPasswordButton || 
+      rightGroupPage.SelectedUserManagement_EditRightGroupPageUser || rightGroupPage.SelectedUserManagement_DeleteUser || 
+      rightGroupPage.SelectedUserManagement_EditUser) {
+        rightGroupPage.SelectedUserManagement_Access = true;
+      }
+    
+    // UserManagement Page
+    if(element === "UserManagement_Access") {
+      if(rightGroupPage.UserManagement_Access) {
+        rightGroupPage.UserManagement_AddUser = false;
+        rightGroupPage.UserManagement_EditDefaultUser = false;
+      }
+      rightGroupPage.UserManagement_Access = !(rightGroupPage.UserManagement_Access);
+    } else if(element === "UserManagement_AddUser") {
+      if(!rightGroupPage.UserManagement_AddUser) {
+        rightGroupPage.SelectedUserManagement_Access = true;
+        rightGroupPage.SelectedUserManagement_EditUser = true;
+      }
+      rightGroupPage.UserManagement_AddUser = !(rightGroupPage.UserManagement_AddUser);
+    } else if(element === "UserManagement_EditDefaultUser") {
+      if(!rightGroupPage.UserManagement_EditDefaultUser){
+        rightGroupPage.SelectedUserManagement_Access = true;
+        rightGroupPage.SelectedUserManagement_EditUser = true;
+      }
+      rightGroupPage.UserManagement_EditDefaultUser = !(rightGroupPage.UserManagement_EditDefaultUser);
+    }
+    if(rightGroupPage.UserManagement_AddUser || rightGroupPage.UserManagement_EditDefaultUser)
+      rightGroupPage.UserManagement_Access = true;
+
+    // SelectedGroupManagement Page
+    if(element === "SelectedGroupManagement_Access"){
+      if(rightGroupPage.SelectedGroupManagement_Access) {
+        rightGroupPage.SelectedGroupManagement_EditGroup = false;
+        rightGroupPage.SelectedGroupManagement_DeleteGroup = false;
+        rightGroupPage.SelectedGroupManagement_EditRightPage = false;
+        rightGroupPage.GroupManagement_AddGroup = false;
+        rightGroupPage.GroupManagement_EditDefaultGroup = false;
+      }
+      rightGroupPage.SelectedGroupManagement_Access = !(rightGroupPage.SelectedGroupManagement_Access);
+    } else if(element === "SelectedGroupManagement_EditGroup") {
+      if(rightGroupPage.SelectedGroupManagement_EditGroup) {
+        rightGroupPage.SelectedGroupManagement_EditRightPage = false;
+        rightGroupPage.GroupManagement_AddGroup = false;
+        rightGroupPage.GroupManagement_EditDefaultGroup = false;
+      }
+      rightGroupPage.SelectedGroupManagement_EditGroup = !(rightGroupPage.SelectedGroupManagement_EditGroup);
+    } else if(element === "SelectedGroupManagement_DeleteGroup")
+      rightGroupPage.SelectedGroupManagement_DeleteGroup = !(rightGroupPage.SelectedGroupManagement_DeleteGroup);
+    else if(element === "SelectedGroupManagement_EditRightPage") {
+      if(!rightGroupPage.SelectedGroupManagement_EditRightPage)
+        rightGroupPage.SelectedGroupManagement_EditGroup = true;
+      rightGroupPage.SelectedGroupManagement_EditRightPage = !(rightGroupPage.SelectedGroupManagement_EditRightPage);
+    }
+    if(rightGroupPage.SelectedGroupManagement_DeleteGroup || rightGroupPage.SelectedGroupManagement_EditGroup ||
+      rightGroupPage.SelectedGroupManagement_EditRightPage)
+      rightGroupPage.SelectedGroupManagement_Access = true;
+    
+    // GroupManagement Page
+    if(element === "GroupManagement_Access") {
+      if(rightGroupPage.GroupManagement_Access) {
+        rightGroupPage.GroupManagement_AddGroup = false;
+        rightGroupPage.GroupManagement_EditDefaultGroup = false;
+      }
+      rightGroupPage.GroupManagement_Access = !(rightGroupPage.GroupManagement_Access);
+    } else if(element === "GroupManagement_AddGroup") {
+      if(!rightGroupPage.GroupManagement_AddGroup) {
+        rightGroupPage.SelectedGroupManagement_Access = true;
+        rightGroupPage.SelectedGroupManagement_EditGroup = true;
+      }
+      rightGroupPage.GroupManagement_AddGroup = !(rightGroupPage.GroupManagement_AddGroup);
+    } else if(element === "GroupManagement_EditDefaultGroup") {
+      if(!rightGroupPage.GroupManagement_EditDefaultGroup) {
+        rightGroupPage.SelectedGroupManagement_Access = true;
+        rightGroupPage.SelectedGroupManagement_EditGroup = true;
+      }
+      rightGroupPage.GroupManagement_EditDefaultGroup = !(rightGroupPage.GroupManagement_EditDefaultGroup);
+    }
+    if(rightGroupPage.GroupManagement_AddGroup || rightGroupPage.GroupManagement_EditDefaultGroup)
+      rightGroupPage.GroupManagement_Access = true;
+      
+    // EditBar
+    if(element === "EditBar_Dev")
+      rightGroupPage.EditBar_Dev = !(rightGroupPage.EditBar_Dev);
+    if(rightGroupPage.SelectedGroupManagement_Access || rightGroupPage.SelectedUserManagement_Access ||
+      rightGroupPage.UserManagement_Access || rightGroupPage.GroupManagement_Access)
+      rightGroupPage.EditBar_Edit = true;
+    if(!rightGroupPage.SelectedGroupManagement_Access && !rightGroupPage.SelectedUserManagement_Access &&
+      !rightGroupPage.UserManagement_Access && !rightGroupPage.GroupManagement_Access)
+      rightGroupPage.EditBar_Edit = false;
+
+    if(rightGroupPage.EditBar_Dev || rightGroupPage.EditBar_Edit)
+      rightGroupPage.EditBar_Access = true;
+    if(!rightGroupPage.EditBar_Dev && !rightGroupPage.EditBar_Edit)
+      rightGroupPage.EditBar_Access = false;
+
+    // Main Page
+    if(rightGroupPage.Accueil_Access || rightGroupPage.Login_Access || rightGroupPage.MonCompte_Access || 
+      rightGroupPage.EditBar_Access || rightGroupPage.SelectedUserManagement_Access || rightGroupPage.UserManagement_Access ||
+      rightGroupPage.SelectedGroupManagement_Access || rightGroupPage.GroupManagement_Access)
+      rightGroupPage.Main_Access = true;
+    if(!rightGroupPage.Accueil_Access && !rightGroupPage.Login_Access && !rightGroupPage.MonCompte_Access && 
+      !rightGroupPage.EditBar_Access && !rightGroupPage.SelectedUserManagement_Access && !rightGroupPage.UserManagement_Access &&
+      !rightGroupPage.SelectedGroupManagement_Access && !rightGroupPage.GroupManagement_Access)
+      rightGroupPage.Main_Access = false;
+
+    // On definit le group de droit de page de l'utilisateur par celui que l'on vient de créer et modifier
+    this.user.group.rightGroupPage = rightGroupPage;
+
+    // Initialisation des données à afficher dans le formulaire
+    this.initData();
+
+    this.SelectedUserManagementForm.get('EditBar_Edit').disable();
+    this.SelectedUserManagementForm.get('EditBar_Access').disable();
+    this.SelectedUserManagementForm.get('Main_Access').disable();
   }
 
   private initData(): void {
@@ -144,6 +319,7 @@ export class SelectedUserManagementComponent implements OnInit {
       'statut': this.user.statut,
       'login' : this.user.login,
       'password' : this.user.password,
+      'profile': this.user.profile,
       'date_signIn' : this.user.date_time_signIn.split(' ')[0],
       'time_signIn' : this.user.date_time_signIn.split(' ')[1],
       'date_logIn' : this.user.date_time_logIn.split(' ')[0],
@@ -177,110 +353,120 @@ export class SelectedUserManagementComponent implements OnInit {
       'SelectedGroupManagement_EditRightPage' : this.user.group.rightGroupPage.SelectedGroupManagement_EditRightPage,
       'EditBar_Dev' : this.user.group.rightGroupPage.EditBar_Dev,
       'EditBar_Edit' : this.user.group.rightGroupPage.EditBar_Edit
-      //'EditBar_Edit' : 
     });
 
-    if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser) {
-      var index: number = this.GroupList.findIndex(d => d.id === this.user.group.id);
-      this.SelectedUserManagementForm.get('group').setValue(this.GroupList[index]);
-
-      if(this.route.snapshot.paramMap.get('id') !== "New") {
-        if(this.initial_user.group.rightGroupPage.name.split('_')[1] === "user" && this.user.group.rightGroupPage.name.split('_').length === 1) {
-          this.MsgGroupDelete = "En séléctionnant un group prédefinit, vous allez supprimer le groupe personnalisé de l'utiliateur";
-        } else {
-          this.MsgGroupDelete = null;
-        }
-      }
+    // On Bloque la modification du groupe et du login pour l'utilisateur par defaut
+    if(Number(this.route.snapshot.paramMap.get('id')) === 1) {
+      this.SelectedUserManagementForm.get('group').disable();
+      this.SelectedUserManagementForm.get('login').disable();
     }
 
-    var index = this.RightGroupPageList.findIndex(d => d.id === this.user.group.rightGroupPage.id);
-    this.SelectedUserManagementForm.get('rightGroupPage').setValue(this.RightGroupPageList[index]);
+    // Definit quelle groupe est a séléctionner par defaut dans la liste des groupes
+    this.SelectedUserManagementForm.get('group').setValue(this.GroupList[this.GroupList.findIndex(d => d.id === this.user.group.id)]);
 
-    if(!this._currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser) {
-      this.SelectedUserManagementForm.disable();
-      this.SelectedUserManagementForm.get('id').enable();
-      this.SelectedUserManagementForm.get('statut').enable();
-      this.SelectedUserManagementForm.get('login').enable();
-      this.SelectedUserManagementForm.get('password').enable();
-      this.SelectedUserManagementForm.get('date_signIn').enable();
-      this.SelectedUserManagementForm.get('time_signIn').enable();
-      this.SelectedUserManagementForm.get('date_logIn').enable();
-      this.SelectedUserManagementForm.get('time_logIn').enable();
-      this.SelectedUserManagementForm.get('gameTag').enable();
-      this.SelectedUserManagementForm.get('name').enable();
-      this.SelectedUserManagementForm.get('firstName').enable();
-      this.SelectedUserManagementForm.get('birthDate').enable();
-      this._RightEdit = true;
+    // Definit quelle groupe de droit de page a selectionner par defaut dans la liste de groupes de droit de page
+    this.SelectedUserManagementForm.get('rightGroupPage').setValue(this.RightGroupPageList[this.RightGroupPageList.findIndex(d => d.id === this.user.group.rightGroupPage.id)]);
+
+    // On indique a l'administrateur que si il selectionne un autre groupe que le groupe perso du user, que le groupe perso sera supprimé
+    if(this.initial_user.group.name.split('_')[1] === "user" && Number(this.initial_user.group.name.split('_')[2]) === this.initial_user.id) {
+      if(this.user.group.name === this.initial_user.login || Number(this.user.group.name.split('_')[2]) === this.initial_user.id)
+        this.MsgGroupDelete = null;
+      else
+        this.MsgGroupDelete = "En séléctionnant un group prédefinit, vous allez supprimer le groupe personnalisé de l'utiliateur";
     }
+    
+    // if(!this._currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser) {
+    //   this.SelectedUserManagementForm.disable();
+    //   this.SelectedUserManagementForm.get('id').enable();
+    //   this.SelectedUserManagementForm.get('statut').enable();
+    //   this.SelectedUserManagementForm.get('login').enable();
+    //   this.SelectedUserManagementForm.get('password').enable();
+    //   this.SelectedUserManagementForm.get('date_signIn').enable();
+    //   this.SelectedUserManagementForm.get('time_signIn').enable();
+    //   this.SelectedUserManagementForm.get('date_logIn').enable();
+    //   this.SelectedUserManagementForm.get('time_logIn').enable();
+    //   this.SelectedUserManagementForm.get('gameTag').enable();
+    //   this.SelectedUserManagementForm.get('name').enable();
+    //   this.SelectedUserManagementForm.get('firstName').enable();
+    //   this.SelectedUserManagementForm.get('birthDate').enable();
+    //   this._RightEdit = true;
+    // }
   }
 
   private ChangeRightEdit(): void {
-    if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser)
-      this._RightEdit = !(this._RightEdit);
-    else 
-      console.log("Vous n'avez pas la permission pour effectuer cette action");
+    this._RightEdit = !(this._RightEdit);
   }
 
   private editUse(post: any): void {
-    if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditUser || this._currentUser.group.rightGroupPage.UserManagement_AddUser || this._currentUser.group.rightGroupPage.UserManagement_EditDefaultUser) {
-      if(this.route.snapshot.paramMap.get('id') === "New") {
-
-        post.date_time_logIn = post.date_logIn + " " + post.time_logIn;
-        post.date_time_signIn = post.date_signIn + " " + post.time_signIn;
-    
-        this.user = new User(post);
-        this.user.id = 1;
+    if(this.route.snapshot.paramMap.get('id') === "New") {
+      post.date_time_logIn = post.date_logIn + " " + post.time_logIn;
+      post.date_time_signIn = post.date_signIn + " " + post.time_signIn;
   
-        this.userApi.postUser(this.user);
-        this.router.navigate(['/UserManagement']);
-      } else {
-        post.date_time_logIn = post.date_logIn + " " + post.time_logIn;
-        post.date_time_signIn = post.date_signIn + " " + post.time_signIn;
-    
-        this.user = new User(post);
-    
-        if(this.initial_user.group.rightGroupPage.name.split('_')[1] === "user" && this.change_defaut_rightGroupPage && this._currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser) {
-          console.log("modification du groupe perso de d'utilisateur");
-          var rightGroupPage: RightGroupPage = new RightGroupPage(post);
-          rightGroupPage.id = this.initial_user.group.rightGroupPage.id,
-          rightGroupPage.name = this.initial_user.group.rightGroupPage.name;
-          this.rightGroupPageApi.putRightGroupPage(this.initial_user.group.rightGroupPage.id, rightGroupPage);
-        }
-        if(this.change_defaut_rightGroupPage && this.initial_user.group.rightGroupPage.name.split('_')[1] !== "user" && this._currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser) {
-          console.log("Nouveau groupe perso pour l'utilisateur");
-    
-          var index = this.RightGroupPageList.findIndex(d => d.name === "_user_" + this.initial_user.id);
-          if(index === -1) {
-            var rightGroupPage: RightGroupPage = new RightGroupPage(post);
-            rightGroupPage.id = 1,
-            rightGroupPage.name = "_user_" + this.initial_user.id;
-            this.rightGroupPageApi.postRightGroupPage(rightGroupPage);
-          }
-    
-          index = this.GroupList.findIndex(d => d.name === "_user_" + this.initial_user.id);
-          if(index === -1) {
-            var group: Group = new Group(null);
-            group.id = 1;
-            group.name = "_user_" + this.initial_user.id;
-            group.rightGroupPage = rightGroupPage;
-            this.groupApi.postGroup(group);
-          }
-    
-          this.user.group = group;
-        }
-        if(this.user.group.rightGroupPage.name.split('_')[1] !== "user" && this.initial_user.group.rightGroupPage.name.split('_')[1] === "user") {
-          console.log("Attribution d'un group générique à l'utilisateur");
-          this.groupApi.deleteGroup(this.initial_user.group.id);
-          this.rightGroupPageApi.deleteRightGroupPage(this.initial_user.group.rightGroupPage.id);
-        }
-  
-        this.userApi.putUser(post.id, this.user);
-        this.router.navigate(['/UserManagement']);
-        if(this.user.id === this._currentUser.id)
-          this.app.logOut();
+      this.user = new User(post);
+      if(this._ChangeRightPage || post.group.name !== post.group.rightGroupPage.name) {
+        this.user.group = new Group(null);
+        this.user.group.id = 0;
+        this.user.group.rightGroupPage = new RightGroupPage(post);
       }
-    } else
-      console.log("Vous n'avez pas la permission pour effectuer cette action");
+
+      this.userApi.postUser(this.user);
+      this.router.navigate(['/UserManagement']);
+    }
+    else if(Number(this.route.snapshot.paramMap.get('id')) === 1) {
+      post.date_time_logIn = post.date_logIn + " " + post.time_logIn;
+      post.date_time_signIn = post.date_signIn + " " + post.time_signIn;
+
+      this.user = new User(post);
+      this.user.id = 1;
+      this.user.login = "default";
+      this.user.group = new Group(null);
+      this.user.group.id = 1;
+      this.user.group.name = "default";
+      this.user.group.rightGroupPage = new RightGroupPage(post);
+      this.user.group.rightGroupPage.id = 1;
+      this.user.group.rightGroupPage.name = "default";
+
+      this.userApi.putUser(1, this.user);
+      this.router.navigate(['/UserManagement']);
+    } else {
+      post.date_time_logIn = post.date_logIn + " " + post.time_logIn;
+      post.date_time_signIn = post.date_signIn + " " + post.time_signIn;
+
+      this.user = new User(post);
+
+      if(this.initial_user.group.name.split('_').length === 1) {
+        if(this._ChangeRightPage || post.group.name !== post.group.rightGroupPage.name) {
+          this.user.group = post.group;
+          this.user.group.rightGroupPage = post.group.rightGroupPage;
+          this.user.group.rightGroupPage.name = "_user_"+this.user.id;
+          this.rightGroupPageApi.postRightGroupPage(this.user.group.rightGroupPage);
+          this.user.group.name = "_user_"+this.user.id;
+          this.groupApi.postGroup(this.user.group);
+        } else if(this.initial_user.group.name !== post.group.name) {
+          this.user.group = post.group;
+        } else {
+          this.user.group = this.initial_user.group;
+        }
+      } else {
+        if(post.group.name !== this.initial_user.login) {
+          this.user.group = post.group;
+          this.rightGroupPageApi.deleteRightGroupPage(this.initial_user.group.rightGroupPage.id);
+          this.groupApi.deleteGroup(this.initial_user.group.id);
+        } else {
+          if(this._ChangeRightPage || (Number(post.group.rightGroupPage.name.split('_')[2]) !== this.initial_user.id && post.group.rightGroupPage.name !== this.initial_user.login) && post.group.name === this.initial_user.login) {
+            this.user.group.rightGroupPage = post.group.rightGroupPage;
+            this.rightGroupPageApi.putRightGroupPage(this.initial_user.group.rightGroupPage.id, this.user.group.rightGroupPage);
+          } else {
+            this.user.group = this.initial_user.group;
+          }
+        }
+      }
+    }
+
+    this.userApi.putUser(this.initial_user.id, this.user);
+    this.router.navigate(['/UserManagement']);
+    if(this.user.id === this._currentUser.id)
+      this.app.logOut();
   }
 
   private showPassword(): void {

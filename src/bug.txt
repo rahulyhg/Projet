@@ -65,3 +65,5 @@ Pour les page ou il est necessaire d'etre connecter, verifier si le current user
 creer un dossier Api
 => un fichier bdd.ts ou dedans on vient simuler la base de données avec toutes les tablde dedans (USER, GROUP ....)
 => le fichier Data.ts renomé en Api.ts ou l'on va venir faire les traietemnt des données à revoyer à l'application
+
+Faire la vérification des format de données (comme pour les @GameTag ou il y pas d'espace)

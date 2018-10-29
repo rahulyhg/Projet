@@ -3,6 +3,7 @@ body {
   color: #000;
       user-select: none;
           text-align: justify;
+          cursor: default;
 }
 
 li, ul, a {
@@ -554,4 +555,8 @@ margin-top: 60px;
   .edit_page_gauche label {
     font-weight: bold;
     margin-bottom: 20px;
+  }
+
+  .disabledCheck {
+    color: #888;
   }
