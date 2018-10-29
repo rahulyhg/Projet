@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
-import { Data } from './Data';
+import { Data } from './Api/Api';
 import { RouterModule, Routes } from '@angular/router';
 import { FileDropModule } from 'ngx-file-drop';
 
@@ -18,7 +18,7 @@ import { UserManagementComponent } from './user-management/user-management.compo
 import { SelectedUserManagementComponent } from './selected-user-management/selected-user-management.component';
 import { GroupManagementComponent } from './group-management/group-management.component';
 import { SelectedGroupManagementComponent } from './selected-group-management/selected-group-management.component';
-import { HighlightDirective } from './highlight.directive';
+import { HighlightDirective } from './Services/highlight.directive';
 import { PageManagementComponent } from './page-management/page-management.component';
 import { SelectedPageManagementComponent } from './selected-page-management/selected-page-management.component';
 

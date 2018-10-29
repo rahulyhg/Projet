@@ -5,13 +5,13 @@ import { UploadEvent, FileSystemFileEntry } from '../../../node_modules/ngx-file
 
 import { AppComponent } from '../app.component';
 
-import { User } from '../User/User';
-import { Group } from '../Group/Group';
-import { RightGroupPage } from '../RightGroupPage/RightGroupPage';
+import { User } from '../Class/User';
+import { Group } from '../Class/Group';
+import { RightGroupPage } from '../Class/RightGroupPage';
 
-import { UserService } from '../User/user.service';
-import { GroupService } from '../Group/group.service';
-import { RightGroupPageService } from '../RightGroupPage/RightGroupPage.service';
+import { UserService } from '../Services/user.service';
+import { GroupService } from '../Services/group.service';
+import { RightGroupPageService } from '../Services/RightGroupPage.service';
 
 @Component({
   templateUrl: './selected-group-management.component.html'

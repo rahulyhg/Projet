@@ -3,10 +3,10 @@ import { Router } from "@angular/router";
 
 import { AppComponent } from '../app.component';
 
-import { Page } from '../Page/Page';
-import { User } from '../User/User';
+import { Page } from '../Class/Page';
+import { User } from '../Class/User';
 
-import { PageService } from '../Page/page.service';
+import { PageService } from '../Services/page.service';
 
 @Component({
   templateUrl: './page-management.component.html',

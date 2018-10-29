@@ -1,12 +1,10 @@
-import { Group } from './Group/Group'; 
-import { User } from './User/User'; 
-import { RightGroupPage } from './RightGroupPage/RightGroupPage'; 
-import { Page } from './Page/Page';
+import { Group } from '../Class/Group'; 
+import { User } from '../Class/User'; 
+import { RightGroupPage } from '../Class/RightGroupPage'; 
+import { Page } from '../Class/Page';
+import { Upload } from '../Class/Upload';
 
-import { USER } from './User/UserData';
-import { GROUP } from './Group/GroupData';
-import { RIGHTGROUPPAGE } from './RightGroupPage/RightGroupPageData';
-import { PAGE } from './Page/PageData';
+import { USER, GROUP, RIGHTGROUPPAGE, PAGE, UPLOAD } from './Bdd';
 
 interface Api {
   api: boolean;
@@ -14,18 +12,19 @@ interface Api {
   ErrorMsg: string;
   data: Object[];
 }
-
 export class Data {
   private user: User[];
   private group: Group[];
   private rightGroupPage: RightGroupPage[];
   private page: Page[]
+  private upload: Upload[];
 
   constructor() {
     this.rightGroupPage = RIGHTGROUPPAGE;
     this.group = GROUP;
     this.user = USER;
     this.page = PAGE;
+    this.upload = UPLOAD;
   }
 
   // --------------------- USER ---------------------
@@ -523,6 +522,125 @@ export class Data {
     }
     return JSON.stringify(api);
   }
+  // --------------------- UPLOAD ---------------------
+  // ------- GET ---------
+
+  public getUploadById(id: number): string {
+    var ErrorMsg: string = null;
+
+    if(id !== null && id !== undefined && id !== 0) {
+      var index: number = this.upload.findIndex(d => d.id === id);
+      var upload_return: Upload = new Upload(null);
+
+      if(index !== -1)
+        upload_return = this.upload[index];
+      else
+        ErrorMsg = "Index non valide";
+    } else
+      ErrorMsg = "Id non valide";
+
+    var api: Api = {
+      api: true,
+      auth: true,
+      ErrorMsg: ErrorMsg,
+      data: [ upload_return ]
+    }
+    return JSON.stringify(api);
+  }
+
+  public getUpload(): string {
+    var api: Api = {
+      api: true,
+      auth: true,
+      ErrorMsg: null,
+      data: this.upload
+    }
+    return JSON.stringify(api);
+  }
+
+  // ------- PUT ---------
+
+  public putUpload(id: number, upload: Upload): string {
+    var ErrorMsg: string = null;
+
+    if(id !== null && id !== undefined && id !== 0) {
+      if(upload !== null && upload !== undefined) {
+        var index: number = this.upload.findIndex(d => d.id === id);
+        if(index !== -1) {
+          this.upload[index] = upload;
+
+          if(this.upload[index] !== upload)
+            ErrorMsg = "Impossible de mettre à jour l'utilisateur";
+        }
+        else 
+          ErrorMsg = "Index non valide";
+      } else 
+      ErrorMsg = "Upload non valide";
+    } else 
+      ErrorMsg = "Id non valide";
+    
+
+
+    var api: Api = {
+      api: true,
+      auth: true,
+      ErrorMsg: ErrorMsg,
+      data: [ null ]
+    }
+    return JSON.stringify(api);
+  }
+
+  // ------- POST ---------
+
+  public postUpload(upload: Upload): string {
+    var ErrorMsg: string = null;
+
+    if(upload !== null && upload !== undefined) {
+      var l: number = this.upload.length;
+      upload.id = l + 1;
+      this.upload.push(upload);
+    }
+
+    var api: Api = {
+      api: true,
+      auth: true,
+      ErrorMsg: ErrorMsg,
+      data: null
+    }
+    return JSON.stringify(api);
+  }
+
+  // ------- DELETE ---------
+
+  public deleteUpload(id: number): string {
+    var ErrorMsg: string = null;
+
+    if(id !== null && id !== undefined && id !== 0) {
+      var t: number = this.upload.length;
+      if(t !== null && t !== undefined && t !== 0) {
+        var index: number = this.upload.findIndex(d => d.id === id);
+
+        if(index !== null && index !== undefined && index !== -1) {
+          this.upload.splice(index, 1);
+
+          if(t === this.upload.length)
+            ErrorMsg = "Impossible de supprimer l'utilisateur";
+        } else 
+          ErrorMsg = "Index non valide";
+      } else 
+        ErrorMsg = "Index non valide";
+    } else
+      ErrorMsg = "Id non valide";
+
+    var api: Api = {
+      api: true,
+      auth: true,
+      ErrorMsg: ErrorMsg,
+      data: null
+    }
+    return JSON.stringify(api);
+  }
+
   // ------ AUTRE ---------
   // ------ AUTH ---------
 

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 
-import { Data } from '../Data';
+import { Data } from '../Api/Api';
 
-import { RightGroupPage } from './RightGroupPage';
+import { RightGroupPage } from '../Class/RightGroupPage';
 
 interface Api {
   api: boolean;

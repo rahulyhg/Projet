@@ -1,4 +1,4 @@
-import { RightGroupPage } from '../RightGroupPage/RightGroupPage';
+import { RightGroupPage } from './RightGroupPage';
 
 export class Group {
   public id: number;

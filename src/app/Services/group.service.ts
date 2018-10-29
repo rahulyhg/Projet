@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
-import { Group } from './Group';
-import { Data } from '../Data';
+import { Group } from '../Class/Group';
+import { Data } from '../Api/Api';
 
 interface Api {
   api: boolean;

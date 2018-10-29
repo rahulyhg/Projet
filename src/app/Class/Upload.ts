@@ -1,4 +1,4 @@
-import { User } from '../User/User';
+import { User } from './User';
  
 export class Upload {
   public id: number;

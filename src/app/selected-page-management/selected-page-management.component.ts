@@ -6,10 +6,10 @@ import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms'
 
 import { AppComponent } from '../app.component';
 
-import { User } from '../User/User';
-import { Page } from '../Page/Page';
+import { User } from '../Class/User';
+import { Page } from '../Class/Page';
 
-import { PageService } from '../Page/page.service';
+import { PageService } from '../Services/page.service';
 import { from } from 'rxjs';
 
 @Component({

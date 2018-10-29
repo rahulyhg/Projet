@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from "@angular/router";
 import { Title } from '@angular/platform-browser';
 
-import { User } from './User/User';
-import { Page } from './Page/Page';
+import { User } from './Class/User';
+import { Page } from './Class/Page';
 
-import { UserService } from './User/user.service';
-import { PageService } from './Page/page.service';
+import { UserService } from './Services/user.service';
+import { PageService } from './Services/page.service';
 
 @Component({
   selector: 'app-root',
@@ -24,7 +24,6 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    //console.log(this.userApi.test(4));
     this.Init();
     this.getCurrentUser();
   }

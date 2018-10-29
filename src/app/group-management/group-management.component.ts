@@ -3,11 +3,11 @@ import { Router } from "@angular/router";
 
 import { AppComponent } from '../app.component';
 
-import { User } from '../User/User'; 
-import { Group } from '../Group/Group';
+import { User } from '../Class/User'; 
+import { Group } from '../Class/Group';
 
-import { GroupService } from '../Group/group.service';
-import { UserService } from '../User/user.service';
+import { GroupService } from '../Services/group.service';
+import { UserService } from '../Services/user.service';
 
 @Component({
   templateUrl: './group-management.component.html'

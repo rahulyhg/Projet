@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Md5 } from 'ts-md5/dist/md5';
-import { HttpClient } from '@angular/common/http';
 
-import { User } from './User';
-import { Data } from '../Data';
+import { User } from '../Class/User';
+import { Data } from '../Api/Api';
 
 interface Api {
   api: boolean;
@@ -16,7 +15,7 @@ interface Api {
   providedIn: 'root'
 })
 export class UserService {
-  constructor(private data: Data, private http:HttpClient) { }
+  constructor(private data: Data) { }
 
   public getUserById(id: number): User {
     console.log("GET / USER / getUserById");
@@ -59,15 +58,6 @@ export class UserService {
   public postUser(user: User): void {
     console.log("POST / USER / postUser");
     this.InitReponse(JSON.parse(this.data.postUser(user)));
-  }
-
-  public test(id: number): User {
-    console.log("GET / USER / test");
-    var user = new User(null);
-    var d: any = { api: true, auth: true, ErrorMsg: "test", data: []  };
-    this.http.get<Api>('https://dev.kevin-c.fr/api/User/getUserById/' + id).subscribe((data) => { d = data; console.log(data)});;
-    console.log(d);
-    return user;
   }
 
   private InitReponse(api: Api): User[] {

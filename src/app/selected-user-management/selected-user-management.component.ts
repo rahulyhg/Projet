@@ -1,18 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute} from '@angular/router';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { UploadEvent, FileSystemFileEntry } from '../../../node_modules/ngx-file-drop';
+import { FileSystemFileEntry } from '../../../node_modules/ngx-file-drop';
 
 import { AppComponent } from '../app.component';
 
-import { User } from '../User/User';
-import { Group } from '../Group/Group';
-import { RightGroupPage } from '../RightGroupPage/RightGroupPage';
+import { User } from '../Class/User';
+import { Group } from '../Class/Group';
+import { RightGroupPage } from '../Class/RightGroupPage';
 
-import { UserService } from '../User/user.service';
-import { GroupService } from '../Group/group.service';
-import { RightGroupPageService } from '../RightGroupPage/RightGroupPage.service';
+import { UserService } from '../Services/user.service';
+import { GroupService } from '../Services/group.service';
+import { RightGroupPageService } from '../Services/RightGroupPage.service';
+import { UploadService } from '../Services/uploads.service';
 
 @Component({
   templateUrl: './selected-user-management.component.html'
@@ -33,7 +34,7 @@ export class SelectedUserManagementComponent implements OnInit {
   private MsgGroupPerso: string;
 
   constructor(private route: ActivatedRoute, private app: AppComponent, private userApi: UserService, private router: Router,
-    private fb: FormBuilder, private groupApi: GroupService, private rightGroupPageApi: RightGroupPageService, private http: HttpClient) { 
+    private fb: FormBuilder, private groupApi: GroupService, private rightGroupPageApi: RightGroupPageService, private http: HttpClient, private uploadApi: UploadService) { 
       this._currentUser = new User(null);
       this._RightEdit = false;
       this.change_defaut_rightGroupPage = false;
@@ -273,9 +274,6 @@ export class SelectedUserManagementComponent implements OnInit {
           this.rightGroupPageApi.deleteRightGroupPage(this.initial_user.group.rightGroupPage.id);
         }
   
-        if(this.selectedFile !== null && this.selectedFile !== undefined)
-          this.onUpload();
-  
         this.userApi.putUser(post.id, this.user);
         this.router.navigate(['/UserManagement']);
         if(this.user.id === this._currentUser.id)
@@ -304,27 +302,10 @@ export class SelectedUserManagementComponent implements OnInit {
   }
 
   private imageChangeClick(event): void {
-    this.selectedFile = event.target.files[0];
-    this.onUpload();
+    this.user.profile = this.uploadApi.UploadFile(event.target.files[0]);
   }
 
-  private onUpload(): void {
-    var uploadData: FormData = new FormData();
-    var name: string = "profile" + Math.random() * 1000 + ".jpg";
-    uploadData.append('myFile', this.selectedFile, name);
-    this.http.post('https://dev.kevin-c.fr/api/file.php', uploadData, { observe: 'events' })
-    .subscribe(event => {
-      if(event)
-        this.newImage(event, name);
-    });
-  }
-
-  private newImage(ok: any, name: string): void {
-    if(ok.ok)
-      this.user.profile = "https://dev.kevin-c.fr/api/uploads/" + name;
-  }
-
-  public imageChangeDrag(event: UploadEvent): void {
-    (event.files[0].fileEntry as FileSystemFileEntry).file((file: File) => { this.selectedFile = file; this.onUpload(); });
+  public imageChangeDrag(event): void {
+    (event.files[0].fileEntry as FileSystemFileEntry).file((file: File) => { this.user.profile = this.uploadApi.UploadFile(file) });
   }
 }

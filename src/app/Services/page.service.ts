@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Md5 } from 'ts-md5/dist/md5';
 
-import { Page } from './Page';
-import { Data } from '../Data';
+import { Page } from '../Class/Page';
+import { Data } from '../Api/Api';
 
 interface Api {
   api: boolean;
