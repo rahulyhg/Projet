@@ -25,6 +25,7 @@ export class SelectedGroupManagementComponent implements OnInit {
   private group: Group;
   private initial_group: Group;
   private MsgRightGroupPageDelete: string;
+  private PlaceHolder: Group;
 
   constructor(private route: ActivatedRoute, private app: AppComponent, private router: Router,
     private fb: FormBuilder, private groupApi: GroupService, private rightGroupPageApi: RightGroupPageService,private userApi: UserService) { 
@@ -37,6 +38,7 @@ export class SelectedGroupManagementComponent implements OnInit {
       if(this.route.snapshot.paramMap.get('id') !== "New")
         this.initial_group = new Group(this.groupApi.getGroupById(Number(this.route.snapshot.paramMap.get('id'))));
       this.MsgRightGroupPageDelete = null;
+      this.PlaceHolder = null;
     }
 
   ngOnInit(): void { 
@@ -121,6 +123,12 @@ export class SelectedGroupManagementComponent implements OnInit {
       'EditBar_Edit' : new FormControl (this.group.rightGroupPage.EditBar_Edit)
     });
 
+    if(this.route.snapshot.paramMap.get('id') === "New") {
+      this.SelectedGroupManagementForm.get('name').setValue(null);
+
+      this.PlaceHolder = this.group;
+    }
+
     var index = this.RightGroupPageList.findIndex(d => d.id === this.group.rightGroupPage.id);
     this.SelectedGroupManagementForm.get('RightGroupPage').setValue(this.RightGroupPageList[index]);
 
@@ -133,6 +141,8 @@ export class SelectedGroupManagementComponent implements OnInit {
   private NameChange(post: string): void {
     if(this._currentUser.group.rightGroupPage.SelectedGroupManagement_EditRightPage) {
       this.RightGroupPageList[0].name = post;
+      if(post === "")
+        this.RightGroupPageList[0].name = "default";
       this.SelectedGroupManagementForm.get('RightGroupPage').setValue(this.RightGroupPageList[0]);
     }
   }

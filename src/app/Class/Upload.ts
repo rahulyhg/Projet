@@ -1,3 +1,5 @@
+import { isString, isNumber, isBoolean } from 'util';
+
 import { User } from './User';
  
 export class Upload {
@@ -12,32 +14,62 @@ export class Upload {
   constructor(value: any) {
     if(value === null) { value = "" }
 
-    this.id = value.id;
-    if(value.id === null || value.id === undefined || value === "")
-        this.id = 1;
+    this.id = this.setFormatNumber(value.id, value, 1);
+    this.name = this.setFormatString(value.name, value, "default.default");
+    this.path = this.setFormatString(value.path, value, "default/defaultdefault.default");
+    this.uploadDate = this.setFormatString(value.uploadDate, value, "2000-01-01");
+    this.fileOwner = this.setFormat(value.fileOwner, value, new User(null));
+    this.size = this.setFormatNumber(value.size, value, 0);
+    this.extention = this.setFormatString(value.extention, value, ".default");
+  }
 
-    this.name = value.name;
-    if(value.name === null || value.name === undefined || value === "")
-        this.name = "default.default";
+  private setFormatNumber(attirb: any, value: any, defaut: any): number {
+    var ret: number;
+    if(isNumber(attirb))
+      ret = attirb;
+    if(attirb === null || attirb === undefined || attirb === "" || attirb === " " || attirb < 0 || value === "") {
+      if(isNumber(defaut))
+        ret = defaut;
+      else 
+        ret = 1;
+    }
+    return ret;
+  }
 
-    this.path = value.path;
-    if(value.path === null || value.path === undefined || value === "")
-        this.path = "default/defaultdefault.default";
+  private setFormatString(attirb: any, value: any, defaut: any): string {
+    var ret: string;
+    if(isString(attirb))
+      ret = attirb;
+    if(attirb === null || attirb === undefined || attirb === "" || attirb === " " || value === "") {
+      if(isString(defaut))
+        ret = defaut;
+      else 
+        ret = "default";
+    }
+    return ret;
+  }
 
-    this.uploadDate = value.uploadDate;
-    if(value.uploadDate === null || value.uploadDate === undefined || value === "")
-        this.uploadDate = "2000-01-01";
+  private setFormatBoolean(attirb: any, value: any, defaut: any): boolean {
+    var ret: boolean;
+    if((attirb || !attirb) && isBoolean(attirb))  
+      ret = attirb;
+    if(attirb === "0" || attirb === 0)
+      ret = false;
+    if(attirb === "1" || attirb === 1)
+      ret = true;
+    if(attirb === null || attirb === undefined || attirb === "" || attirb === " "  || value === "") {
+      if(isBoolean(defaut))
+        ret = defaut;
+      else 
+        ret = false;
+    }
+    return ret;
+  }
 
-    this.fileOwner = value.fileOwner;
-    if(value.fileOwner === null || value.fileOwner === undefined || value === "")
-        this.fileOwner = new User(null);
-
-    this.size = value.size;
-    if(value.size === null || value.size === undefined || value === "")
-        this.size = 0;
-
-    this.extention = value.extention;
-    if(value.extention === null || value.extention === undefined || value === "")
-        this.extention = ".default";
+  private setFormat(attirb: any, value: any, defaut: any): any {
+    var ret: any = attirb;
+    if(attirb === null || attirb === undefined || value === "")
+      ret = defaut;
+    return ret;
   }
 }

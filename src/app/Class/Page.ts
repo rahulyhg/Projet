@@ -1,32 +1,71 @@
+import { isString, isNumber, isBoolean } from 'util';
+
 export class Page {
   public id: number;
   public title: string;
   public favicon: string;
   public refresh: number;
   public route: string;
+  public needLogIn: boolean;
 
   constructor(value: any) {
     if(value === null) { value = "" }
 
-    this.id = value.id;
-    if(value.id === null || value.id === undefined || value === "")
-      this.id = 1;
+    this.id = this.setFormatNumber(value.id, value, 1);
+    this.title = this.setFormatString(value.title, value, "default");
+    this.favicon = this.setFormatString(value.favicon, value, "assets/uploads/favicon/favicon.ico");
+    this.refresh = this.setFormatNumber(value.refresh, value, 1);
+    this.route = this.setFormatString(value.route, value, "default");
+    this.needLogIn = this.setFormatBoolean(value.needLogIn, value, true);
+  }
 
-    this.title = value.title;
-    if(value.title === null || value.title === undefined || value === "")
-      this.title = "default";
+  private setFormatNumber(attirb: any, value: any, defaut: any): number {
+    var ret: number;
+    if(isNumber(attirb))
+      ret = attirb;
+    if(attirb === null || attirb === undefined || attirb === "" || attirb === " " || attirb < 0 || value === "") {
+      if(isNumber(defaut))
+        ret = defaut;
+      else 
+        ret = 1;
+    }
+    return ret;
+  }
 
-    this.favicon = value.favicon;
-    if(value.favicon === null || value.favicon === undefined || value === "")
-      this.favicon = "assets/uploads/favicon/favicon.ico";
+  private setFormatString(attirb: any, value: any, defaut: any): string {
+    var ret: string;
+    if(isString(attirb))
+      ret = attirb;
+    if(attirb === null || attirb === undefined || attirb === "" || attirb === " " || value === "") {
+      if(isString(defaut))
+        ret = defaut;
+      else 
+        ret = "default";
+    }
+    return ret;
+  }
 
-    this.refresh = value.refresh;
-    if(value.refresh === null || value.refresh === undefined || value === "")
-      this.refresh = 1;
+  private setFormatBoolean(attirb: any, value: any, defaut: any): boolean {
+    var ret: boolean;
+    if((attirb || !attirb) && isBoolean(attirb))  
+      ret = attirb;
+    if(attirb === "0" || attirb === 0)
+      ret = false;
+    if(attirb === "1" || attirb === 1)
+      ret = true;
+    if(attirb === null || attirb === undefined || attirb === "" || attirb === " "  || value === "") {
+      if(isBoolean(defaut))
+        ret = defaut;
+      else 
+        ret = false;
+    }
+    return ret;
+  }
 
-    this.route = value.route;
-    if(value.route === null || value.route === undefined || value === "")
-      this.route = "default";
-
+  private setFormat(attirb: any, value: any, defaut: any): any {
+    var ret: any = attirb;
+    if(attirb === null || attirb === undefined || value === "")
+      ret = defaut;
+    return ret;
   }
 }

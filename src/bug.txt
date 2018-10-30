@@ -4,12 +4,12 @@ Faire en sorte que les utilisateurs puisse modifier les compte (avec les droit d
 
 Voir pour des droit sur autre personne et sur soit meme en fonction des cas
 
-mettre en automatique que si on coche ajouter ou modifier par defaut, que l'on ai acces  au Selected
-=> faire une class a l'event (change) avec en parametre la valeur + sur quelle input on est et dans cette fonction definir toute les dependance
+OK => mettre en automatique que si on coche ajouter ou modifier par defaut, que l'on ai acces  au Selected
+OK => => faire une class a l'event (change) avec en parametre la valeur + sur quelle input on est et dans cette fonction definir toute les dependance
 
 Faire page de Modification de mon compte (la meme que pour voia la page de compte d'une autre personne mise a part le bouton modifier)
 
-séparer en deux group pour group et user (group user)
+OK => (inutile) séparer en deux group pour group et user (group user)
 
 Faire une table avec les parametre globaux du site
 => possibilite de modifier l'interval de refresh
@@ -18,8 +18,8 @@ Faire une table avec les parametre globaux du site
 => image arriere plan
 => apercue de la page d'acceuil avec le <app-root></app-root> dans un div pour afficher la premiere page
 
-Pour la modification des infomration logo et titre dans la barre, mise en place d'un sytem de visionnage instantané sur simulation 
-(genre un screen d'un onglet chrome ou le titre et le logo on rajouté par dessus et ou l'on compte le nombre de caractere du titre pour savoir si on met des '...' a la fin pour pas que ca depasse)
+OK => Pour la modification des infomration logo et titre dans la barre, mise en place d'un sytem de visionnage instantané sur simulation 
+OK => (genre un screen d'un onglet chrome ou le titre et le logo on rajouté par dessus et ou l'on compte le nombre de caractere du titre pour savoir si on met des '...' a la fin pour pas que ca depasse)
 
 Créer un class avec directive pour tout les importation de fichier comme pour les photo de profile (avec drap and drop)
 
@@ -60,7 +60,7 @@ Mettre un fichier valide dans le contructeur de l'object Upload
 OK => Si on supprime un User/Group/page, et que l'on fait page arriere, ca met page par defaut
 OK => Avant de lancer la page, regarder si l'object que l'on veux editer existe
 
-Pour les page ou il est necessaire d'etre connecter, verifier si le current user a le statut en true
+OK => Pour les page ou il est necessaire d'etre connecter, verifier si le current user a le statut en true
 
 OK => creer un dossier Api
 OK => => un fichier bdd.ts ou dedans on vient simuler la base de données avec toutes les tablde dedans (USER, GROUP ....)
@@ -68,6 +68,6 @@ OK => => le fichier Data.ts renomé en Api.ts ou l'on va venir faire les traiete
 
 Faire la vérification des format de données (comme pour les @GameTag ou il y pas d'espace)
 
-mettre place older pour new user / Group
+OK => mettre place older pour new user / Group
 
 OK => le nom de l'image ne s'enregistre pas

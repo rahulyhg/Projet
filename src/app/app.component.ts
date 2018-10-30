@@ -24,12 +24,16 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.Init();
     this.getCurrentUser();
+    this.Init(); 
   }
 
   private Init(): void {
     this._currentPage = this.pageApi.getPageByRoute("/" + this.router.url.split("/")[1]);
+    if(this._currentPage.needLogIn && !this._currentUser.statut) {
+      console.log("Vous devez être connecté pour accedez à cette page");
+      this.router.navigate(['/Accueil']);
+    }
     this.titleService.setTitle( this._currentPage.title );
     
     var linkfav = document.head.querySelector("#favicon");

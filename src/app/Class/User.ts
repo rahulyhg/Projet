@@ -1,3 +1,5 @@
+import { isString, isNumber, isBoolean } from 'util';
+
 import { Group } from './Group'; 
 
 export class User {
@@ -17,57 +19,67 @@ export class User {
   constructor(value: any) {
     if(value === null) { value = "" }
 
-    this.id = value.id;
-    if(value.id === null || value.id === undefined || value === "")
-      this.id = 1;
+    this.id = this.setFormatNumber(value.id, value, 1);
+    this.login = this.setFormatString(value.login, value, "default");
+    this.password = this.setFormatString(value.password, value, "c21f969b5f03d33d43e04f8f136e7682");
+    this.group = this.setFormat(value.group, value, new Group(null));
+    this.profile = this.setFormatString(value.profile, value, "assets/uploads/images/default.jpg");
+    this.statut = this.setFormatBoolean(value.statut, value, false);
+    this.date_time_logIn = this.setFormatString(value.date_time_logIn, value, "2000-01-01 01:01:01");
+    this.date_time_signIn = this.setFormatString(value.date_time_signIn, value, "2000-01-01 01:01:01");
+    this.gameTag = this.setFormatString(value.gameTag, value, "@default");
+    this.name = this.setFormatString(value.name, value, "default");
+    this.firstName = this.setFormatString(value.firstName, value, "default");
+    this.birthDate = this.setFormatString(value.birthDate, value, "2000-01-01");
+  }
 
-    this.login = value.login;
-    if(value.login === null || value.login === undefined || value === "")
-      this.login = "default";
+  private setFormatNumber(attirb: any, value: any, defaut: any): number {
+    var ret: number;
+    if(isNumber(attirb))
+      ret = attirb;
+    if(attirb === null || attirb === undefined || attirb === "" || attirb === " " || attirb < 0 || value === "") {
+      if(isNumber(defaut))
+        ret = defaut;
+      else 
+        ret = 1;
+    }
+    return ret;
+  }
 
-    this.password = value.password;
-    if(value.password === null || value.password === undefined || value === "")
-      this.password = "c21f969b5f03d33d43e04f8f136e7682";
+  private setFormatString(attirb: any, value: any, defaut: any): string {
+    var ret: string;
+    if(isString(attirb))
+      ret = attirb;
+    if(attirb === null || attirb === undefined || attirb === "" || attirb === " " || value === "") {
+      if(isString(defaut))
+        ret = defaut;
+      else 
+        ret = "default";
+    }
+    return ret;
+  }
 
-    this.group = value.group;
-    if(value.group === null || value.group === undefined || value === "")
-      this.group = new Group(null);
+  private setFormatBoolean(attirb: any, value: any, defaut: any): boolean {
+    var ret: boolean;
+    if((attirb || !attirb) && isBoolean(attirb))  
+      ret = attirb;
+    if(attirb === "0" || attirb === 0)
+      ret = false;
+    if(attirb === "1" || attirb === 1)
+      ret = true;
+    if(attirb === null || attirb === undefined || attirb === "" || attirb === " "  || value === "") {
+      if(isBoolean(defaut))
+        ret = defaut;
+      else 
+        ret = false;
+    }
+    return ret;
+  }
 
-    this.profile = value.profile;
-    if(value.profile === null || value.profile === undefined || value === "")
-      this.profile = "assets/uploads/images/default.jpg";
-
-    if(value.statut || !value.statut) 
-      this.statut = value.statut;
-    if(value.statut === "0")
-      this.statut = false;
-    if(value.statut === "1")
-      this.statut = true;
-    if(value.statut === null || value.statut === undefined || value === "")
-      this.statut = false;
-
-    this.date_time_logIn = value.date_time_logIn;
-    if(value.date_time_logIn === null || value.date_time_logIn === undefined || value === "")
-      this.date_time_logIn = "2000-01-01 01:01:01";
-
-    this.date_time_signIn = value.date_time_signIn;
-    if(value.date_time_signIn === null || value.date_time_signIn === undefined || value === "")
-      this.date_time_signIn = "2000-01-01 01:01:01";
-
-    this.gameTag = value.gameTag;
-    if(value.gameTag === null || value.gameTag === undefined || value === "")
-      this.gameTag = "@default";
-
-    this.name= value.name;
-    if(value.name === null || value.name === undefined || value === "")
-      this.name = "default";
-
-    this.firstName = value.firstName;
-    if(value.firstName === null || value.firstName === undefined || value === "")
-      this.firstName = "default";
-
-    this.birthDate = value.birthDate;
-    if(value.birthDate === null || value.birthDate === undefined || value === "")
-      this.birthDate = "2000-01-01";
+  private setFormat(attirb: any, value: any, defaut: any): any {
+    var ret: any = attirb;
+    if(attirb === null || attirb === undefined || value === "")
+      ret = defaut;
+    return ret;
   }
 }
