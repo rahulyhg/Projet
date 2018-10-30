@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Injectable } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { FileSystemFileEntry } from '../../../node_modules/ngx-file-drop';
+import { HttpClient } from '@angular/common/http';
 
 import { AppComponent } from '../app.component';
 
@@ -13,7 +14,6 @@ import { UserService } from '../Services/user.service';
 import { GroupService } from '../Services/group.service';
 import { RightGroupPageService } from '../Services/RightGroupPage.service';
 import { UploadService } from '../Services/uploads.service';
-import { element } from '@angular/core/src/render3/instructions';
 
 @Component({
   templateUrl: './selected-user-management.component.html'
@@ -22,16 +22,15 @@ export class SelectedUserManagementComponent implements OnInit {
   public _currentUser: User;
   private _RightEdit: boolean;
   private _ChangeRightPage: boolean;
-  private UserList: User[];
   private RightGroupPageList: RightGroupPage[];
   private GroupList: Group[];
-  private post: any;
   private SelectedUserManagementForm: FormGroup;
   private user: User;
   private initial_user: User;
   private isPassword: boolean;
   private MsgGroupDelete: string;
   private MsgGroupPerso: string;
+  private PlaceHolder: User;
 
   constructor(private route: ActivatedRoute, private app: AppComponent, private userApi: UserService, private router: Router,
     private fb: FormBuilder, private groupApi: GroupService, private rightGroupPageApi: RightGroupPageService, private uploadApi: UploadService) { 
@@ -40,7 +39,6 @@ export class SelectedUserManagementComponent implements OnInit {
       this._ChangeRightPage = false;
       this.RightGroupPageList = null;
       this.GroupList = null;
-      this.post = null;
       this.SelectedUserManagementForm = null;
       this.user = new User(null);
       var id: number = 2;
@@ -49,7 +47,7 @@ export class SelectedUserManagementComponent implements OnInit {
       this.isPassword = true;
       this.MsgGroupDelete = null;
       this.MsgGroupPerso = null;
-      this.UserList = null;
+      this.PlaceHolder = new User(null);
     }
 
   ngOnInit(): void { 
@@ -65,6 +63,10 @@ export class SelectedUserManagementComponent implements OnInit {
         this.MsgGroupPerso = "Groupe personnel de droit";
     } else 
       this.user = new User(this.userApi.getUserById(1));
+
+    // On verifit que l'utilisateur que l'on veut editer existe reellement
+    if(this.user.id !== Number(this.route.snapshot.paramMap.get('id')) && this.route.snapshot.paramMap.get('id') !== "New")
+      this.router.navigate(['/UserManagement']);
 
     // Si on modifie un utilisateur ou que l'on edite l'utilisateur par defaut, on enlève le bouton supprimer
     if(this.route.snapshot.paramMap.get('id') === "New" || this.route.snapshot.paramMap.get('id') === "1")
@@ -355,6 +357,16 @@ export class SelectedUserManagementComponent implements OnInit {
       'EditBar_Edit' : this.user.group.rightGroupPage.EditBar_Edit
     });
 
+    if(this.route.snapshot.paramMap.get('id') === "New") {
+      this.SelectedUserManagementForm.get('login').setValue(null);
+      this.SelectedUserManagementForm.get('password').setValue(null);
+      this.SelectedUserManagementForm.get('gameTag').setValue(null);
+      this.SelectedUserManagementForm.get('name').setValue(null);
+      this.SelectedUserManagementForm.get('firstName').setValue(null);
+
+      this.PlaceHolder = this.user;
+    }
+
     // On Bloque la modification du groupe et du login pour l'utilisateur par defaut
     if(Number(this.route.snapshot.paramMap.get('id')) === 1) {
       this.SelectedUserManagementForm.get('group').disable();
@@ -374,7 +386,7 @@ export class SelectedUserManagementComponent implements OnInit {
       else
         this.MsgGroupDelete = "En séléctionnant un group prédefinit, vous allez supprimer le groupe personnalisé de l'utiliateur";
     }
-    
+
     // if(!this._currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser) {
     //   this.SelectedUserManagementForm.disable();
     //   this.SelectedUserManagementForm.get('id').enable();
@@ -461,37 +473,45 @@ export class SelectedUserManagementComponent implements OnInit {
           }
         }
       }
-    }
 
-    this.userApi.putUser(this.initial_user.id, this.user);
+      this.userApi.putUser(this.initial_user.id, this.user);
+      this.router.navigate(['/UserManagement']);
+      if(this.user.id === this._currentUser.id)
+        this.app.logOut();
+    }
+  }
+
+  private showPassword(): void {
+    this.isPassword = !(this.isPassword);
+  }
+
+  private DeleteUser(): void {
+    this.userApi.deleteUser(this.user.id);
+
     this.router.navigate(['/UserManagement']);
     if(this.user.id === this._currentUser.id)
       this.app.logOut();
   }
 
-  private showPassword(): void {
-    if(this._currentUser.group.rightGroupPage.SelectedUserManagement_ShowPasswordButton)
-      this.isPassword = !(this.isPassword);
-    else
-      console.log("Vous n'avez pas la permission pour effectuer cette action");
-  }
-
-  private DeleteUser(): void {
-    if(this._currentUser.group.rightGroupPage.SelectedUserManagement_DeleteUser) {
-      this.userApi.deleteUser(this.user.id);
-
-      this.router.navigate(['/UserManagement']);
-      if(this.user.id === this._currentUser.id)
-        this.app.logOut();
-    } else 
-      console.log("Vous n'avez pas la permission pour effectuer cette action");
-  }
-
   private imageChangeClick(event): void {
-    this.user.profile = this.uploadApi.UploadFile(event.target.files[0]);
+    var name: string = "profile" + Math.random() * 1000 + ".jpg";
+     this.uploadApi.UploadFile(event.target.files[0], name).subscribe(event => {
+      if(event)
+        this.newImage(event, name);
+    });
+  }
+
+  private newImage(ok: any, name: string): void {
+    if(ok.ok)
+      this.user.profile = "https://dev.kevin-c.fr/api/uploads/" + name;
+    this.initData();
   }
 
   public imageChangeDrag(event): void {
-    (event.files[0].fileEntry as FileSystemFileEntry).file((file: File) => { this.user.profile = this.uploadApi.UploadFile(file) });
+    var name: string = "profile" + Math.random() * 1000 + ".jpg";
+    (event.files[0].fileEntry as FileSystemFileEntry).file((file: File) => { this.uploadApi.UploadFile(file, name).subscribe(event => {
+      if(event)
+        this.newImage(event, name);
+    }); });
   }
 }

@@ -20,11 +20,7 @@ interface Api {
   providedIn: 'root'
 })
 export class UploadService {
-    private pathNewFile: string;
-
-  constructor(private data: Data, private http: HttpClient) { 
-      this.pathNewFile = "";
-  }
+  constructor(private data: Data, private http: HttpClient) { }
 
   public getUploadById(id: number): Upload {
     console.log("GET / UPLOAD / getUploadById");
@@ -59,23 +55,10 @@ export class UploadService {
     this.InitReponse(JSON.parse(this.data.postUpload(upload)));
   }
 
-  public UploadFile(file: File): string {
+  public UploadFile(file: File, name: string) {
     var uploadData: FormData = new FormData();
-    var name: string = "profile" + Math.random() * 1000 + ".jpg";
     uploadData.append('myFile', file, name);
-    this.http.post('https://dev.kevin-c.fr/api/file.php', uploadData, { observe: 'events' })
-    .subscribe(event => {
-      if(event)
-        this.newImage(event, name);
-    });
-    
-    return this.pathNewFile;
-  }
-
-  private newImage(ok: any, name: string): void {
-    if(ok.ok)
-      this.pathNewFile = "https://dev.kevin-c.fr/api/uploads/" + name;
-      console.log(this.pathNewFile);
+    return this.http.post('https://dev.kevin-c.fr/api/file.php', uploadData, { observe: 'events' })
   }
 
   private InitReponse(api: Api): Upload[] {

@@ -29,8 +29,8 @@
             </div>
             <div class="Account_content">
                 <ul>
-                    <li>Login : <input type="text" formControlName="login"/></li>
-                    <li *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_ViewPassword">Mot de passe : <input type="{{isPassword ? 'password' : 'text' }}" formControlName="password"/><div *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_ShowPasswordButton" class="button" (click)="showPassword()">Voir le mot de passe</div></li>
+                    <li>Login : <input type="text" formControlName="login" [placeholder]="PlaceHolder.login"/></li>
+                    <li *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_ViewPassword">Mot de passe : <input type="{{isPassword ? 'password' : 'text' }}" formControlName="password" [placeholder]="PlaceHolder.password"/><div *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_ShowPasswordButton" class="button" (click)="showPassword()">Voir le mot de passe</div></li>
                     <li *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser">Group :
                         <select formControlName="group" (change)="setGroupSelected($event.target.value, SelectedUserManagementForm.value)">
                             <option *ngFor="let group of GroupList" [ngValue]="group">{{ group.name}}</option>
@@ -40,10 +40,10 @@
                     <li *ngIf="!_currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser">Group : {{ user.group.name }}</li>
                     <li>Statut de connexion : <input type="checkbox" formControlName="statut"/></li>
                     <li>Date de dernière connexion : <input type="date" formControlName="date_logIn"/><input type="time" formControlName="time_logIn"/></li>
-                    <li>Datse d'Inscription : <input type="date" formControlName="date_signIn"/><input type="time" formControlName="time_signIn"/></li>
-                    <li>Game Tag : <input type="text" formControlName="gameTag"/></li>
-                    <li>Name : <input type="text" formControlName="name"/></li>
-                    <li>FirstName : <input type="text" formControlName="firstName"/></li>
+                    <li>Date d'Inscription : <input type="date" formControlName="date_signIn"/><input type="time" formControlName="time_signIn"/></li>
+                    <li>Game Tag : <input type="text" formControlName="gameTag" [placeholder]="PlaceHolder.gameTag"/></li>
+                    <li>Name : <input type="text" formControlName="name" [placeholder]="PlaceHolder.name"/></li>
+                    <li>FirstName : <input type="text" formControlName="firstName" [placeholder]="PlaceHolder.firstName"/></li>
                     <li>BirthDate : <input type="date" formControlName="birthDate"/></li>
                 </ul>
             </div>

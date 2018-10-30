@@ -57,13 +57,17 @@ dans le SelectedPageManagement, mettre une liste deroulante avec la liste de fic
 
 Mettre un fichier valide dans le contructeur de l'object Upload
 
-Si on supprime un User/Group/page, et que l'on fait page arriere, ca met page par defaut
-Avant de lancer la page, regarder si l'object que l'on veux editer existe
+OK => Si on supprime un User/Group/page, et que l'on fait page arriere, ca met page par defaut
+OK => Avant de lancer la page, regarder si l'object que l'on veux editer existe
 
 Pour les page ou il est necessaire d'etre connecter, verifier si le current user a le statut en true
 
-creer un dossier Api
-=> un fichier bdd.ts ou dedans on vient simuler la base de données avec toutes les tablde dedans (USER, GROUP ....)
-=> le fichier Data.ts renomé en Api.ts ou l'on va venir faire les traietemnt des données à revoyer à l'application
+OK => creer un dossier Api
+OK => => un fichier bdd.ts ou dedans on vient simuler la base de données avec toutes les tablde dedans (USER, GROUP ....)
+OK => => le fichier Data.ts renomé en Api.ts ou l'on va venir faire les traietemnt des données à revoyer à l'application
 
 Faire la vérification des format de données (comme pour les @GameTag ou il y pas d'espace)
+
+mettre place older pour new user / Group
+
+OK => le nom de l'image ne s'enregistre pas
