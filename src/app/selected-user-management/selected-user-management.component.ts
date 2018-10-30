@@ -55,57 +55,76 @@ export class SelectedUserManagementComponent implements OnInit {
     this.app.ngOnInit();
     this._currentUser = this.app._currentUser;
 
-    // Récupération des données de l'utilisateur que l'on va modifier UNIQUEMENT si ce n'est pas la création d'un nouveau user
-    // On indique également si il sagit d'un groupe perso ou pas
-    if(this.route.snapshot.paramMap.get('id') !== "New") {
-      this.user = new User(this.userApi.getUserById(Number(this.route.snapshot.paramMap.get('id'))));
-      if(this.initial_user.group.name === this.initial_user.login)
-        this.MsgGroupPerso = "Groupe personnel de droit";
-    } else 
-      this.user = new User(this.userApi.getUserById(1));
+    // Vérification des droit d'acces a cette page pour _currentUser
+    if(!this._currentUser.group.rightGroupPage.SelectedUserManagement_Access) {
+      console.log("Vous n'avez pas la permission d'accedez à la page de Gestion de cette utilisateur");
+      this.router.navigate(['/Accueil']);
+    }
+    // Vérification des droit d'acces a la création d'un nouveux utilisateur pour _currentUser
+    if(!this._currentUser.group.rightGroupPage.UserManagement_AddUser && this.route.snapshot.paramMap.get('id') === "New") {
+      console.log("Vous n'avez pas la permission de creer de nouveau Utilisateur");
+      this.router.navigate(['/Accueil']);
+    }
+    // Vérification des droit d'acces a la modification de l'utilisateur par defaut pour _currentUser
+    if(!this._currentUser.group.rightGroupPage.UserManagement_EditDefaultUser && Number(this.route.snapshot.paramMap.get('id')) === 1) {
+      console.log("Vous n'avez pas la permission de modifier l'utilisateur par defaut");
+      this.router.navigate(['/Accueil']);
+    }
 
-    // On verifit que l'utilisateur que l'on veut editer existe reellement
-    if(this.user.id !== Number(this.route.snapshot.paramMap.get('id')) && this.route.snapshot.paramMap.get('id') !== "New")
-      this.router.navigate(['/UserManagement']);
+    // Vérification des droit pour savoir si l'utilisateur peux recurerer les données
+    if(this._currentUser.group.rightGroupPage.SelectedUserManagement_Access) {
+      // Récupération des données de l'utilisateur que l'on va modifier UNIQUEMENT si ce n'est pas la création d'un nouveau user
+      // On indique également si il sagit d'un groupe perso ou pas
+      if(this.route.snapshot.paramMap.get('id') !== "New") {
+        this.user = new User(this.userApi.getUserById(Number(this.route.snapshot.paramMap.get('id'))));
+        if(this.initial_user.group.name === this.initial_user.login)
+          this.MsgGroupPerso = "Groupe personnel de droit";
+      } else 
+        this.user = new User(this.userApi.getUserById(1));
 
-    // Si on modifie un utilisateur ou que l'on edite l'utilisateur par defaut, on enlève le bouton supprimer
-    if(this.route.snapshot.paramMap.get('id') === "New" || this.route.snapshot.paramMap.get('id') === "1")
-      this._currentUser.group.rightGroupPage.SelectedUserManagement_DeleteUser = false;
+      // On verifit que l'utilisateur que l'on veut editer existe reellement
+      if(this.user.id !== Number(this.route.snapshot.paramMap.get('id')) && this.route.snapshot.paramMap.get('id') !== "New")
+        this.router.navigate(['/UserManagement']);
 
-    // Récupération de la liste des groupes
-    this.GroupList = this.groupApi.getGroupList();
+      // Si on modifie un utilisateur ou que l'on edite l'utilisateur par defaut, on enlève le bouton supprimer
+      if(this.route.snapshot.paramMap.get('id') === "New" || this.route.snapshot.paramMap.get('id') === "1")
+        this._currentUser.group.rightGroupPage.SelectedUserManagement_DeleteUser = false;
 
-    // Récupération de la liste des groupes de droit de pages
-    this.RightGroupPageList = this.rightGroupPageApi.getRightGroupPageList();
+      // Récupération de la liste des groupes
+      this.GroupList = this.groupApi.getGroupList();
 
-    // Supprime de la liste les groupes perso (autre que celui en cours) et remplace le nom du groupe perso du user actuel par son login
-    var GroupList: Group[] = [];
-    for(var i: number = 0; i < this.GroupList.length; i++) {
-      if(this.GroupList[i].name.split('_')[1] === "user") {
-        if(Number(this.GroupList[i].name.split('_')[2]) === this.user.id) {
-          this.GroupList[i].name = this.user.login;
+      // Récupération de la liste des groupes de droit de pages
+      this.RightGroupPageList = this.rightGroupPageApi.getRightGroupPageList();
+
+      // Supprime de la liste les groupes perso (autre que celui en cours) et remplace le nom du groupe perso du user actuel par son login
+      var GroupList: Group[] = [];
+      for(var i: number = 0; i < this.GroupList.length; i++) {
+        if(this.GroupList[i].name.split('_')[1] === "user") {
+          if(Number(this.GroupList[i].name.split('_')[2]) === this.user.id) {
+            this.GroupList[i].name = this.user.login;
+            GroupList.push(this.GroupList[i]);
+          }
+        } else
           GroupList.push(this.GroupList[i]);
-        }
-      } else
-        GroupList.push(this.GroupList[i]);
-    }
-    this.GroupList = GroupList;
+      }
+      this.GroupList = GroupList;
 
-    // Remplace le nom des groupe de droit perso (_user_:id) par le login de ce meme user
-    var RightGroupPageList: RightGroupPage[] = [];
-    for(var i: number = 0; i < this.RightGroupPageList.length; i++) {
-      if(this.RightGroupPageList[i].name.split('_')[1] === "user") {
-        if(Number(this.RightGroupPageList[i].name.split('_')[2]) === this.user.id) {
-          this.RightGroupPageList[i].name = this.user.login;
-          RightGroupPageList.push(this.RightGroupPageList[i]);
-        }
-      } else
-      RightGroupPageList.push(this.RightGroupPageList[i]);
-    }
-    this.RightGroupPageList = RightGroupPageList;
+      // Remplace le nom des groupe de droit perso (_user_:id) par le login de ce meme user
+      var RightGroupPageList: RightGroupPage[] = [];
+      for(var i: number = 0; i < this.RightGroupPageList.length; i++) {
+        if(this.RightGroupPageList[i].name.split('_')[1] === "user") {
+          if(Number(this.RightGroupPageList[i].name.split('_')[2]) === this.user.id) {
+            this.RightGroupPageList[i].name = this.user.login;
+            RightGroupPageList.push(this.RightGroupPageList[i]);
+          }
+        } else
+        RightGroupPageList.push(this.RightGroupPageList[i]);
+      }
+      this.RightGroupPageList = RightGroupPageList;
 
-    // Initialisation des données à afficher dans le formulaire
-    this.initData();
+      // Initialisation des données à afficher dans le formulaire
+      this.initData();
+    }
   }
 
   // Permet de changer la valeur du groupe de droit de page de l'utilisateur par celui séléctionné (change l'object)
@@ -176,6 +195,7 @@ export class SelectedUserManagementComponent implements OnInit {
         rightGroupPage.SelectedUserManagement_ViewPassword = false;
         rightGroupPage.UserManagement_AddUser = false;
         rightGroupPage.UserManagement_EditDefaultUser = false;
+        rightGroupPage.GroupManagement_EditDefaultGroup = false;
       }
       rightGroupPage.SelectedUserManagement_Access = !(rightGroupPage.SelectedUserManagement_Access);
     } else if(element === "SelectedUserManagement_ViewPassword") {
@@ -195,6 +215,7 @@ export class SelectedUserManagementComponent implements OnInit {
         rightGroupPage.SelectedUserManagement_EditRightGroupPageUser = false;
         rightGroupPage.UserManagement_AddUser = false;
         rightGroupPage.UserManagement_EditDefaultUser = false;
+        rightGroupPage.GroupManagement_EditDefaultGroup = false;
       }
       rightGroupPage.SelectedUserManagement_EditUser = !(rightGroupPage.SelectedUserManagement_EditUser);
     } else if(element === "SelectedUserManagement_DeleteUser")
@@ -210,6 +231,7 @@ export class SelectedUserManagementComponent implements OnInit {
       if(rightGroupPage.UserManagement_Access) {
         rightGroupPage.UserManagement_AddUser = false;
         rightGroupPage.UserManagement_EditDefaultUser = false;
+        rightGroupPage.GroupManagement_EditDefaultGroup = false;
       }
       rightGroupPage.UserManagement_Access = !(rightGroupPage.UserManagement_Access);
     } else if(element === "UserManagement_AddUser") {
@@ -222,7 +244,11 @@ export class SelectedUserManagementComponent implements OnInit {
       if(!rightGroupPage.UserManagement_EditDefaultUser){
         rightGroupPage.SelectedUserManagement_Access = true;
         rightGroupPage.SelectedUserManagement_EditUser = true;
-      }
+        rightGroupPage.SelectedGroupManagement_Access = true;
+        rightGroupPage.GroupManagement_EditDefaultGroup = true;
+        rightGroupPage.SelectedGroupManagement_EditGroup = true;
+      } else
+        rightGroupPage.GroupManagement_EditDefaultGroup = false;
       rightGroupPage.UserManagement_EditDefaultUser = !(rightGroupPage.UserManagement_EditDefaultUser);
     }
     if(rightGroupPage.UserManagement_AddUser || rightGroupPage.UserManagement_EditDefaultUser)
@@ -236,6 +262,7 @@ export class SelectedUserManagementComponent implements OnInit {
         rightGroupPage.SelectedGroupManagement_EditRightPage = false;
         rightGroupPage.GroupManagement_AddGroup = false;
         rightGroupPage.GroupManagement_EditDefaultGroup = false;
+        rightGroupPage.UserManagement_EditDefaultUser = false;
       }
       rightGroupPage.SelectedGroupManagement_Access = !(rightGroupPage.SelectedGroupManagement_Access);
     } else if(element === "SelectedGroupManagement_EditGroup") {
@@ -243,6 +270,7 @@ export class SelectedUserManagementComponent implements OnInit {
         rightGroupPage.SelectedGroupManagement_EditRightPage = false;
         rightGroupPage.GroupManagement_AddGroup = false;
         rightGroupPage.GroupManagement_EditDefaultGroup = false;
+        rightGroupPage.UserManagement_EditDefaultUser = false;
       }
       rightGroupPage.SelectedGroupManagement_EditGroup = !(rightGroupPage.SelectedGroupManagement_EditGroup);
     } else if(element === "SelectedGroupManagement_DeleteGroup")
@@ -261,6 +289,7 @@ export class SelectedUserManagementComponent implements OnInit {
       if(rightGroupPage.GroupManagement_Access) {
         rightGroupPage.GroupManagement_AddGroup = false;
         rightGroupPage.GroupManagement_EditDefaultGroup = false;
+        rightGroupPage.UserManagement_EditDefaultUser = false;
       }
       rightGroupPage.GroupManagement_Access = !(rightGroupPage.GroupManagement_Access);
     } else if(element === "GroupManagement_AddGroup") {
@@ -273,7 +302,12 @@ export class SelectedUserManagementComponent implements OnInit {
       if(!rightGroupPage.GroupManagement_EditDefaultGroup) {
         rightGroupPage.SelectedGroupManagement_Access = true;
         rightGroupPage.SelectedGroupManagement_EditGroup = true;
-      }
+        rightGroupPage.UserManagement_Access = true;
+        rightGroupPage.UserManagement_EditDefaultUser = true;
+        rightGroupPage.SelectedUserManagement_Access = true;
+        rightGroupPage.SelectedUserManagement_EditUser = true;
+      } else
+        rightGroupPage.UserManagement_EditDefaultUser = false;
       rightGroupPage.GroupManagement_EditDefaultGroup = !(rightGroupPage.GroupManagement_EditDefaultGroup);
     }
     if(rightGroupPage.GroupManagement_AddGroup || rightGroupPage.GroupManagement_EditDefaultGroup)
@@ -370,7 +404,7 @@ export class SelectedUserManagementComponent implements OnInit {
     // On Bloque la modification du groupe et du login pour l'utilisateur par defaut
     if(Number(this.route.snapshot.paramMap.get('id')) === 1) {
       this.SelectedUserManagementForm.get('group').disable();
-      this.SelectedUserManagementForm.get('login').disable();
+      this.SelectedUserManagementForm.get('rightGroupPage').disable();
     }
 
     // Definit quelle groupe est a séléctionner par defaut dans la liste des groupes
@@ -387,22 +421,22 @@ export class SelectedUserManagementComponent implements OnInit {
         this.MsgGroupDelete = "En séléctionnant un group prédefinit, vous allez supprimer le groupe personnalisé de l'utiliateur";
     }
 
-    // if(!this._currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser) {
-    //   this.SelectedUserManagementForm.disable();
-    //   this.SelectedUserManagementForm.get('id').enable();
-    //   this.SelectedUserManagementForm.get('statut').enable();
-    //   this.SelectedUserManagementForm.get('login').enable();
-    //   this.SelectedUserManagementForm.get('password').enable();
-    //   this.SelectedUserManagementForm.get('date_signIn').enable();
-    //   this.SelectedUserManagementForm.get('time_signIn').enable();
-    //   this.SelectedUserManagementForm.get('date_logIn').enable();
-    //   this.SelectedUserManagementForm.get('time_logIn').enable();
-    //   this.SelectedUserManagementForm.get('gameTag').enable();
-    //   this.SelectedUserManagementForm.get('name').enable();
-    //   this.SelectedUserManagementForm.get('firstName').enable();
-    //   this.SelectedUserManagementForm.get('birthDate').enable();
-    //   this._RightEdit = true;
-    // }
+    if(!this._currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser) {
+      this.SelectedUserManagementForm.disable();
+      this.SelectedUserManagementForm.get('id').enable();
+      this.SelectedUserManagementForm.get('statut').enable();
+      this.SelectedUserManagementForm.get('login').enable();
+      this.SelectedUserManagementForm.get('password').enable();
+      this.SelectedUserManagementForm.get('date_signIn').enable();
+      this.SelectedUserManagementForm.get('time_signIn').enable();
+      this.SelectedUserManagementForm.get('date_logIn').enable();
+      this.SelectedUserManagementForm.get('time_logIn').enable();
+      this.SelectedUserManagementForm.get('gameTag').enable();
+      this.SelectedUserManagementForm.get('name').enable();
+      this.SelectedUserManagementForm.get('firstName').enable();
+      this.SelectedUserManagementForm.get('birthDate').enable();
+      this._RightEdit = true;
+    }
   }
 
   private ChangeRightEdit(): void {
@@ -411,107 +445,142 @@ export class SelectedUserManagementComponent implements OnInit {
 
   private editUse(post: any): void {
     if(this.route.snapshot.paramMap.get('id') === "New") {
-      post.date_time_logIn = post.date_logIn + " " + post.time_logIn;
-      post.date_time_signIn = post.date_signIn + " " + post.time_signIn;
-  
-      this.user = new User(post);
-      if(this._ChangeRightPage || post.group.name !== post.group.rightGroupPage.name) {
-        this.user.group = new Group(null);
-        this.user.group.id = 0;
-        this.user.group.rightGroupPage = new RightGroupPage(post);
-      }
-
-      this.userApi.postUser(this.user);
-      this.router.navigate(['/UserManagement']);
+      if(this._currentUser.group.rightGroupPage.UserManagement_AddUser) {
+        post.date_time_logIn = post.date_logIn + " " + post.time_logIn;
+        post.date_time_signIn = post.date_signIn + " " + post.time_signIn;
+    
+        this.user = new User(post);
+        if(this._ChangeRightPage || post.group.name !== post.group.rightGroupPage.name) {
+          this.user.group = new Group(null);
+          if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser) {
+            this.user.group.id = 0;
+            this.user.group.rightGroupPage = new RightGroupPage(post);
+          }
+        }
+        this.userApi.postUser(this.user);
+        this.router.navigate(['/UserManagement']);
+      } else
+        console.log("Vous n'avez pas la permission de créer un nouvelle utilisateur");
     }
     else if(Number(this.route.snapshot.paramMap.get('id')) === 1) {
-      post.date_time_logIn = post.date_logIn + " " + post.time_logIn;
-      post.date_time_signIn = post.date_signIn + " " + post.time_signIn;
+      if(this._currentUser.group.rightGroupPage.UserManagement_EditDefaultUser) {
+        post.date_time_logIn = post.date_logIn + " " + post.time_logIn;
+        post.date_time_signIn = post.date_signIn + " " + post.time_signIn;
 
-      this.user = new User(post);
-      this.user.id = 1;
-      this.user.login = "default";
-      this.user.group = new Group(null);
-      this.user.group.id = 1;
-      this.user.group.name = "default";
-      this.user.group.rightGroupPage = new RightGroupPage(post);
-      this.user.group.rightGroupPage.id = 1;
-      this.user.group.rightGroupPage.name = "default";
+        this.user = new User(post);
+        this.user.id = 1;
+        this.user.login = "default";
+        this.user.group = new Group(null);
 
-      this.userApi.putUser(1, this.user);
-      this.router.navigate(['/UserManagement']);
+        if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser) {
+          this.user.group.id = 1;
+          this.user.group.name = "default";
+          this.user.group.rightGroupPage = new RightGroupPage(post);
+          this.user.group.rightGroupPage.id = 1;
+          this.user.group.rightGroupPage.name = "default";
+
+          this.rightGroupPageApi.putRightGroupPage(1, this.user.group.rightGroupPage);
+          this.groupApi.putGroup(this.user.group.id, this.user.group);
+        }
+
+        this.userApi.putUser(1, this.user);
+        this.router.navigate(['/UserManagement']);
+      } else
+        console.log("Vous n'avez pas la permission de créer un nouvelle utilisateur");
     } else {
-      post.date_time_logIn = post.date_logIn + " " + post.time_logIn;
-      post.date_time_signIn = post.date_signIn + " " + post.time_signIn;
+      if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditUser) {
+        post.date_time_logIn = post.date_logIn + " " + post.time_logIn;
+        post.date_time_signIn = post.date_signIn + " " + post.time_signIn;
+  
+        this.user = new User(post);
 
-      this.user = new User(post);
-
-      if(this.initial_user.group.name.split('_').length === 1) {
-        if(this._ChangeRightPage || post.group.name !== post.group.rightGroupPage.name) {
-          this.user.group = post.group;
-          this.user.group.rightGroupPage = post.group.rightGroupPage;
-          this.user.group.rightGroupPage.name = "_user_"+this.user.id;
-          this.rightGroupPageApi.postRightGroupPage(this.user.group.rightGroupPage);
-          this.user.group.name = "_user_"+this.user.id;
-          this.groupApi.postGroup(this.user.group);
-        } else if(this.initial_user.group.name !== post.group.name) {
-          this.user.group = post.group;
+        if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser) {
+          if(this.initial_user.group.name.split('_').length === 1) {
+            if(this._ChangeRightPage || post.group.name !== post.group.rightGroupPage.name) {
+              this.user.group = post.group;
+              this.user.group.rightGroupPage = post.group.rightGroupPage;
+              this.user.group.rightGroupPage.name = "_user_"+this.user.id;
+              this.rightGroupPageApi.postRightGroupPage(this.user.group.rightGroupPage);
+              this.user.group.name = "_user_"+this.user.id;
+              this.groupApi.postGroup(this.user.group);
+            } else if(this.initial_user.group.name !== post.group.name) {
+              this.user.group = post.group;
+            } else {
+              this.user.group = this.initial_user.group;
+            }
+          } else {
+            if(post.group.name !== this.initial_user.login) {
+              this.user.group = post.group;
+              this.rightGroupPageApi.deleteRightGroupPage(this.initial_user.group.rightGroupPage.id);
+              this.groupApi.deleteGroup(this.initial_user.group.id);
+            } else {
+              if(this._ChangeRightPage || (Number(post.group.rightGroupPage.name.split('_')[2]) !== this.initial_user.id && post.group.rightGroupPage.name !== this.initial_user.login) && post.group.name === this.initial_user.login) {
+                this.user.group.rightGroupPage = post.group.rightGroupPage;
+                this.rightGroupPageApi.putRightGroupPage(this.initial_user.group.rightGroupPage.id, this.user.group.rightGroupPage);
+              } else {
+                this.user.group = this.initial_user.group;
+              }
+            }
+          }
         } else {
           this.user.group = this.initial_user.group;
         }
-      } else {
-        if(post.group.name !== this.initial_user.login) {
-          this.user.group = post.group;
-          this.rightGroupPageApi.deleteRightGroupPage(this.initial_user.group.rightGroupPage.id);
-          this.groupApi.deleteGroup(this.initial_user.group.id);
-        } else {
-          if(this._ChangeRightPage || (Number(post.group.rightGroupPage.name.split('_')[2]) !== this.initial_user.id && post.group.rightGroupPage.name !== this.initial_user.login) && post.group.name === this.initial_user.login) {
-            this.user.group.rightGroupPage = post.group.rightGroupPage;
-            this.rightGroupPageApi.putRightGroupPage(this.initial_user.group.rightGroupPage.id, this.user.group.rightGroupPage);
-          } else {
-            this.user.group = this.initial_user.group;
-          }
-        }
-      }
 
-      this.userApi.putUser(this.initial_user.id, this.user);
-      this.router.navigate(['/UserManagement']);
-      if(this.user.id === this._currentUser.id)
-        this.app.logOut();
+        this.userApi.putUser(this.initial_user.id, this.user);
+        this.router.navigate(['/UserManagement']);
+        if(this.user.id === this._currentUser.id)
+          this.app.logOut();  
+      } else
+        console.log("Vous n'avez pas la permission de modifier cette utilisateur");
     }
   }
 
   private showPassword(): void {
-    this.isPassword = !(this.isPassword);
+    if(this._currentUser.group.rightGroupPage.SelectedUserManagement_ShowPasswordButton)
+      this.isPassword = !(this.isPassword);
+    else 
+      console.log("Vous n'avez pas la permission de visualiser le mot de passe de cette utilisateur");
   }
 
   private DeleteUser(): void {
-    this.userApi.deleteUser(this.user.id);
+    if(this._currentUser.group.rightGroupPage.SelectedUserManagement_DeleteUser && Number(this.route.snapshot.paramMap.get('id')) !== 1 && this.route.snapshot.paramMap.get('id') !== "New") {
+      this.userApi.deleteUser(this.user.id);
 
-    this.router.navigate(['/UserManagement']);
-    if(this.user.id === this._currentUser.id)
-      this.app.logOut();
+      this.router.navigate(['/UserManagement']);
+      if(this.user.id === this._currentUser.id)
+        this.app.logOut();
+    } else 
+      console.log("Vous n'avez pas la permission de supprimer cette utilisateurs");
   }
 
   private imageChangeClick(event): void {
-    var name: string = "profile" + Math.random() * 1000 + ".jpg";
-     this.uploadApi.UploadFile(event.target.files[0], name).subscribe(event => {
-      if(event)
-        this.newImage(event, name);
-    });
+    if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditUser) {
+      var name: string = "profile" + Math.random() * 1000 + ".jpg";
+      this.uploadApi.UploadFile(event.target.files[0], name).subscribe(event => {
+        if(event)
+          this.newImage(event, name);
+      });
+    } else 
+      console.log("Vous n'avez pas la permission de modifier l'image de profile de cette utilisateur");
   }
 
   private newImage(ok: any, name: string): void {
-    if(ok.ok)
-      this.user.profile = "https://dev.kevin-c.fr/api/uploads/" + name;
-    this.initData();
+    if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditUser) {
+      if(ok.ok)
+        this.user.profile = "https://dev.kevin-c.fr/api/uploads/" + name;
+      this.initData();
+    } else 
+      console.log("Vous n'avez pas la permission de modifier l'image de profile de cette utilisateur");
   }
 
   public imageChangeDrag(event): void {
-    var name: string = "profile" + Math.random() * 1000 + ".jpg";
-    (event.files[0].fileEntry as FileSystemFileEntry).file((file: File) => { this.uploadApi.UploadFile(file, name).subscribe(event => {
-      if(event)
-        this.newImage(event, name);
-    }); });
+    if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditUser) {
+      var name: string = "profile" + Math.random() * 1000 + ".jpg";
+      (event.files[0].fileEntry as FileSystemFileEntry).file((file: File) => { this.uploadApi.UploadFile(file, name).subscribe(event => {
+        if(event)
+          this.newImage(event, name);
+      }); });
+    } else 
+      console.log("Vous n'avez pas la permission de modifier l'image de profile de cette utilisateur");
   }
 }

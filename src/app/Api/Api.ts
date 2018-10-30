@@ -37,9 +37,11 @@ export class Data {
       var index: number = this.user.findIndex(d => d.id === id);
       var user_return: User = new User(null);
 
-      if(index !== -1)
+      if(index !== -1) {
         user_return = this.user[index];
-      else
+        user_return.group = this.group[this.group.findIndex(d => d.id === user_return.group.id)];
+        user_return.group.rightGroupPage = this.rightGroupPage[this.rightGroupPage.findIndex(d => d.id === user_return.group.rightGroupPage.id)];
+      } else
         ErrorMsg = "Index non valide";
     } else
       ErrorMsg = "Id non valide";
@@ -162,8 +164,11 @@ export class Data {
       var index: number = this.group.findIndex(d => d.id === id);
       var group_return: Group = new Group(null);
 
-      if(index !== -1)
+      if(index !== -1) {
         group_return = this.group[index];
+        group_return.rightGroupPage = this.rightGroupPage[this.rightGroupPage.findIndex(d => d.id === group_return.rightGroupPage.id)];
+      }
+        
       else
         ErrorMsg = "Index non valide";
     } else

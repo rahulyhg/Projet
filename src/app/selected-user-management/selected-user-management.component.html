@@ -1,6 +1,6 @@
 <div *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_Access">
     <form [formGroup]="SelectedUserManagementForm" (ngSubmit)="editUse(SelectedUserManagementForm.value)">
-        <div *ngIf="!_currentUser.group.rightGroupPage.SelectedUserManagement_EditUser && !_currentUser.group.rightGroupPage.UserManagement_AddUser && !_currentUser.group.rightGroupPage.UserManagement_EditDefaultUser">
+        <div *ngIf="!_currentUser.group.rightGroupPage.SelectedUserManagement_EditUser">
             <div class="profile">
                 <img src="{{ user.profile }}">
             </div>
@@ -19,7 +19,7 @@
                 </ul>
             </div>
         </div>
-        <div *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_EditUser || _currentUser.group.rightGroupPage.UserManagement_AddUser || _currentUser.group.rightGroupPage.UserManagement_EditDefaultUser">
+        <div *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_EditUser">
             <div class="profile">
                 <input style="display: none" type="file" (change)="imageChangeClick($event)" #File>
                 <file-drop (onFileDrop)="imageChangeDrag($event)" (click)="File.click()">
@@ -99,10 +99,10 @@
             <li>SelectedGroupManagement_DeleteGroup : <input type="checkbox" formControlName="SelectedGroupManagement_DeleteGroup" (click)="setRightSelected(SelectedUserManagementForm.value, $event.target.attributes[0].nodeValue)"/></li>
             <li>SelectedGroupManagement_EditRightPage : <input type="checkbox" formControlName="SelectedGroupManagement_EditRightPage" (click)="setRightSelected(SelectedUserManagementForm.value, $event.target.attributes[0].nodeValue)"/></li>
         </div>
-        <div class="EditBar" *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_EditUser || _currentUser.group.rightGroupPage.UserManagement_AddUser || _currentUser.group.rightGroupPage.UserManagement_EditDefaultUser">
+        <div class="EditBar" *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_EditUser || _currentUser.group.rightGroupPage.SelectedUserManagement_DeleteUser || _currentUser.group.rightGroupPage.UserManagement_EditDefaultUser">
             <div *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser" class="button" (click)="ChangeRightEdit()">Modifier les doits de l'utilisateur</div>
             <div *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_DeleteUser" class="button" (click)="DeleteUser()">Supprimer l'utilisateur</div>
-            <button *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_EditUser || _currentUser.group.rightGroupPage.UserManagement_AddUser || _currentUser.group.rightGroupPage.UserManagement_EditDefaultUser" type="submit" [disabled]="!SelectedUserManagementForm.valid">Valider les modifications</button>
+            <button *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_EditUser" type="submit" [disabled]="!SelectedUserManagementForm.valid">Valider les modifications</button>
         </div>
     </form>
 </div> 

@@ -10,13 +10,24 @@
   </thead>
   <tbody>
     <tr *ngFor="let user of UserList">
-      <td>#{{ user.id }}</td>
-      <td *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_Access"><li class="lien"><a routerLink="/UserManagement/{{ user.id }}">{{ user.login }}</a></td>
-      <td style="color: #555;" *ngIf="!_currentUser.group.rightGroupPage.SelectedUserManagement_Access">{{ user.login }}</td>
-      <td>{{ user.date_time_signIn }}</td>
-      <td>{{ user.date_time_logIn }}</td> 
-      <td *ngIf="_currentUser.group.rightGroupPage.SelectedGroupManagement_Access"><li class="lien"><a routerLink="/GroupManagement/{{ user.group.id }}">{{ user.group.name }}</a></td>
-      <td style="color: #555;" *ngIf="!_currentUser.group.rightGroupPage.SelectedGroupManagement_Access">{{ user.group.name }}</td>
+      <div *ngIf="user.id !== 1" style="display: contents; vertical-align: inherit;">
+        <td>#{{ user.id }}</td>
+        <td *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_Access"><li class="lien"><a routerLink="/UserManagement/{{ user.id }}">{{ user.login }}</a></td>
+        <td style="color: #555;" *ngIf="!_currentUser.group.rightGroupPage.SelectedUserManagement_Access">{{ user.login }}</td>
+        <td>{{ user.date_time_signIn }}</td>
+        <td>{{ user.date_time_logIn }}</td> 
+        <td *ngIf="_currentUser.group.rightGroupPage.SelectedGroupManagement_Access"><li class="lien"><a routerLink="/GroupManagement/{{ user.group.id }}">{{ user.group.name }}</a></td>
+        <td style="color: #555;" *ngIf="!_currentUser.group.rightGroupPage.SelectedGroupManagement_Access">{{ user.group.name }}</td>        
+      </div>
+      <div *ngIf="user.id === 1" style="display: contents; vertical-align: inherit">
+        <td>#{{ user.id }}</td>
+        <td *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_Access && _currentUser.group.rightGroupPage.UserManagement_EditDefaultUser"><li class="lien"><a routerLink="/UserManagement/{{ user.id }}">{{ user.login }}</a></td>
+        <td style="color: #555;" *ngIf="!_currentUser.group.rightGroupPage.SelectedUserManagement_Access || !_currentUser.group.rightGroupPage.UserManagement_EditDefaultUser">{{ user.login }}</td>      
+        <td>{{ user.date_time_signIn }}</td>
+        <td>{{ user.date_time_logIn }}</td> 
+        <td *ngIf="_currentUser.group.rightGroupPage.SelectedGroupManagement_Access && _currentUser.group.rightGroupPage.UserManagement_EditDefaultUser"><li class="lien"><a routerLink="/GroupManagement/{{ user.group.id }}">{{ user.group.name }}</a></td>
+        <td style="color: #555;" *ngIf="!_currentUser.group.rightGroupPage.SelectedGroupManagement_Access || !_currentUser.group.rightGroupPage.UserManagement_EditDefaultUser">{{ user.group.name }}</td>  
+      </div>
     </tr>
   </tbody>
 </table>

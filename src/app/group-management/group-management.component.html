@@ -8,6 +8,8 @@
     </thead>
     <tbody>
       <tr *ngFor="let group of GroupList">
+
+          <!-- _currentUser.group.rightGroupPage.UserManagement_EditDefaultUser -->
         <td>#{{ group.id }}</td>
         <td *ngIf="_currentUser.group.rightGroupPage.SelectedGroupManagement_Access"><li class="lien"><a routerLink="/GroupManagement/{{ group.id }}">{{ group.name }}</a></td>
         <td *ngIf="!_currentUser.group.rightGroupPage.SelectedGroupManagement_Access" style="color: #555;">{{ group.name }}</td>
@@ -17,5 +19,5 @@
   </table>
   <div *ngIf="_currentUser.group.rightGroupPage.SelectedGroupManagement_Access" class="EditBar">
     <div *ngIf="_currentUser.group.rightGroupPage.GroupManagement_AddGroup" class="button" routerLink="/GroupManagement/New">Ajouter un groupe</div>
-    <div *ngIf="_currentUser.group.rightGroupPage.GroupManagement_EditDefaultGroup" class="button" routerLink="/GroupManagement/1">Modifier le groupe par défaut</div>
+    <div *ngIf="_currentUser.group.rightGroupPage.GroupManagement_EditDefaultGroup && _currentUser.group.rightGroupPage.UserManagement_EditDefaultUser" class="button" routerLink="/GroupManagement/1">Modifier le groupe par défaut</div>
   </div>
