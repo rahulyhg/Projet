@@ -45,8 +45,9 @@ export class UserService {
       return [ null ];
   }
 
-  public putUser(id: number, user: User): void {
+  public putUser(id: number, user: User, regenerate_password: boolean): void {
     console.log("PUT / USER / putUser");
+    user.password = this.create_md5(user.password);
     this.InitReponse(JSON.parse(this.data.putUser(id, user)));
   }
 
@@ -57,6 +58,7 @@ export class UserService {
 
   public postUser(user: User): void {
     console.log("POST / USER / postUser");
+    user.password = this.create_md5(user.password);
     this.InitReponse(JSON.parse(this.data.postUser(user)));
   }
 

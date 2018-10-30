@@ -41,7 +41,7 @@ export class SelectedUserManagementComponent implements OnInit {
       this.GroupList = null;
       this.SelectedUserManagementForm = null;
       this.user = new User(null);
-      var id: number = 2;
+      var id: number = 1;
       if(this.route.snapshot.paramMap.get('id') !== "New") { id = Number(this.route.snapshot.paramMap.get('id')) }
       this.initial_user = new User(this.userApi.getUserById(id));
       this.isPassword = true;
@@ -86,7 +86,7 @@ export class SelectedUserManagementComponent implements OnInit {
       if(this.user.id !== Number(this.route.snapshot.paramMap.get('id')) && this.route.snapshot.paramMap.get('id') !== "New")
         this.router.navigate(['/UserManagement']);
 
-      // Si on modifie un utilisateur ou que l'on edite l'utilisateur par defaut, on enlève le bouton supprimer
+      // Si on créer un utilisateur ou que l'on edite l'utilisateur par defaut, on enlève le bouton supprimer
       if(this.route.snapshot.paramMap.get('id') === "New" || this.route.snapshot.paramMap.get('id') === "1")
         this._currentUser.group.rightGroupPage.SelectedUserManagement_DeleteUser = false;
 
@@ -122,6 +122,14 @@ export class SelectedUserManagementComponent implements OnInit {
       }
       this.RightGroupPageList = RightGroupPageList;
 
+      if(this.route.snapshot.paramMap.get('id') === "New") {
+        this.user.login = "null";
+        this.user.password = "null";
+        this.user.gameTag = "null";
+        this.user.name = "null";
+        this.user.firstName = "null";
+      }
+
       // Initialisation des données à afficher dans le formulaire
       this.initData();
     }
@@ -132,6 +140,11 @@ export class SelectedUserManagementComponent implements OnInit {
     // On Met dans l'object user les données que l'on a deja rentré
     value.date_time_logIn = value.date_logIn + " " + value.time_logIn;
     value.date_time_signIn = value.date_signIn + " " + value.time_signIn;
+    if(value.login === null) { value.login = "null" }
+    if(value.password === null) { value.password = "null" }
+    if(value.gameTag === null) { value.gameTag = "null" }
+    if(value.name === null) { value.name = "null" }
+    if(value.firstName === null) { value.firstName = "null" }
     this.user = new User(value);
 
     this.user.group.rightGroupPage = this.RightGroupPageList[Number(id.split(":")[0])];
@@ -148,6 +161,11 @@ export class SelectedUserManagementComponent implements OnInit {
     // On Met dans l'object user les données que l'on a deja rentré
     value.date_time_logIn = value.date_logIn + " " + value.time_logIn;
     value.date_time_signIn = value.date_signIn + " " + value.time_signIn;
+    if(value.login === null) { value.login = "null" }
+    if(value.password === null) { value.password = "null" }
+    if(value.gameTag === null) { value.gameTag = "null" }
+    if(value.name === null) { value.name = "null" }
+    if(value.firstName === null) { value.firstName = "null" }
     this.user = new User(value);
 
     this.user.group = this.GroupList[Number(id.split(":")[0])];
@@ -167,6 +185,11 @@ export class SelectedUserManagementComponent implements OnInit {
   
     value.date_time_logIn = value.date_logIn + " " + value.time_logIn;
     value.date_time_signIn = value.date_signIn + " " + value.time_signIn;
+    if(value.login === null) { value.login = "null" }
+    if(value.password === null) { value.password = "null" }
+    if(value.gameTag === null) { value.gameTag = "null" }
+    if(value.name === null) { value.name = "null" }
+    if(value.firstName === null) { value.firstName = "null" }
     this.user = new User(value);
 
     var rightGroupPage: RightGroupPage = new RightGroupPage(value);
@@ -350,6 +373,12 @@ export class SelectedUserManagementComponent implements OnInit {
   }
 
   private initData(): void {
+    if(this.user.login === "null") { this.user.login = null }
+    if(this.user.password === "null") { this.user.password = null }
+    if(this.user.gameTag === "null") { this.user.gameTag = null }
+    if(this.user.name === "null") { this.user.name = null }
+    if(this.user.firstName === "null") { this.user.firstName = null }
+
     this.SelectedUserManagementForm = this.fb.group({
       'id': this.user.id,
       'statut': this.user.statut,
@@ -392,13 +421,7 @@ export class SelectedUserManagementComponent implements OnInit {
     });
 
     if(this.route.snapshot.paramMap.get('id') === "New") {
-      this.SelectedUserManagementForm.get('login').setValue(null);
-      this.SelectedUserManagementForm.get('password').setValue(null);
-      this.SelectedUserManagementForm.get('gameTag').setValue(null);
-      this.SelectedUserManagementForm.get('name').setValue(null);
-      this.SelectedUserManagementForm.get('firstName').setValue(null);
-
-      this.PlaceHolder = this.user;
+      this.PlaceHolder = this.initial_user;
     }
 
     // On Bloque la modification du groupe et du login pour l'utilisateur par defaut
@@ -483,7 +506,11 @@ export class SelectedUserManagementComponent implements OnInit {
           this.groupApi.putGroup(this.user.group.id, this.user.group);
         }
 
-        this.userApi.putUser(1, this.user);
+        var regenerate_password: boolean = false;
+        if(this.user.password !== this.initial_user.password)
+          regenerate_password = true;
+
+        this.userApi.putUser(1, this.user, regenerate_password);
         this.router.navigate(['/UserManagement']);
       } else
         console.log("Vous n'avez pas la permission de créer un nouvelle utilisateur");
@@ -526,7 +553,11 @@ export class SelectedUserManagementComponent implements OnInit {
           this.user.group = this.initial_user.group;
         }
 
-        this.userApi.putUser(this.initial_user.id, this.user);
+        var regenerate_password: boolean = false;
+        if(this.user.password !== this.initial_user.password)
+          regenerate_password = true;
+
+        this.userApi.putUser(this.initial_user.id, this.user, regenerate_password);
         this.router.navigate(['/UserManagement']);
         if(this.user.id === this._currentUser.id)
           this.app.logOut();  

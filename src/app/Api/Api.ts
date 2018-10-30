@@ -229,9 +229,17 @@ export class Data {
     var ErrorMsg: string = null;
 
     if(group !== null && group !== undefined) {
-      var l: number = this.group.length;
-      group.id = l + 1;
-      this.group.push(group);
+      if(group.id === 0) {
+        var _rightGroupPage: RightGroupPage = new RightGroupPage(group.rightGroupPage);
+        var _group: Group = new Group(group);
+
+        _rightGroupPage.id = this.rightGroupPage.length + 1;
+        _group.id = this.group.length + 1;
+        _group.rightGroupPage = _rightGroupPage;
+
+        this.group.push(_group);
+        this.rightGroupPage.push(_rightGroupPage)
+      }
     }
 
     var api: Api = {
@@ -252,6 +260,14 @@ export class Data {
       var t: number = this.group.length;
       if(t !== null && t !== undefined && t !== 0) {
         var index: number = this.group.findIndex(d => d.id === id);
+        var indexRightGroupPage: number = this.rightGroupPage.findIndex(d => d.id === this.group[index].id);
+        
+        for(var i: number = 0; i < this.user.length; i++) {
+          if(this.user[i].group.id === id) { this.user[i].group = new Group(null) }
+        }
+
+        if(indexRightGroupPage !== null && indexRightGroupPage !== undefined && indexRightGroupPage !== -1)
+          this.rightGroupPage.splice(indexRightGroupPage);
 
         if(index !== null && index !== undefined && index !== -1) {
           this.group.splice(index, 1);

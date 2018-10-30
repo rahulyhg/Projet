@@ -51,6 +51,12 @@ Mettre un fichier valide dans le contructeur de l'object Upload
 
 Faire la vérification des format de données (comme pour les @GameTag ou il y pas d'espace)
 
-OK => Remettre la gestion des droit dans le controller de SelectedUserManagement
+OK => Empecher la modication du nom du groupe par defaut et celui des droit de page
 
-Empecher la modication du nom du groupe par defaut et celui des droit de page
+OK => La création d'utilisateur ne marche plus si l'on lui change ses droit de page
+
+OK => Quand on supprime un groupe, il faut repasser toutes les personnes apartenant a ce groupe dans le groupe par defaut
+OK => Supprimer le groupe de droit de page qui lui est attribué
+OK => => (A faire dans l'API)
+
+OK => reconvertir les password en md5 quand on créer / modifie un user
