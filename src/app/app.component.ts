@@ -24,8 +24,15 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getCurrentUser();
-    this.Init(); 
+    //console.log(this.userApi.getUserById(2));
+    //console.log(this.userApi.Auth("dev", "SlmgrRearm_1689"));
+    //console.log(this.userApi.getUserList());
+    var u: User = new User(null);
+    this.userApi.putUser(3, u, false);
+
+
+    // this.getCurrentUser();
+    // this.Init(); 
   }
 
   private Init(): void {
@@ -66,7 +73,7 @@ export class AppComponent implements OnInit {
   public logOut(): void {
     console.log("deconnection");
     this._currentUser.statut = false;
-    this.userApi.putUser(this._currentUser.id, this._currentUser);
+    this.userApi.putUser(this._currentUser.id, this._currentUser, false);
     this._GestionSitePopupStatut = false;
     localStorage.clear();
     this.router.navigate(['/Accueil']);
