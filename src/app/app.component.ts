@@ -7,6 +7,7 @@ import { Page } from './Class/Page';
 
 import { UserService } from './Services/user.service';
 import { PageService } from './Services/page.service';
+import { Group } from './Class/Group';
 
 @Component({
   selector: 'app-root',
@@ -25,14 +26,20 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     //console.log(this.userApi.getUserById(2));
+
     //console.log(this.userApi.Auth("dev", "SlmgrRearm_1689"));
+
     //console.log(this.userApi.getUserList());
-    var u: User = new User(null);
-    this.userApi.putUser(3, u, false);
 
+    // var u: User = new User(null);
+    // this.userApi.putUser(3, u, false);
 
-    // this.getCurrentUser();
-    // this.Init(); 
+    //this.userApi.deleteUser(3);
+
+    //this.userApi.postUser(new User(null));
+
+    this.getCurrentUser();
+    this.Init(); 
   }
 
   private Init(): void {
@@ -60,9 +67,12 @@ export class AppComponent implements OnInit {
       if(user !== null && user !== undefined && user !== "") {
         var user_tab: string[] = user.split("/\\");
         var id: number = Number(user_tab[0]);
+        console.log(id);
         //var login: string = user[1];
         //var password: string = user[2];
         this._currentUser =  this.userApi.getUserById(id);
+        this._currentUser.group = new Group(null);
+        console.log(this._currentUser);
         if(!this._currentUser.statut)
           this.logOut();
       }
