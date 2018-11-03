@@ -3,9 +3,11 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { FileSystemFileEntry } from '../../../node_modules/ngx-file-drop';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 import { AppComponent } from '../app.component';
 
+import { Api } from '../Class/Api';
 import { User } from '../Class/User';
 import { Group } from '../Class/Group';
 import { RightGroupPage } from '../Class/RightGroupPage';
@@ -19,6 +21,12 @@ import { UploadService } from '../Services/uploads.service';
   templateUrl: './selected-user-management.component.html'
 })
 export class SelectedUserManagementComponent implements OnInit {
+  private Reponse_getUserById: Observable<Api>;
+  private Reponse_getUserById_initial: Observable<Api>;
+  private Reponse_getUserById_form: Observable<Api>;
+  private Reponse_getRightGroupPageList: Observable<Api>;
+  private Reponse_getGroupList: Observable<Api>;
+
   public _currentUser: User;
   private _RightEdit: boolean;
   private _ChangeRightPage: boolean;
@@ -34,16 +42,34 @@ export class SelectedUserManagementComponent implements OnInit {
 
   constructor(private route: ActivatedRoute, private app: AppComponent, private userApi: UserService, private router: Router,
     private fb: FormBuilder, private groupApi: GroupService, private rightGroupPageApi: RightGroupPageService, private uploadApi: UploadService) { 
+      this.Reponse_getUserById = null;
+      this.Reponse_getUserById_initial = null;
+      this.Reponse_getUserById_form = null;
+      this.Reponse_getRightGroupPageList = null;
+      this.Reponse_getGroupList = null;
+      
       this._currentUser = new User(null);
       this._RightEdit = false;
       this._ChangeRightPage = false;
       this.RightGroupPageList = null;
       this.GroupList = null;
-      this.SelectedUserManagementForm = null;
+      this.SelectedUserManagementForm = this.fb.group({
+        'id': null, 'statut': null, 'login' : null, 'password' : null, 'profile': null, 'date_signIn' : null, 'time_signIn' : null,
+        'date_logIn' : null, 'time_logIn' : null, 'group' : null, 'gameTag' : null, 'name' : null, 'firstName' : null,
+        'birthDate' : null, 'rightGroupPage' : null, 'Main_Access' : null, 'Accueil_Access' : null, 'Login_Access' : null,
+        'MonCompte_Access' : null, 'EditBar_Access' : null, 'SelectedUserManagement_Access' : null,
+        'SelectedUserManagement_ViewPassword' : null, 'SelectedUserManagement_ShowPasswordButton' : null,
+        'SelectedUserManagement_EditRightGroupPageUser' : null, 'SelectedUserManagement_DeleteUser' : null,
+        'SelectedUserManagement_EditUser' : null, 'UserManagement_Access' : null, 'UserManagement_AddUser' : null,
+        'UserManagement_EditDefaultUser' : null, 'GroupManagement_Access' : null, 'GroupManagement_AddGroup' : null,
+        'GroupManagement_EditDefaultGroup' : null, 'SelectedGroupManagement_Access' : null,
+        'SelectedGroupManagement_EditGroup' : null, 'SelectedGroupManagement_DeleteGroup' : null,
+        'SelectedGroupManagement_EditRightPage' : null, 'EditBar_Dev' : null, 'EditBar_Edit' : null});
       this.user = new User(null);
       var id: number = 1;
+      this.initial_user = new User(null);
       if(this.route.snapshot.paramMap.get('id') !== "New") { id = Number(this.route.snapshot.paramMap.get('id')) }
-      this.initial_user = new User(this.userApi.getUserById(id));
+      this.Reponse_getUserById_initial = this.userApi.getUserById(id);
       this.isPassword = true;
       this.MsgGroupDelete = null;
       this.MsgGroupPerso = null;
@@ -53,82 +79,121 @@ export class SelectedUserManagementComponent implements OnInit {
   ngOnInit(): void { 
     // Initialisation de la page
     this.app.ngOnInit();
-    this._currentUser = this.app._currentUser;
+    this.Reponse_getUserById = this.app.Reponse_getUserById;
 
     // Vérification des droit d'acces a cette page pour _currentUser
-    if(!this._currentUser.group.rightGroupPage.SelectedUserManagement_Access) {
+    // Vérification des droit d'acces a la création d'un nouveux utilisateur pour _currentUser
+    // Vérification des droit d'acces a la modification de l'utilisateur par defaut pour _currentUser
+    // Vérification des droit pour savoir si l'utilisateur peux recurerer les données
+    if(this.Reponse_getUserById === null) {
+      this._currentUser = new User(null);
+
+      this.verifRight(this._currentUser.group.rightGroupPage);
+    } else {
+      this.Reponse_getUserById.subscribe((data: Api) => {
+        this._currentUser = data.data
+
+        this.verifRight(data.data.group.rightGroupPage);
+      })
+    }
+  }
+
+  private verifRight(rightGroupPage: RightGroupPage) {
+    if(!rightGroupPage.SelectedUserManagement_Access) {
       console.log("Vous n'avez pas la permission d'accedez à la page de Gestion de cette utilisateur");
       this.router.navigate(['/Accueil']);
     }
-    // Vérification des droit d'acces a la création d'un nouveux utilisateur pour _currentUser
-    if(!this._currentUser.group.rightGroupPage.UserManagement_AddUser && this.route.snapshot.paramMap.get('id') === "New") {
+    
+    if(!rightGroupPage.UserManagement_AddUser && this.route.snapshot.paramMap.get('id') === "New") {
       console.log("Vous n'avez pas la permission de creer de nouveau Utilisateur");
       this.router.navigate(['/Accueil']);
     }
-    // Vérification des droit d'acces a la modification de l'utilisateur par defaut pour _currentUser
-    if(!this._currentUser.group.rightGroupPage.UserManagement_EditDefaultUser && Number(this.route.snapshot.paramMap.get('id')) === 1) {
+    
+    if(!rightGroupPage.UserManagement_EditDefaultUser && Number(this.route.snapshot.paramMap.get('id')) === 1) {
       console.log("Vous n'avez pas la permission de modifier l'utilisateur par defaut");
       this.router.navigate(['/Accueil']);
     }
 
-    // Vérification des droit pour savoir si l'utilisateur peux recurerer les données
-    if(this._currentUser.group.rightGroupPage.SelectedUserManagement_Access) {
+    if(rightGroupPage.SelectedUserManagement_Access) {
       // Récupération des données de l'utilisateur que l'on va modifier UNIQUEMENT si ce n'est pas la création d'un nouveau user
       // On indique également si il sagit d'un groupe perso ou pas
       if(this.route.snapshot.paramMap.get('id') !== "New") {
-        this.user = new User(this.userApi.getUserById(Number(this.route.snapshot.paramMap.get('id'))));
-        if(this.initial_user.group.name === this.initial_user.login)
-          this.MsgGroupPerso = "Groupe personnel de droit";
-      } else 
-        this.user = new User(this.userApi.getUserById(1));
+        this.Reponse_getUserById_form = this.userApi.getUserById(Number(this.route.snapshot.paramMap.get('id')));
+        this.Reponse_getUserById_form.subscribe((data: Api) => {
+          this.user = data.data
 
-      // On verifit que l'utilisateur que l'on veut editer existe reellement
-      if(this.user.id !== Number(this.route.snapshot.paramMap.get('id')) && this.route.snapshot.paramMap.get('id') !== "New")
-        this.router.navigate(['/UserManagement']);
+          if(this.initial_user.group.name === this.initial_user.login)
+            this.MsgGroupPerso = "Groupe personnel de droit";
+        })
+      } else {
+        this.Reponse_getUserById_form = this.userApi.getUserById(1);
+        this.Reponse_getUserById_form.subscribe((data: Api) => {
+          this.user = data.data
 
+          if(this.initial_user.group.name === this.initial_user.login)
+            this.MsgGroupPerso = "Groupe personnel de droit";
+
+        })
+      }
+
+      this.Reponse_getUserById_form.subscribe((data: Api) => {
+        if(data.data.id !== Number(this.route.snapshot.paramMap.get('id')) && this.route.snapshot.paramMap.get('id') !== "New") {
+          console.log("L'utilisateur que vous voullez editer n'existe pas pas ou n'existe plus");
+          this.router.navigate(['/UserManagement']);
+        }
+      })
+        
       // Si on créer un utilisateur ou que l'on edite l'utilisateur par defaut, on enlève le bouton supprimer
       if(this.route.snapshot.paramMap.get('id') === "New" || this.route.snapshot.paramMap.get('id') === "1")
         this._currentUser.group.rightGroupPage.SelectedUserManagement_DeleteUser = false;
 
       // Récupération de la liste des groupes
-      //this.GroupList = this.groupApi.getGroupList();
+      this.Reponse_getGroupList = this.groupApi.getGroupList();
+      this.Reponse_getGroupList.subscribe((data: Api) => {
+        this.GroupList = data.data
+        
+        // Supprime de la liste les groupes perso (autre que celui en cours) et remplace le nom du groupe perso du user actuel par son login
+        var GroupList: Group[] = [];
+        for(var i: number = 0; i < this.GroupList.length; i++) {
+          if(this.GroupList[i].name.split('_')[1] === "user") {
+            if(Number(this.GroupList[i].name.split('_')[2]) === this.user.id) {
+              this.GroupList[i].name = this.user.login;
+              GroupList.push(this.GroupList[i]);
+            }
+          } else
+            GroupList.push(this.GroupList[i]);
+        }
+        this.GroupList = GroupList;
+      })
 
       // Récupération de la liste des groupes de droit de pages
-      //this.RightGroupPageList = this.rightGroupPageApi.getRightGroupPageList();
+      this.Reponse_getRightGroupPageList = this.rightGroupPageApi.getRightGroupPageList();
+      this.Reponse_getRightGroupPageList.subscribe((data: Api) => {
+        this.RightGroupPageList = data.data
 
-      // Supprime de la liste les groupes perso (autre que celui en cours) et remplace le nom du groupe perso du user actuel par son login
-      var GroupList: Group[] = [];
-      for(var i: number = 0; i < this.GroupList.length; i++) {
-        if(this.GroupList[i].name.split('_')[1] === "user") {
-          if(Number(this.GroupList[i].name.split('_')[2]) === this.user.id) {
-            this.GroupList[i].name = this.user.login;
-            GroupList.push(this.GroupList[i]);
-          }
-        } else
-          GroupList.push(this.GroupList[i]);
-      }
-      this.GroupList = GroupList;
+        // Remplace le nom des groupe de droit perso (_user_:id) par le login de ce meme user
+        var RightGroupPageList: RightGroupPage[] = [];
+        for(var i: number = 0; i < this.RightGroupPageList.length; i++) {
+          if(this.RightGroupPageList[i].name.split('_')[1] === "user") {
+            if(Number(this.RightGroupPageList[i].name.split('_')[2]) === this.user.id) {
+              this.RightGroupPageList[i].name = this.user.login;
+              RightGroupPageList.push(this.RightGroupPageList[i]);
+            }
+          } else
+          RightGroupPageList.push(this.RightGroupPageList[i]);
+        }
+        this.RightGroupPageList = RightGroupPageList;
+      })
 
-      // Remplace le nom des groupe de droit perso (_user_:id) par le login de ce meme user
-      var RightGroupPageList: RightGroupPage[] = [];
-      for(var i: number = 0; i < this.RightGroupPageList.length; i++) {
-        if(this.RightGroupPageList[i].name.split('_')[1] === "user") {
-          if(Number(this.RightGroupPageList[i].name.split('_')[2]) === this.user.id) {
-            this.RightGroupPageList[i].name = this.user.login;
-            RightGroupPageList.push(this.RightGroupPageList[i]);
-          }
-        } else
-        RightGroupPageList.push(this.RightGroupPageList[i]);
-      }
-      this.RightGroupPageList = RightGroupPageList;
-
-      if(this.route.snapshot.paramMap.get('id') === "New") {
-        this.user.login = "null";
-        this.user.password = "null";
-        this.user.gameTag = "null";
-        this.user.name = "null";
-        this.user.firstName = "null";
-      }
+      this.Reponse_getUserById_form.subscribe((data: Api) => {
+        if(this.route.snapshot.paramMap.get('id') === "New") {
+          this.user.login = "null";
+          this.user.password = "null";
+          this.user.gameTag = "null";
+          this.user.name = "null";
+          this.user.firstName = "null";
+        }
+      })
 
       // Initialisation des données à afficher dans le formulaire
       this.initData();
@@ -373,92 +438,94 @@ export class SelectedUserManagementComponent implements OnInit {
   }
 
   private initData(): void {
-    if(this.user.login === "null") { this.user.login = null }
-    if(this.user.password === "null") { this.user.password = null }
-    if(this.user.gameTag === "null") { this.user.gameTag = null }
-    if(this.user.name === "null") { this.user.name = null }
-    if(this.user.firstName === "null") { this.user.firstName = null }
+    this.Reponse_getUserById_form.subscribe((data: Api) => {
+      if(this.user.login === "null") { this.user.login = null }
+      if(this.user.password === "null") { this.user.password = null }
+      if(this.user.gameTag === "null") { this.user.gameTag = null }
+      if(this.user.name === "null") { this.user.name = null }
+      if(this.user.firstName === "null") { this.user.firstName = null }
 
-    this.SelectedUserManagementForm = this.fb.group({
-      'id': this.user.id,
-      'statut': this.user.statut,
-      'login' : this.user.login,
-      'password' : this.user.password,
-      'profile': this.user.profile,
-      'date_signIn' : this.user.date_time_signIn.split(' ')[0],
-      'time_signIn' : this.user.date_time_signIn.split(' ')[1],
-      'date_logIn' : this.user.date_time_logIn.split(' ')[0],
-      'time_logIn' : this.user.date_time_logIn.split(' ')[1],
-      'group' : this.user.group,
-      'gameTag' : this.user.gameTag,
-      'name' : this.user.name,
-      'firstName' : this.user.firstName,
-      'birthDate' : this.user.birthDate,
-      'rightGroupPage' : this.user.group.rightGroupPage,
-      'Main_Access' : this.user.group.rightGroupPage.Main_Access,
-      'Accueil_Access' : this.user.group.rightGroupPage.Accueil_Access,
-      'Login_Access' : this.user.group.rightGroupPage.Login_Access,
-      'MonCompte_Access' : this.user.group.rightGroupPage.MonCompte_Access,
-      'EditBar_Access' : this.user.group.rightGroupPage.EditBar_Access,
-      'SelectedUserManagement_Access' : this.user.group.rightGroupPage.SelectedUserManagement_Access,
-      'SelectedUserManagement_ViewPassword' : this.user.group.rightGroupPage.SelectedUserManagement_ViewPassword,
-      'SelectedUserManagement_ShowPasswordButton' : this.user.group.rightGroupPage.SelectedUserManagement_ShowPasswordButton,
-      'SelectedUserManagement_EditRightGroupPageUser' : this.user.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser,
-      'SelectedUserManagement_DeleteUser' : this.user.group.rightGroupPage.SelectedUserManagement_DeleteUser,
-      'SelectedUserManagement_EditUser' : this.user.group.rightGroupPage.SelectedUserManagement_EditUser,
-      'UserManagement_Access' : this.user.group.rightGroupPage.UserManagement_Access,
-      'UserManagement_AddUser' : this.user.group.rightGroupPage.UserManagement_AddUser,
-      'UserManagement_EditDefaultUser' : this.user.group.rightGroupPage.UserManagement_EditDefaultUser,
-      'GroupManagement_Access' : this.user.group.rightGroupPage.GroupManagement_Access,
-      'GroupManagement_AddGroup' : this.user.group.rightGroupPage.GroupManagement_AddGroup,
-      'GroupManagement_EditDefaultGroup' : this.user.group.rightGroupPage.GroupManagement_EditDefaultGroup,
-      'SelectedGroupManagement_Access' : this.user.group.rightGroupPage.SelectedGroupManagement_Access,
-      'SelectedGroupManagement_EditGroup' : this.user.group.rightGroupPage.SelectedGroupManagement_EditGroup,
-      'SelectedGroupManagement_DeleteGroup' : this.user.group.rightGroupPage.SelectedGroupManagement_DeleteGroup,
-      'SelectedGroupManagement_EditRightPage' : this.user.group.rightGroupPage.SelectedGroupManagement_EditRightPage,
-      'EditBar_Dev' : this.user.group.rightGroupPage.EditBar_Dev,
-      'EditBar_Edit' : this.user.group.rightGroupPage.EditBar_Edit
-    });
+      this.SelectedUserManagementForm = this.fb.group({
+        'id': this.user.id,
+        'statut': this.user.statut,
+        'login' : this.user.login,
+        'password' : this.user.password,
+        'profile': this.user.profile,
+        'date_signIn' : this.user.date_time_signIn.split(' ')[0],
+        'time_signIn' : this.user.date_time_signIn.split(' ')[1],
+        'date_logIn' : this.user.date_time_logIn.split(' ')[0],
+        'time_logIn' : this.user.date_time_logIn.split(' ')[1],
+        'group' : this.user.group,
+        'gameTag' : this.user.gameTag,
+        'name' : this.user.name,
+        'firstName' : this.user.firstName,
+        'birthDate' : this.user.birthDate,
+        'rightGroupPage' : this.user.group.rightGroupPage,
+        'Main_Access' : this.user.group.rightGroupPage.Main_Access,
+        'Accueil_Access' : this.user.group.rightGroupPage.Accueil_Access,
+        'Login_Access' : this.user.group.rightGroupPage.Login_Access,
+        'MonCompte_Access' : this.user.group.rightGroupPage.MonCompte_Access,
+        'EditBar_Access' : this.user.group.rightGroupPage.EditBar_Access,
+        'SelectedUserManagement_Access' : this.user.group.rightGroupPage.SelectedUserManagement_Access,
+        'SelectedUserManagement_ViewPassword' : this.user.group.rightGroupPage.SelectedUserManagement_ViewPassword,
+        'SelectedUserManagement_ShowPasswordButton' : this.user.group.rightGroupPage.SelectedUserManagement_ShowPasswordButton,
+        'SelectedUserManagement_EditRightGroupPageUser' : this.user.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser,
+        'SelectedUserManagement_DeleteUser' : this.user.group.rightGroupPage.SelectedUserManagement_DeleteUser,
+        'SelectedUserManagement_EditUser' : this.user.group.rightGroupPage.SelectedUserManagement_EditUser,
+        'UserManagement_Access' : this.user.group.rightGroupPage.UserManagement_Access,
+        'UserManagement_AddUser' : this.user.group.rightGroupPage.UserManagement_AddUser,
+        'UserManagement_EditDefaultUser' : this.user.group.rightGroupPage.UserManagement_EditDefaultUser,
+        'GroupManagement_Access' : this.user.group.rightGroupPage.GroupManagement_Access,
+        'GroupManagement_AddGroup' : this.user.group.rightGroupPage.GroupManagement_AddGroup,
+        'GroupManagement_EditDefaultGroup' : this.user.group.rightGroupPage.GroupManagement_EditDefaultGroup,
+        'SelectedGroupManagement_Access' : this.user.group.rightGroupPage.SelectedGroupManagement_Access,
+        'SelectedGroupManagement_EditGroup' : this.user.group.rightGroupPage.SelectedGroupManagement_EditGroup,
+        'SelectedGroupManagement_DeleteGroup' : this.user.group.rightGroupPage.SelectedGroupManagement_DeleteGroup,
+        'SelectedGroupManagement_EditRightPage' : this.user.group.rightGroupPage.SelectedGroupManagement_EditRightPage,
+        'EditBar_Dev' : this.user.group.rightGroupPage.EditBar_Dev,
+        'EditBar_Edit' : this.user.group.rightGroupPage.EditBar_Edit
+      });
 
-    if(this.route.snapshot.paramMap.get('id') === "New") {
-      this.PlaceHolder = this.initial_user;
-    }
+      if(this.route.snapshot.paramMap.get('id') === "New") {
+        this.PlaceHolder = this.initial_user;
+      }
+
+      // Definit quelle groupe est a séléctionner par defaut dans la liste des groupes
+      this.SelectedUserManagementForm.get('group').setValue(this.GroupList[this.GroupList.findIndex(d => d.id === this.user.group.id)]);
+
+      // Definit quelle groupe de droit de page a selectionner par defaut dans la liste de groupes de droit de page
+      this.SelectedUserManagementForm.get('rightGroupPage').setValue(this.RightGroupPageList[this.RightGroupPageList.findIndex(d => d.id === this.user.group.rightGroupPage.id)]);
+
+      // On indique a l'administrateur que si il selectionne un autre groupe que le groupe perso du user, que le groupe perso sera supprimé
+      if(this.initial_user.group.name.split('_')[1] === "user" && Number(this.initial_user.group.name.split('_')[2]) === this.initial_user.id) {
+        if(this.user.group.name === this.initial_user.login || Number(this.user.group.name.split('_')[2]) === this.initial_user.id)
+          this.MsgGroupDelete = null;
+        else
+          this.MsgGroupDelete = "En séléctionnant un group prédefinit, vous allez supprimer le groupe personnalisé de l'utiliateur";
+      }
+
+      if(!this._currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser) {
+        this.SelectedUserManagementForm.disable();
+        this.SelectedUserManagementForm.get('id').enable();
+        this.SelectedUserManagementForm.get('statut').enable();
+        this.SelectedUserManagementForm.get('login').enable();
+        this.SelectedUserManagementForm.get('password').enable();
+        this.SelectedUserManagementForm.get('date_signIn').enable();
+        this.SelectedUserManagementForm.get('time_signIn').enable();
+        this.SelectedUserManagementForm.get('date_logIn').enable();
+        this.SelectedUserManagementForm.get('time_logIn').enable();
+        this.SelectedUserManagementForm.get('gameTag').enable();
+        this.SelectedUserManagementForm.get('name').enable();
+        this.SelectedUserManagementForm.get('firstName').enable();
+        this.SelectedUserManagementForm.get('birthDate').enable();
+        this._RightEdit = true;
+      }
+    })
 
     // On Bloque la modification du groupe et du login pour l'utilisateur par defaut
     if(Number(this.route.snapshot.paramMap.get('id')) === 1) {
       this.SelectedUserManagementForm.get('group').disable();
       this.SelectedUserManagementForm.get('rightGroupPage').disable();
-    }
-
-    // Definit quelle groupe est a séléctionner par defaut dans la liste des groupes
-    this.SelectedUserManagementForm.get('group').setValue(this.GroupList[this.GroupList.findIndex(d => d.id === this.user.group.id)]);
-
-    // Definit quelle groupe de droit de page a selectionner par defaut dans la liste de groupes de droit de page
-    this.SelectedUserManagementForm.get('rightGroupPage').setValue(this.RightGroupPageList[this.RightGroupPageList.findIndex(d => d.id === this.user.group.rightGroupPage.id)]);
-
-    // On indique a l'administrateur que si il selectionne un autre groupe que le groupe perso du user, que le groupe perso sera supprimé
-    if(this.initial_user.group.name.split('_')[1] === "user" && Number(this.initial_user.group.name.split('_')[2]) === this.initial_user.id) {
-      if(this.user.group.name === this.initial_user.login || Number(this.user.group.name.split('_')[2]) === this.initial_user.id)
-        this.MsgGroupDelete = null;
-      else
-        this.MsgGroupDelete = "En séléctionnant un group prédefinit, vous allez supprimer le groupe personnalisé de l'utiliateur";
-    }
-
-    if(!this._currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser) {
-      this.SelectedUserManagementForm.disable();
-      this.SelectedUserManagementForm.get('id').enable();
-      this.SelectedUserManagementForm.get('statut').enable();
-      this.SelectedUserManagementForm.get('login').enable();
-      this.SelectedUserManagementForm.get('password').enable();
-      this.SelectedUserManagementForm.get('date_signIn').enable();
-      this.SelectedUserManagementForm.get('time_signIn').enable();
-      this.SelectedUserManagementForm.get('date_logIn').enable();
-      this.SelectedUserManagementForm.get('time_logIn').enable();
-      this.SelectedUserManagementForm.get('gameTag').enable();
-      this.SelectedUserManagementForm.get('name').enable();
-      this.SelectedUserManagementForm.get('firstName').enable();
-      this.SelectedUserManagementForm.get('birthDate').enable();
-      this._RightEdit = true;
     }
   }
 
@@ -474,13 +541,17 @@ export class SelectedUserManagementComponent implements OnInit {
     
         this.user = new User(post);
         if(this._ChangeRightPage || post.group.name !== post.group.rightGroupPage.name) {
+          this.user.id = 0;
           this.user.group = new Group(null);
           if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser) {
-            this.user.group.id = 0;
+            this.user.group.id = this.user.id;
+            this.user.group.name = "_user_" + this.user.id;
             this.user.group.rightGroupPage = new RightGroupPage(post);
+            this.user.group.rightGroupPage.id = this.user.id;
+            this.user.group.rightGroupPage.name = this.user.group.name;
           }
         }
-        //this.userApi.postUser(this.user);
+        this.userApi.postUser(this.user);
         this.router.navigate(['/UserManagement']);
       } else
         console.log("Vous n'avez pas la permission de créer un nouvelle utilisateur");
@@ -502,16 +573,16 @@ export class SelectedUserManagementComponent implements OnInit {
           this.user.group.rightGroupPage.id = 1;
           this.user.group.rightGroupPage.name = "default";
 
-          this.rightGroupPageApi.putRightGroupPage(1, this.user.group.rightGroupPage);
-          this.groupApi.putGroup(this.user.group.id, this.user.group);
+          // this.rightGroupPageApi.putRightGroupPage(this.user.group.rightGroupPage.id, this.user.group.rightGroupPage);
+          // this.groupApi.putGroup(this.user.group.id, this.user.group);
         }
 
         var regenerate_password: boolean = false;
         if(this.user.password !== this.initial_user.password)
           regenerate_password = true;
 
-        //this.userApi.putUser(1, this.user, regenerate_password);
-        this.router.navigate(['/UserManagement']);
+        // this.userApi.putUser(1, this.user, regenerate_password);
+        // this.router.navigate(['/UserManagement']);
       } else
         console.log("Vous n'avez pas la permission de créer un nouvelle utilisateur");
     } else {
@@ -557,7 +628,7 @@ export class SelectedUserManagementComponent implements OnInit {
         if(this.user.password !== this.initial_user.password)
           regenerate_password = true;
 
-        //this.userApi.putUser(this.initial_user.id, this.user, regenerate_password);
+        this.userApi.putUser(this.initial_user.id, this.user, regenerate_password);
         this.router.navigate(['/UserManagement']);
         if(this.user.id === this._currentUser.id)
           this.app.logOut();  
@@ -575,7 +646,7 @@ export class SelectedUserManagementComponent implements OnInit {
 
   private DeleteUser(): void {
     if(this._currentUser.group.rightGroupPage.SelectedUserManagement_DeleteUser && Number(this.route.snapshot.paramMap.get('id')) !== 1 && this.route.snapshot.paramMap.get('id') !== "New") {
-      //this.userApi.deleteUser(this.user.id);
+      this.userApi.deleteUser(this.user.id);
 
       this.router.navigate(['/UserManagement']);
       if(this.user.id === this._currentUser.id)

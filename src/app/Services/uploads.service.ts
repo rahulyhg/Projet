@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { Upload } from '../Class/Upload';
-import { Data } from '../Api/Api';
+// import { Data } from '../Api/Api';
 
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -20,39 +20,39 @@ interface Api {
   providedIn: 'root'
 })
 export class UploadService {
-  constructor(private data: Data, private http: HttpClient) { }
+  constructor(private http: HttpClient) { }
 
   public getUploadById(id: number): Upload {
     console.log("GET / UPLOAD / getUploadById");
-    var reponse: Upload[] = this.InitReponse(JSON.parse(this.data.getUploadById(id)));
-    if(reponse !== null && reponse !== undefined)
-      return new Upload(reponse[0]);
-    else
+    // var reponse: Upload[] = this.InitReponse(JSON.parse(this.data.getUploadById(id)));
+    // if(reponse !== null && reponse !== undefined)
+      // return new Upload(reponse[0]);
+    // else
       return new Upload(null);
   }
 
   public getUploadList(): Upload[] {
     console.log("GET / UPLOAD / getUploadList");
-    var reponse: Upload[] = this.InitReponse(JSON.parse(this.data.getUpload()));
-    if(reponse !== null && reponse !== undefined)
-      return reponse;
-    else
+    // var reponse: Upload[] = this.InitReponse(JSON.parse(this.data.getUpload()));
+    // if(reponse !== null && reponse !== undefined)
+    //   return reponse;
+    // else
       return [ null ];
   }
 
   public putUpload(id: number, upload: Upload): void {
     console.log("PUT / UPLOAD / putUpload");
-    this.InitReponse(JSON.parse(this.data.putUpload(id, upload)));
+    // this.InitReponse(JSON.parse(this.data.putUpload(id, upload)));
   }
 
   public deleteUpload(id: number): void {
     console.log("DELETE / UPLOAD / deleteUpload");
-    this.InitReponse(JSON.parse(this.data.deleteUpload(id)));
+    // this.InitReponse(JSON.parse(this.data.deleteUpload(id)));
   }
 
   public postUpload(upload: Upload): void {
     console.log("POST / UPLOAD / postUpload");
-    this.InitReponse(JSON.parse(this.data.postUpload(upload)));
+    // this.InitReponse(JSON.parse(this.data.postUpload(upload)));
   }
 
   public UploadFile(file: File, name: string) {

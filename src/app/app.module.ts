@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
-import { Data } from './Api/Api';
 import { RouterModule, Routes } from '@angular/router';
 import { FileDropModule } from 'ngx-file-drop';
 
@@ -60,7 +59,7 @@ const routes: Routes = [
     LoadingBarRouterModule,
     FileDropModule
   ],
-  providers: [DatePipe, Data],
+  providers: [DatePipe],
   bootstrap: [AppComponent],
   exports: [ RouterModule ]
 })
