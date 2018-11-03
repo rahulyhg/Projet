@@ -25,7 +25,7 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    //console.log(this.userApi.getUserById(2));
+    console.log(this.userApi.getUserById(2));
 
     //console.log(this.userApi.Auth("dev", "SlmgrRearm_1689"));
 
@@ -40,6 +40,8 @@ export class AppComponent implements OnInit {
 
     this.getCurrentUser();
     this.Init(); 
+
+    console.log(this._currentUser);
   }
 
   private Init(): void {
@@ -67,14 +69,11 @@ export class AppComponent implements OnInit {
       if(user !== null && user !== undefined && user !== "") {
         var user_tab: string[] = user.split("/\\");
         var id: number = Number(user_tab[0]);
-        console.log(id);
         //var login: string = user[1];
         //var password: string = user[2];
         this._currentUser =  this.userApi.getUserById(id);
-        this._currentUser.group = new Group(null);
-        console.log(this._currentUser);
-        if(!this._currentUser.statut)
-          this.logOut();
+        // if(!this._currentUser.statut)
+        //   this.logOut();
       }
     } else
       this._currentUser = new User(null);
@@ -83,7 +82,7 @@ export class AppComponent implements OnInit {
   public logOut(): void {
     console.log("deconnection");
     this._currentUser.statut = false;
-    this.userApi.putUser(this._currentUser.id, this._currentUser, false);
+    //this.userApi.putUser(this._currentUser.id, this._currentUser, false);
     this._GestionSitePopupStatut = false;
     localStorage.clear();
     this.router.navigate(['/Accueil']);

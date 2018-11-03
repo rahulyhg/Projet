@@ -46,10 +46,9 @@ export class LoginComponent implements OnInit {
       if(post.login !== "" && post.login !== null && post.login !== undefined) {
         if(post.password !== "" && post.password !== null && post.password !== undefined) {
           this._currentUser = new User(this.userApi.Auth(post.login, post.password));
-          this._currentUser.group = new Group(null);
+          console.log(this._currentUser);
           localStorage.setItem('isLoggedIn', "true");
           localStorage.setItem('user', this._currentUser.id  + "/\\" +  this._currentUser.login + "/\\" + this._currentUser.password);
-          console.log(this._currentUser);
           this.app.ngOnInit();
           this.app._currentUser = this._currentUser;
           this.router.navigate(['/Accueil']);

@@ -1,4 +1,4 @@
-import { isString, isNumber, isBoolean } from 'util';
+import { isString, isNumber, isBoolean, isObject } from 'util';
 
 export class Page {
   public id: number;
@@ -23,6 +23,8 @@ export class Page {
     var ret: number;
     if(isNumber(attirb))
       ret = attirb;
+    else
+      ret = Number(attirb);
     if(attirb === null || attirb === undefined || attirb === "" || attirb === " " || attirb < 0 || value === "") {
       if(isNumber(defaut))
         ret = defaut;
@@ -36,6 +38,8 @@ export class Page {
     var ret: string;
     if(isString(attirb))
       ret = attirb;
+    else
+      ret = String(attirb);
     if(attirb === null || attirb === undefined || attirb === "" || attirb === " " || value === "") {
       if(isString(defaut))
         ret = defaut;
@@ -49,6 +53,8 @@ export class Page {
     var ret: boolean;
     if((attirb || !attirb) && isBoolean(attirb))  
       ret = attirb;
+    else
+      ret = Boolean(attirb);
     if(attirb === "0" || attirb === 0)
       ret = false;
     if(attirb === "1" || attirb === 1)
@@ -64,7 +70,7 @@ export class Page {
 
   private setFormat(attirb: any, value: any, defaut: any): any {
     var ret: any = attirb;
-    if(attirb === null || attirb === undefined || value === "")
+    if(attirb === null || attirb === undefined || value === "" || !isObject(attirb))
       ret = defaut;
     return ret;
   }

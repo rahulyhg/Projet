@@ -1,4 +1,4 @@
-import { isString, isNumber, isBoolean } from 'util';
+import { isString, isNumber, isBoolean, isObject } from 'util';
 
 import { Group } from './Group'; 
 
@@ -84,7 +84,7 @@ export class User {
 
   private setFormat(attirb: any, value: any, defaut: any): any {
     var ret: any = attirb;
-    if(attirb === null || attirb === undefined || value === "")
+    if(attirb === null || attirb === undefined || value === "" || !isObject(attirb))
       ret = defaut;
     return ret;
   }

@@ -1,49 +1,145 @@
-Main_Access: value.
-Accueil_Access: value.
-Login_Access: value.
-MonCompte_Access: value.
-EditBar_Access: value.
-SelectedUserManagement_Access: value.
-SelectedUserManagement_ViewPassword: value.
-SelectedUserManagement_ShowPasswordButton: value.
-SelectedUserManagement_EditRightGroupPageUser: value.
-SelectedUserManagement_DeleteUser: value.
-SelectedUserManagement_EditUser: value.
-UserManagement_Access: value.
-UserManagement_AddUser: value.
-UserManagement_EditDefaultUser: value.
-GroupManagement_Access: value.
-GroupManagement_AddGroup: value.
-GroupManagement_EditDefaultGroup: value.
-SelectedGroupManagement_Access: value.
-SelectedGroupManagement_EditGroup: value.SelectedGroupManagement_EditGroup
-SelectedGroupManagement_DeleteGroup: value.SelectedGroupManagement_DeleteGroup
-SelectedGroupManagement_EditRightPage: value.SelectedGroupManagement_EditRightPage
-EditBar_Dev: value.EditBar_Dev
-EditBar_Edit: value.EditBar_Edit
+import { Injectable } from '@angular/core';
+import { Md5 } from 'ts-md5/dist/md5';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
-: value.
+import { User } from '../Class/User';
+import { Data } from '../Api/Api';
 
-: Main_Access
-Accueil_Access
-Login_Access
-MonCompte_Access
-EditBar_Access
-SelectedUserManagement_Access
-SelectedUserManagement_ViewPassword
-SelectedUserManagement_ShowPasswordButton
-SelectedUserManagement_EditRightGroupPageUser
-SelectedUserManagement_DeleteUser
-SelectedUserManagement_EditUser
-UserManagement_Access
-UserManagement_AddUser
-UserManagement_EditDefaultUser
-GroupManagement_Access
-GroupManagement_AddGroup
-GroupManagement_EditDefaultGroup
-SelectedGroupManagement_Access
-SelectedGroupManagement_EditGroup
-SelectedGroupManagement_DeleteGroup
-SelectedGroupManagement_EditRightPage
-EditBar_Dev
-EditBar_Edit
+interface Api {
+  api: boolean;
+  auth: boolean;
+  ErrorMsg: string;
+  data: User[];
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class UserService {
+  private Api:string = environment.apiUrl + "test/";
+
+  constructor(private data: Data, private http: HttpClient) { 
+  }
+
+  public getUserById(id: number): User {
+    console.log("GET / USER / getUserById");
+
+    // LOCAL
+    // var reponse: User[] = this.InitReponse(JSON.parse(this.data.getUserById(id)));
+
+    // API
+    this.http.get(this.Api + id).subscribe(data => document.cookie = "API=" + JSON.stringify(data));
+    var json: string = document.cookie.split('API=')[1];
+    var reponse: User[] = this.InitReponse(JSON.parse(json));
+
+    if(reponse !== null && reponse !== undefined)
+      return new User(reponse);
+    else
+      return new User(null);
+  }
+
+  public Auth(login: string, password: string): User {
+    console.log("GET:AUTH / USER / AuthUser");
+
+    // LOCAL
+    // var reponse: User[] = this.InitReponse(JSON.parse(this.data.AuthUser(login, this.create_md5(password))));
+
+    // API
+
+    
+    this.http.get(this.Api + "Auth/" + login + "/" + this.create_md5(password)).subscribe(data => document.cookie = "API=" + JSON.stringify(data));
+    var json: string = document.cookie.split('API=')[1];
+    var reponse: User[] = this.InitReponse(JSON.parse(json));
+
+    if(reponse !== null && reponse !== undefined)
+      return new User(reponse);
+    else
+      return new User(null);
+  }
+
+  public getUserList(): User[] {
+    console.log("GET / USER / getUserList");
+
+    // LOCAL
+    // var reponse: User[] = this.InitReponse(JSON.parse(this.data.getUser()));
+
+    // API 
+    this.http.get(this.Api).subscribe(data => document.cookie = "API=" + JSON.stringify(data));
+    var json: string = document.cookie.split('API=')[1];
+    console.log(json);
+    var reponse: User[] = this.InitReponse(JSON.parse(json));
+
+    for(var i: number = 0; i < reponse.length; i++) {
+      reponse[i] = new User(reponse[i]);
+    }
+
+    if(reponse !== null && reponse !== undefined)
+      return reponse;
+    else
+      return [ null ];
+  }
+
+  public putUser(id: number, user: User, regenerate_password: boolean): void {
+    console.log("PUT / USER / putUser");
+
+    if(regenerate_password) { user.password = this.create_md5(user.password) }
+
+    // LOCAL
+    // this.InitReponse(JSON.parse(this.data.putUser(id, user)));
+
+    // API
+    this.http.put(this.Api + id, user).subscribe(data => document.cookie = "API=" + JSON.stringify(data));
+    var json: string = document.cookie.split('API=')[1];
+    console.log(json);
+    this.InitReponse(JSON.parse(json));
+  }
+
+  public deleteUser(id: number): void {
+    console.log("DELETE / USER / deleteUser");
+
+    // LOCAL
+    // this.InitReponse(JSON.parse(this.data.deleteUser(id)));
+
+    // API
+    this.http.delete(this.Api + id).subscribe(data => document.cookie = "API=" + JSON.stringify(data));
+    var json: string = document.cookie.split('API=')[1];
+    console.log(json);
+    this.InitReponse(JSON.parse(json));
+  }
+
+  public postUser(user: User): void {
+    console.log("POST / USER / postUser");
+    user.password = this.create_md5(user.password);
+
+    // LOCAL
+    // this.InitReponse(JSON.parse(this.data.postUser(user)));
+
+    // API
+    this.http.post(this.Api, user).subscribe(data => document.cookie = "API=" + JSON.stringify(data));
+    var json: string = document.cookie.split('API=')[1];
+    console.log(json);
+    this.InitReponse(JSON.parse(json));
+  }
+
+  private InitReponse(api: Api): User[] {
+    // document.cookie = '{"api":true,"auth":true,"ErrorMsg":null,"data":{"id":"2","login":"dev","password":"b22f2a7814d6e43374cea98ff1e824be","group":"1","profile":"dev.jpg","statut":"1","date_time_logIn":"2018-10-19 11:59:02","date_time_signIn":"2018-10-15 18:38:01","gameTag":"@default","name":"default","firstName":"default","birthDate":"0000-00-00"}}';
+    if(api !== null && api !== undefined && api.api) {
+      if(api.auth) {
+        if(api.ErrorMsg !== null && api.ErrorMsg !== undefined)
+          console.log(api.ErrorMsg);
+        if(api.data !== null && api.data !== undefined)
+          return api.data;
+        else
+          return [ null ];
+      } else
+        console.log("Error: Authentification False");
+    } else
+      console.log("Error: Api false");
+  }
+
+  private create_md5(attrib: string): any {
+    const md5 = new Md5();
+    return md5.appendStr(attrib).end();
+  }
+}
