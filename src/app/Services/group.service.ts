@@ -1,66 +1,111 @@
 import { Injectable } from '@angular/core';
+import { Md5 } from 'ts-md5/dist/md5';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { environment } from '../../environments/environment';
+import { map } from 'rxjs/operators';
 
+import { Api } from '../Class/Api';
+import { User } from '../Class/User';
 import { Group } from '../Class/Group';
-import { Data } from '../Api/Api';
-
-interface Api {
-  api: boolean;
-  auth: boolean;
-  ErrorMsg: string;
-  data: Group[];
-}
+import { RightGroupPage } from '../Class/RightGroupPage';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GroupService {
-  constructor(private data: Data) { }
+  private Api:string = environment.apiUrl + "Group/";
 
-  public getGroupById(id: number): Group {
+  constructor(private http: HttpClient) { }
+
+    // private Reponse_getGroupById: Observable<Api>;
+    // private Reponse_getGroupList: Observable<Api>;
+
+    // this.Reponse_getGroupById = null;
+    // this.Reponse_getGroupList = null;
+
+    // this.Reponse_getGroupById = this.groupApi.getGroupById(2);
+    // this.Reponse_getGroupById.subscribe((data: Api) => {
+    //   console.log(data)
+    // });
+
+    // this.Reponse_getGroupList = this.groupApi.getGroupList();
+    // this.Reponse_getGroupList.subscribe((data: Api) => {
+    //   console.log(data)
+    // });
+
+    //this.groupApi.putGroup(3, new Group(null));
+    //this.groupApi.deleteGroup(3);
+    //this.groupApi.postGroup(new Group(null));
+
+  public getGroupById(id: number): Observable<Api> {
     console.log("GET / GROUP / getGroupById");
-    var reponse: Group[] = this.InitReponse(JSON.parse(this.data.getGroupById(id)));
-    if(reponse !== null && reponse !== undefined)
-      return new Group(reponse[0]);
-    else
-      return new Group(null);
+
+    var reponse: Observable<Api> = this.http.get<Api>(this.Api + id).pipe(map((data: Api) => {
+      data.data = new Group(data.data)
+      data.data.rightGroupPage = Object(new RightGroupPage(data.data.rightGroupPage))
+      return data
+    }));
+
+    this.InitReponse(reponse);
+    return reponse;
   }
 
-  public getGroupList(): Group[] {
+  public getGroupList(): Observable<Api> {
     console.log("GET / GROUP / getGroupList");
-    var reponse: Group[] = this.InitReponse(JSON.parse(this.data.getGroup()));
-    if(reponse !== null && reponse !== undefined)
-      return reponse;
-    else
-      return [ null ];
+
+    var reponse: Observable<Api> = this.http.get<Api>(this.Api).pipe(map((data: Api) => {
+      for(var i: number = 0; i < Number(data.data.length); i++) {
+        data.data[i] = new Group(data.data[i])
+        data.data[i].rightGroupPage = Object(new RightGroupPage(data.data[i].rightGroupPage))
+      }
+      return data
+    }));
+
+    this.InitReponse(reponse);
+    return reponse;
   }
 
   public putGroup(id: number, group: Group): void {
     console.log("PUT / GROUP / putGroup");
-    this.InitReponse(JSON.parse(this.data.putGroup(id, group)));
-  }
 
-  public postGroup(group: Group): void {
-    console.log("POST / GROUP / postGroup");
-    this.InitReponse(JSON.parse(this.data.postGroup(group)));
+    var reponse: Observable<Api> = this.http.put<Api>(this.Api + id, group);
+    this.InitReponse(reponse);
   }
 
   public deleteGroup(id: number): void {
     console.log("DELETE / GROUP / deleteGroup");
-    this.InitReponse(JSON.parse(this.data.deleteGroup(id)));
+
+    var reponse: Observable<Api> = this.http.delete<Api>(this.Api + id);
+    this.InitReponse(reponse);
   }
 
-  private InitReponse(api: Api): Group[] {
-    if(api !== null && api !== undefined && api.api) {
-      if(api.auth) {
-        if(api.ErrorMsg !== null && api.ErrorMsg !== undefined)
-          console.log(api.ErrorMsg);
-        if(api.data !== null && api.data !== undefined)
-          return api.data;
-        else
-          return [ null ];
+  public postGroup(group: Group): void {
+    console.log("POST / GROUP / postGroup");
+
+    var reponse: Observable<Api> = this.http.post<Api>(this.Api, group);
+    this.InitReponse(reponse);
+  }
+
+  private InitReponse(value: Observable<Api>): void {
+    value.subscribe((data: Api) => {
+      if(data !== null && data !== undefined && data.api) {
+        if(data.auth) {
+          if(data.ErrorMsg !== null && data.ErrorMsg !== undefined)
+            console.log(data.ErrorMsg);
+          if(data.data !== null && data.data !== undefined)
+            return data.data;
+          else
+            return [ null ];
+        } else
+          console.log("Error: Authentification False");
       } else
-        console.log("Error: Authentification False");
-    } else
-      console.log("Error: Api false");
+        console.log("Error: Api false");
+    })
+  }
+
+  private create_md5(attrib: string): any {
+    const md5 = new Md5();
+    return md5.appendStr(attrib).end();
   }
 }

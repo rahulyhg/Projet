@@ -32,6 +32,6 @@ export class PageManagementComponent implements OnInit {
   }
 
   private getUserList(): void {
-    this.PageList = this.pageApi.getPageList();
+    //this.PageList = this.pageApi.getPageList();
   }
 }

@@ -2,87 +2,92 @@ import { Injectable } from '@angular/core';
 import { Md5 } from 'ts-md5/dist/md5';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { environment } from '../../environments/environment';
+import { map } from 'rxjs/operators';
 
+import { Api } from '../Class/Api';
 import { User } from '../Class/User';
-import { Data } from '../Api/Api';
-
-interface Api {
-  api: boolean;
-  auth: boolean;
-  ErrorMsg: string;
-  data: User[];
-}
+import { Group} from '../Class/Group';
+import { RightGroupPage } from '../Class/RightGroupPage';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  private Api:string = environment.apiUrl + "test/";
+  private Api:string = environment.apiUrl + "User/";
 
-  private httpOptions = {
-    headers: new HttpHeaders({
-      'Access-Control-Allow-Credentials' : 'true',
-      'Access-Control-Allow-Origin' : '*',
-      'Content-Type' : 'application/json',
-      'Access-Control-Allow-Methods' : 'GET, POST, PUT, DELETE, OPTIONS'
-    })
-  };
+  constructor(private http: HttpClient) { }
 
-  constructor(private data: Data, private http: HttpClient) { }
+    // private Reponse_getUserById: Observable<Api>;
+    // private Reponse_Aut: Observable<Api>;
+    // private Reponse_getUserList: Observable<Api>;
 
-  public getUserById(id: number): User {
+    // this.Reponse_getUserById = null;
+    // this.Reponse_Aut = null;
+    // this.Reponse_getUserList = null;
+
+    // this.Reponse_getUserById = this.userApi.getUserById(2);
+    // this.Reponse_getUserById.subscribe((data: Api) => {
+    //   this._currentUser = data.data
+    //   console.log(data)
+    // });
+
+    // this.Reponse_Aut = this.userApi.Auth("dev", "SlmgrRearm_1689");
+    // this.Reponse_Aut.subscribe((data: Api) => {
+    //   console.log(data)
+    // });
+
+    // this.Reponse_getUserList = this.userApi.getUserList();
+    // this.Reponse_getUserList.subscribe((data: Api) => {
+    //   console.log(data)
+    // });
+
+    //this.userApi.putUser(3, new User(null), false);
+    //this.userApi.deleteUser(11);
+    //this.userApi.postUser(new User(null));
+
+  public getUserById(id: number): Observable<Api> {
     console.log("GET / USER / getUserById");
 
-    // LOCAL
-    // var reponse: User[] = this.InitReponse(JSON.parse(this.data.getUserById(id)));
+    var reponse: Observable<Api> = this.http.get<Api>(this.Api + id).pipe(map((data: Api) => {
+      data.data = new User(data.data)
+      data.data.group = Object(new Group(data.data.group))
+      data.data.group.rightGroupPage = Object(new RightGroupPage(data.data.group.rightGroupPage))
+      return data
+    }));
 
-    // API
-    this.http.get(this.Api + id).subscribe(data => {
-      localStorage.setItem('reponseApi', JSON.stringify(data))
-    });
-    console.log(localStorage.getItem('reponseApi'));
-    var reponse: User[] = this.InitReponse(JSON.parse(localStorage.getItem('reponseApi')));
-
-
-    if(reponse !== null && reponse !== undefined)
-      return new User(reponse);
-    else
-      return new User(null);
+    this.InitReponse(reponse);
+    return reponse;
   }
 
-  public Auth(login: string, password: string): User {
+  public Auth(login: string, password: string): Observable<Api> {
     console.log("GET:AUTH / USER / AuthUser");
-
-    // LOCAL
-    // var reponse: User[] = this.InitReponse(JSON.parse(this.data.AuthUser(login, this.create_md5(password))));
-
-    // API
-    this.http.get(this.Api + "Auth/" + login + "/" + this.create_md5(password)).subscribe(data => localStorage.setItem('reponseApi', JSON.stringify(data)));
-    var reponse: User[] = this.InitReponse(JSON.parse(localStorage.getItem('reponseApi')));
     
-    if(reponse !== null && reponse !== undefined)
-      return new User(reponse);
-    else
-      return new User(null);
+    var reponse: Observable<Api> = this.http.get<Api>(this.Api + "Auth/" + login + "/" + this.create_md5(password)).pipe(map((data: Api) => {
+      data.data = new User(data.data)
+      data.data.group = Object(new Group(data.data.group))
+      data.data.group.rightGroupPage = Object(new RightGroupPage(data.data.group.rightGroupPage))
+      return data
+    }));
+
+    this.InitReponse(reponse);
+    return reponse;
   }
 
-  public getUserList(): User[] {
+  public getUserList(): Observable<Api> {
     console.log("GET / USER / getUserList");
 
-    // LOCAL
-    // var reponse: User[] = this.InitReponse(JSON.parse(this.data.getUser()));
+    var reponse: Observable<Api> = this.http.get<Api>(this.Api).pipe(map((data: Api) => {
+      for(var i: number = 0; i < Number(data.data.length); i++) {
+        data.data[i] = new User(data.data[i])
+        data.data[i].group = Object(new Group(data.data[i].group))
+        data.data[i].group.rightGroupPage = Object(new RightGroupPage(data.data[i].group.rightGroupPage))
+      }
+      return data
+    }));
 
-    // API 
-    this.http.get(this.Api).subscribe(data => localStorage.setItem('reponseApi', JSON.stringify(data)));
-    var reponse: User[] = this.InitReponse(JSON.parse(localStorage.getItem('reponseApi')));
-    for(var i: number = 0; i < reponse.length; i++) {
-      reponse[i] = new User(reponse[i]);
-    }
-
-    if(reponse !== null && reponse !== undefined)
-      return reponse;
-    else
-      return [ null ];
+    this.InitReponse(reponse);
+    return reponse;
   }
 
   public putUser(id: number, user: User, regenerate_password: boolean): void {
@@ -90,39 +95,41 @@ export class UserService {
 
     if(regenerate_password) { user.password = this.create_md5(user.password) }
 
-    // LOCAL
-    // this.InitReponse(JSON.parse(this.data.putUser(id, user)));
-
-    // API
-    this.http.put(this.Api + id, user).subscribe(data => localStorage.setItem('reponseApi', JSON.stringify(data)));
-    this.InitReponse(JSON.parse(localStorage.getItem('reponseApi')));
+    var reponse: Observable<Api> = this.http.put<Api>(this.Api + id, user);
+    this.InitReponse(reponse);
   }
 
   public deleteUser(id: number): void {
     console.log("DELETE / USER / deleteUser");
-    this.InitReponse(JSON.parse(this.data.deleteUser(id)));
+
+    var reponse: Observable<Api> = this.http.delete<Api>(this.Api + id);
+    this.InitReponse(reponse);
   }
 
   public postUser(user: User): void {
     console.log("POST / USER / postUser");
+
     user.password = this.create_md5(user.password);
-    this.InitReponse(JSON.parse(this.data.postUser(user)));
+
+    var reponse: Observable<Api> = this.http.post<Api>(this.Api, user);
+    this.InitReponse(reponse);
   }
 
-  private InitReponse(api: Api): User[] {
-    localStorage.setItem('reponseApi', "");
-    if(api !== null && api !== undefined && api.api) {
-      if(api.auth) {
-        if(api.ErrorMsg !== null && api.ErrorMsg !== undefined)
-          console.log(api.ErrorMsg);
-        if(api.data !== null && api.data !== undefined)
-          return api.data;
-        else
-          return [ null ];
+  private InitReponse(value: Observable<Api>): void {
+    value.subscribe((data: Api) => {
+      if(data !== null && data !== undefined && data.api) {
+        if(data.auth) {
+          if(data.ErrorMsg !== null && data.ErrorMsg !== undefined)
+            console.log(data.ErrorMsg);
+          if(data.data !== null && data.data !== undefined)
+            return data.data;
+          else
+            return [ null ];
+        } else
+          console.log("Error: Authentification False");
       } else
-        console.log("Error: Authentification False");
-    } else
-      console.log("Error: Api false");
+        console.log("Error: Api false");
+    })
   }
 
   private create_md5(attrib: string): any {

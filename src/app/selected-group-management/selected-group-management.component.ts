@@ -46,7 +46,7 @@ export class SelectedGroupManagementComponent implements OnInit {
     if(this.route.snapshot.paramMap.get('id') !== "New")
       this.group = new Group(this.groupApi.getGroupById(Number(this.route.snapshot.paramMap.get('id'))));
     else
-      this.group = this.groupApi.getGroupById(1);
+      //this.group = this.groupApi.getGroupById(1);
 
     // On vérifit que le groupe que l'on veux éditer réellement
     if(this.group.id !== Number(this.route.snapshot.paramMap.get('id')) && this.route.snapshot.paramMap.get('id') !== "New")
@@ -57,7 +57,7 @@ export class SelectedGroupManagementComponent implements OnInit {
       this._currentUser.group.rightGroupPage.SelectedGroupManagement_DeleteGroup = false; //Pour enlever le bouton supprimer
 
     // Récupération de la liste des groupes de droits de pages
-    this.RightGroupPageList = this.rightGroupPageApi.getRightGroupPageList();
+    //this.RightGroupPageList = this.rightGroupPageApi.getRightGroupPageList();
 
     // On enlève les groupe perso de la liste de groupe de droit de page a afficher Que si on est sur un groupe generique
     var RightGroupPageList: RightGroupPage[] = [];

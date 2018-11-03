@@ -34,22 +34,22 @@ export class GroupManagementComponent implements OnInit {
 
     this.getUserList();
     
-    for(let group of this.getGroupList()) {
-      if(group.name.split('_')[1] === "user") {
-        group.name = "Groupe personnel de droit de " + this.UserList[this.UserList.findIndex(d => d.id === Number(group.name.split('_')[2]))].login;
-        group.rightGroupPage.name = group.name
-        this.GroupList.push(group);
-      }
-      else
-        this.GroupList.push(group);
-    }
+    // for(let group of this.getGroupList()) {
+    //   if(group.name.split('_')[1] === "user") {
+    //     group.name = "Groupe personnel de droit de " + this.UserList[this.UserList.findIndex(d => d.id === Number(group.name.split('_')[2]))].login;
+    //     group.rightGroupPage.name = group.name
+    //     this.GroupList.push(group);
+    //   }
+    //   else
+    //     this.GroupList.push(group);
+    // }
   }
 
-  private getGroupList(): Group[] {
-    return this.groupApi.getGroupList();
-  }
+  // private getGroupList(): Group[] {
+  //   return this.groupApi.getGroupList();
+  // }
 
   private getUserList(): void {
-    this.UserList = this.userApi.getUserList();
+    //this.UserList = this.userApi.getUserList();
   }
 }

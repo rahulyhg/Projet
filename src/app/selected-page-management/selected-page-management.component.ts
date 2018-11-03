@@ -56,7 +56,7 @@ export class SelectedPageManagementComponent implements OnInit {
   }
 
   private getPageById(): void {
-    this.page = this.pageApi.getPageById(Number(this.route.snapshot.paramMap.get('id')));
+    //this.page = this.pageApi.getPageById(Number(this.route.snapshot.paramMap.get('id')));
   }
 
   private imageChangeClick(event): void {

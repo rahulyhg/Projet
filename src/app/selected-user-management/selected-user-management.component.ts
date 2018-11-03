@@ -91,10 +91,10 @@ export class SelectedUserManagementComponent implements OnInit {
         this._currentUser.group.rightGroupPage.SelectedUserManagement_DeleteUser = false;
 
       // Récupération de la liste des groupes
-      this.GroupList = this.groupApi.getGroupList();
+      //this.GroupList = this.groupApi.getGroupList();
 
       // Récupération de la liste des groupes de droit de pages
-      this.RightGroupPageList = this.rightGroupPageApi.getRightGroupPageList();
+      //this.RightGroupPageList = this.rightGroupPageApi.getRightGroupPageList();
 
       // Supprime de la liste les groupes perso (autre que celui en cours) et remplace le nom du groupe perso du user actuel par son login
       var GroupList: Group[] = [];
@@ -480,7 +480,7 @@ export class SelectedUserManagementComponent implements OnInit {
             this.user.group.rightGroupPage = new RightGroupPage(post);
           }
         }
-        this.userApi.postUser(this.user);
+        //this.userApi.postUser(this.user);
         this.router.navigate(['/UserManagement']);
       } else
         console.log("Vous n'avez pas la permission de créer un nouvelle utilisateur");
@@ -510,7 +510,7 @@ export class SelectedUserManagementComponent implements OnInit {
         if(this.user.password !== this.initial_user.password)
           regenerate_password = true;
 
-        this.userApi.putUser(1, this.user, regenerate_password);
+        //this.userApi.putUser(1, this.user, regenerate_password);
         this.router.navigate(['/UserManagement']);
       } else
         console.log("Vous n'avez pas la permission de créer un nouvelle utilisateur");
@@ -557,7 +557,7 @@ export class SelectedUserManagementComponent implements OnInit {
         if(this.user.password !== this.initial_user.password)
           regenerate_password = true;
 
-        this.userApi.putUser(this.initial_user.id, this.user, regenerate_password);
+        //this.userApi.putUser(this.initial_user.id, this.user, regenerate_password);
         this.router.navigate(['/UserManagement']);
         if(this.user.id === this._currentUser.id)
           this.app.logOut();  
@@ -575,7 +575,7 @@ export class SelectedUserManagementComponent implements OnInit {
 
   private DeleteUser(): void {
     if(this._currentUser.group.rightGroupPage.SelectedUserManagement_DeleteUser && Number(this.route.snapshot.paramMap.get('id')) !== 1 && this.route.snapshot.paramMap.get('id') !== "New") {
-      this.userApi.deleteUser(this.user.id);
+      //this.userApi.deleteUser(this.user.id);
 
       this.router.navigate(['/UserManagement']);
       if(this.user.id === this._currentUser.id)

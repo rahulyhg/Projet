@@ -1,145 +1,104 @@
-import { Injectable } from '@angular/core';
-import { Md5 } from 'ts-md5/dist/md5';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { environment } from '../../environments/environment';
+import { Component, OnInit } from '@angular/core';
+import { Router } from "@angular/router";
+import { Title } from '@angular/platform-browser';
+import { Observable } from 'rxjs';
 
-import { User } from '../Class/User';
-import { Data } from '../Api/Api';
+import { Api } from './Class/Api';
+import { User } from './Class/User';
+import { Page } from './Class/Page';
 
-interface Api {
-  api: boolean;
-  auth: boolean;
-  ErrorMsg: string;
-  data: User[];
-}
+import { UserService } from './Services/user.service';
+import { PageService } from './Services/page.service';
 
-@Injectable({
-  providedIn: 'root'
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html'
 })
-export class UserService {
-  private Api:string = environment.apiUrl + "test/";
+export class AppComponent implements OnInit {
+  public Reponse_getUserById: Observable<Api>;
+  private Reponse_getPageByRoute:Observable<Api>;
 
-  constructor(private data: Data, private http: HttpClient) { 
-  }
-
-  public getUserById(id: number): User {
-    console.log("GET / USER / getUserById");
-
-    // LOCAL
-    // var reponse: User[] = this.InitReponse(JSON.parse(this.data.getUserById(id)));
-
-    // API
-    this.http.get(this.Api + id).subscribe(data => document.cookie = "API=" + JSON.stringify(data));
-    var json: string = document.cookie.split('API=')[1];
-    var reponse: User[] = this.InitReponse(JSON.parse(json));
-
-    if(reponse !== null && reponse !== undefined)
-      return new User(reponse);
-    else
-      return new User(null);
-  }
-
-  public Auth(login: string, password: string): User {
-    console.log("GET:AUTH / USER / AuthUser");
-
-    // LOCAL
-    // var reponse: User[] = this.InitReponse(JSON.parse(this.data.AuthUser(login, this.create_md5(password))));
-
-    // API
-
+  public _currentUser: User;
+  public _currentPage: Page;
+  public _GestionSitePopupStatut: boolean;
+  
+  constructor(private userApi: UserService, private router: Router, private pageApi: PageService, private titleService: Title) { 
+    this.Reponse_getUserById = null;
+    this.Reponse_getPageByRoute = null;
     
-    this.http.get(this.Api + "Auth/" + login + "/" + this.create_md5(password)).subscribe(data => document.cookie = "API=" + JSON.stringify(data));
-    var json: string = document.cookie.split('API=')[1];
-    var reponse: User[] = this.InitReponse(JSON.parse(json));
-
-    if(reponse !== null && reponse !== undefined)
-      return new User(reponse);
-    else
-      return new User(null);
+    this._currentUser = new User(null);
+    this._GestionSitePopupStatut = false;
+    this._currentPage = new Page(null);
   }
 
-  public getUserList(): User[] {
-    console.log("GET / USER / getUserList");
-
-    // LOCAL
-    // var reponse: User[] = this.InitReponse(JSON.parse(this.data.getUser()));
-
-    // API 
-    this.http.get(this.Api).subscribe(data => document.cookie = "API=" + JSON.stringify(data));
-    var json: string = document.cookie.split('API=')[1];
-    console.log(json);
-    var reponse: User[] = this.InitReponse(JSON.parse(json));
-
-    for(var i: number = 0; i < reponse.length; i++) {
-      reponse[i] = new User(reponse[i]);
-    }
-
-    if(reponse !== null && reponse !== undefined)
-      return reponse;
-    else
-      return [ null ];
+  ngOnInit(): void {
+    this.Init(); 
   }
 
-  public putUser(id: number, user: User, regenerate_password: boolean): void {
-    console.log("PUT / USER / putUser");
+  private Init(): void {
+    if(localStorage.getItem('isLoggedIn') === "true") {
+      var user: string = localStorage.getItem('user');
+      if(user !== null && user !== undefined && user !== "") {
+        var user_tab: string[] = user.split("/\\");
+        var id: number = Number(user_tab[0]);
+        //var login: string = user[1];
+        //var password: string = user[2];
+        this.Reponse_getUserById = this.userApi.getUserById(id);
+        this.Reponse_getUserById.subscribe((data: Api) => {
+          this._currentUser = data.data
 
-    if(regenerate_password) { user.password = this.create_md5(user.password) }
-
-    // LOCAL
-    // this.InitReponse(JSON.parse(this.data.putUser(id, user)));
-
-    // API
-    this.http.put(this.Api + id, user).subscribe(data => document.cookie = "API=" + JSON.stringify(data));
-    var json: string = document.cookie.split('API=')[1];
-    console.log(json);
-    this.InitReponse(JSON.parse(json));
-  }
-
-  public deleteUser(id: number): void {
-    console.log("DELETE / USER / deleteUser");
-
-    // LOCAL
-    // this.InitReponse(JSON.parse(this.data.deleteUser(id)));
-
-    // API
-    this.http.delete(this.Api + id).subscribe(data => document.cookie = "API=" + JSON.stringify(data));
-    var json: string = document.cookie.split('API=')[1];
-    console.log(json);
-    this.InitReponse(JSON.parse(json));
-  }
-
-  public postUser(user: User): void {
-    console.log("POST / USER / postUser");
-    user.password = this.create_md5(user.password);
-
-    // LOCAL
-    // this.InitReponse(JSON.parse(this.data.postUser(user)));
-
-    // API
-    this.http.post(this.Api, user).subscribe(data => document.cookie = "API=" + JSON.stringify(data));
-    var json: string = document.cookie.split('API=')[1];
-    console.log(json);
-    this.InitReponse(JSON.parse(json));
-  }
-
-  private InitReponse(api: Api): User[] {
-    // document.cookie = '{"api":true,"auth":true,"ErrorMsg":null,"data":{"id":"2","login":"dev","password":"b22f2a7814d6e43374cea98ff1e824be","group":"1","profile":"dev.jpg","statut":"1","date_time_logIn":"2018-10-19 11:59:02","date_time_signIn":"2018-10-15 18:38:01","gameTag":"@default","name":"default","firstName":"default","birthDate":"0000-00-00"}}';
-    if(api !== null && api !== undefined && api.api) {
-      if(api.auth) {
-        if(api.ErrorMsg !== null && api.ErrorMsg !== undefined)
-          console.log(api.ErrorMsg);
-        if(api.data !== null && api.data !== undefined)
-          return api.data;
-        else
-          return [ null ];
-      } else
-        console.log("Error: Authentification False");
+          if(!this._currentUser.statut)
+            this.logOut();
+        })
+      }
     } else
-      console.log("Error: Api false");
+      this._currentUser = new User(null);
+
+    this.Reponse_getPageByRoute = this.pageApi.getPageByRoute(this.router.url.split("/")[1]);
+    this.Reponse_getPageByRoute.subscribe((data: Api) => {
+      if(this.Reponse_getUserById === null) {
+        if(data.data.needLogIn && !this._currentUser.statut && data.data.id !== 1) {
+          console.log("Vous devez être connecté pour accedez à cette page");
+          this.router.navigate(['/Accueil']);
+        }
+      } else {
+        this.Reponse_getUserById.subscribe((user: Api) => {
+          if(data.data.needLogIn && !user.data.statut) {
+            console.log("Vous devez être connecté pour accedez à cette page");
+            this.router.navigate(['/Accueil']);
+          }
+        })
+      }
+
+      this.titleService.setTitle( data.data.title );
+      
+      var linkfav = document.head.querySelector("#favicon");
+      if (linkfav) { document.head.removeChild(linkfav) }
+      
+      var linkElement = document.createElement( "link" );
+      linkElement.setAttribute( "id", "favicon" );
+      linkElement.setAttribute( "rel", "icon" );
+      linkElement.setAttribute( "type", "image/x-icon" );
+      linkElement.setAttribute( "href", data.data.favicon );
+      document.head.appendChild( linkElement );
+    })
   }
 
-  private create_md5(attrib: string): any {
-    const md5 = new Md5();
-    return md5.appendStr(attrib).end();
+  public logOut(): void {
+    console.log("deconnection");
+    this.Reponse_getUserById.subscribe((data: Api) => {
+      data.data.statut = false;
+      this.userApi.putUser(data.data.id, data.data, false);
+    })
+
+    this._GestionSitePopupStatut = false;
+    localStorage.clear();
+    this.router.navigate(['/Accueil']);
+    this.ngOnInit();
+  }
+
+  private GestionSitePopup(): void {
+    this._GestionSitePopupStatut = !(this._GestionSitePopupStatut);
   }
 }
