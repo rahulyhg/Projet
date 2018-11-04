@@ -56,3 +56,14 @@ Remettre la gestion de droit dans SelectedGroupManagement
 Faire la meme chose que pour UserDefault dans GroupManagement (griser si pas droit modif)
 
 Mettre a jour la date d edernier connection dans l'aPI
+
+OK => la liste de right group pas n'est pas grisé pour l'edition de l'utilisateur par defaut
+OK => => statut pas mis a jour
+OK => => login pas mis a jour
+
+OK => Quand on click sur valider les modif, le groupe de droit personelle reprend son vrai nom
+OK => => a voir pour mettr l'utilisateur en put dans une autre variable
+
+OK => Remettre les nom de group brut pour l'insertion / mise à jour dans la base de données
+
+Bug d'edition d'un meme utilisateur qui avait le meme login
