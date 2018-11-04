@@ -57,6 +57,7 @@ export class AppComponent implements OnInit {
 
     this.Reponse_getPageByRoute = this.pageApi.getPageByRoute(this.router.url.split("/")[1]);
     this.Reponse_getPageByRoute.subscribe((data: Api) => {
+      this._currentPage = data.data
       if(this.Reponse_getUserById === null) {
         if(data.data.needLogIn && !this._currentUser.statut && data.data.id !== 1) {
           console.log("Vous devez être connecté pour accedez à cette page");

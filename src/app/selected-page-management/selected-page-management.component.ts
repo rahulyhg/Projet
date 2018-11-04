@@ -1,110 +1,202 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from "@angular/router";
-import { HttpClient } from '@angular/common/http';
-import { UploadEvent, FileSystemFileEntry } from '../../../node_modules/ngx-file-drop';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { FileSystemFileEntry } from '../../../node_modules/ngx-file-drop';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { Observable } from 'rxjs';
 
 import { AppComponent } from '../app.component';
 
+import { Api } from '../Class/Api';
 import { User } from '../Class/User';
 import { Page } from '../Class/Page';
 
 import { PageService } from '../Services/page.service';
-import { from } from 'rxjs';
+import { RightGroupPage } from '../Class/RightGroupPage';
+import { UploadService } from '../Services/uploads.service';
 
 @Component({
   templateUrl: './selected-page-management.component.html',
 })
 export class SelectedPageManagementComponent implements OnInit {
+  private Reponse_getUserById: Observable<Api>;
+  private Reponse_getPageById: Observable<Api>;
+  private Reponse_getPageById_initial: Observable<Api>;
+
   public _currentUser: User;
   public page: Page;
-  private selectedFile: File;
-  public new_title: string;
-  private post: any;
-  private SelectedPageManagementForm: FormGroup;
+  private initial_page: Page;
+  public SelectedPageManagementForm: FormGroup;
 
-  constructor(private app:AppComponent, private router: Router, private pageApi: PageService, private route: ActivatedRoute,
-    private http: HttpClient, private fb: FormBuilder) { 
+  constructor(private app:AppComponent, private router: Router, private pageApi: PageService, private route: ActivatedRoute, 
+    private fb: FormBuilder, private uploadApi: UploadService) { 
+    this.Reponse_getUserById = null;
+    this.Reponse_getPageById = null;
+    this.Reponse_getPageById_initial = null;
+    
     this._currentUser = new User(null);
     this.page = new Page(null);
-    this.new_title = this.page.title;
-    this.post = null;
+    this.initial_page = new Page(null);
     this.SelectedPageManagementForm = null;
+    this.SelectedPageManagementForm = this.fb.group({'id': null, 'title': null, 'favicon': null, 'refresh': null, 
+    'route': null, 'needLogIn': null});
+
+    this.Reponse_getPageById_initial = this.pageApi.getPageById(Number(this.route.snapshot.paramMap.get('id')));
+    this.Reponse_getPageById_initial.subscribe((data: Api) => {
+      this.initial_page = data.data
+    })
   }
 
   ngOnInit(): void { 
+    // Initialisation de la page
     this.app.ngOnInit();
-    this._currentUser = this.app._currentUser;
-    
-    this.getPageById();
+    this.Reponse_getUserById = this.app.Reponse_getUserById;
 
-    this.new_title = this.page.title;
+    // Vérification des droit d'acces a cette page pour _currentUser
+    // Vérification des droit pour savoir si l'utilisateur peux recurerer les données
+    if(this.Reponse_getUserById === null) {
+      this._currentUser = new User(null);
 
-    //#
-    //if(!this._currentUser.group.rightGroupPage.MonCompte_Access) {
-      // console.log("Vous n'avez pas la permission d'accedez à cette page");
-      // this.router.navigate(['/Accueil']);
-    //}
+      this.verifRight(this._currentUser.group.rightGroupPage);
+    } else {
+      this.Reponse_getUserById.subscribe((data: Api) => {
+        this._currentUser = data.data
+
+        this.verifRight(data.data.group.rightGroupPage);
+      })
+    }
+  }
+
+  private verifRight(rightGroupPage: RightGroupPage) {
+    if(!this._currentUser.group.rightGroupPage.SelectedPageManagement_Access) {
+      console.log("Vous n'avez pas la permission d'accedez à cette page");
+      this.router.navigate(['/Accueil']);
+    } else {
+      this.Reponse_getPageById = this.pageApi.getPageById(Number(this.route.snapshot.paramMap.get('id')));
+      this.Reponse_getPageById.subscribe((data: Api) => {
+        this.page = data.data
+      })
+    }
 
     this.initData();
   }
 
   private initData(): void {
-    this.SelectedPageManagementForm = this.fb.group({
-      'title': this.page.title
-    });
+    this.Reponse_getPageById.subscribe((data: Api) => {
+      this.SelectedPageManagementForm = this.fb.group({
+        'id': this.page.id,
+        'title': this.page.title,
+        'favicon': this.page.favicon,
+        'refresh': this.page.refresh,
+        'route': this.page.route,
+        'needLogIn': this.page.needLogIn
+      });
+
+      if(this.initial_page.refresh !== this.page.refresh) {
+        if(!this._currentUser.group.rightGroupPage.SelectedPageManagement_EditRoute) {
+          this.SelectedPageManagementForm.get('refresh').disable();
+          this.page.refresh = this.initial_page.refresh;
+          console.log("Vous n'avez pas la permission de modifier le temps de refersh des données de cette page");
+        }
+      }
+
+      if(this.initial_page.route !== this.page.route) {
+        if(!this._currentUser.group.rightGroupPage.SelectedPageManagement_EditRoute) {
+          this.SelectedPageManagementForm.get('route').disable();
+          this.page.refresh = this.initial_page.refresh;
+          console.log("Vous n'avez pas la permission de modifier la route de cette page");
+        }
+      }
+
+      if(this.initial_page.needLogIn !== this.page.needLogIn) {
+        if(!this._currentUser.group.rightGroupPage.SelectedPageManagement_EditNeedLogIn) {
+          this.SelectedPageManagementForm.get('needLogIn').disable();
+          this.page.refresh = this.initial_page.refresh;
+          console.log("Vous n'avez pas la permission de modifier la condition de connexion pour cette page");
+        }
+      }
+    })
   }
 
-  private getPageById(): void {
-    //this.page = this.pageApi.getPageById(Number(this.route.snapshot.paramMap.get('id')));
-  }
+  private imageChangeClick(event, value): void {
+    this.Reponse_getUserById.subscribe((data: Api) => {
+      if(this._currentUser.group.rightGroupPage.SelectedPageManagement_EditPage) {
+        this.page = new Page(value);
 
-  private imageChangeClick(event): void {
-    this.selectedFile = event.target.files[0];
-    this.onUpload();
-  }
-
-  private onUpload(): void {
-    var uploadData: FormData = new FormData();
-    var name: string = "page" + Math.random() * 1000 + ".jpg";
-    uploadData.append('myFile', this.selectedFile, name);
-    this.http.post('https://dev.kevin-c.fr/api/file.php', uploadData, { observe: 'events' })
-    .subscribe(event => {
-      if(event)
-        this.newImage(event, name);
-    });
+        var name: string = "faviconPage" + Math.random() * 1000 + ".jpg";
+        if(event.target.files[0] !==undefined) {
+          this.uploadApi.UploadFile(event.target.files[0], name).subscribe(event => {
+            if(event)
+              this.newImage(event, name);
+          });
+        }
+      } else
+        console.log("Vous n'avez pas la permission de modifier cette page");
+    })
   }
 
   private newImage(ok: any, name: string): void {
-    if(ok.ok)
-      this.page.favicon = "https://dev.kevin-c.fr/api/uploads/" + name;
+    this.Reponse_getUserById.subscribe((data: Api) => {
+      if(this._currentUser.group.rightGroupPage.SelectedPageManagement_EditPage) {
+        if(ok.ok)
+          this.page.favicon = "https://dev.kevin-c.fr/uploads/" + name;
+        this.initData();
+      } else
+        console.log("Vous n'avez pas la permission de modifier cette page");
+    })
   }
 
-  public imageChangeDrag(event: UploadEvent): void {
-    (event.files[0].fileEntry as FileSystemFileEntry).file((file: File) => { this.selectedFile = file; this.onUpload(); });
+  public imageChangeDrag(event, value): void {
+    this.Reponse_getUserById.subscribe((data: Api) => {
+      if(this._currentUser.group.rightGroupPage.SelectedPageManagement_EditPage) {
+        this.page = new Page(value);
+
+        var name: string = "faviconPage" + Math.random() * 1000 + ".jpg";
+        (event.files[0].fileEntry as FileSystemFileEntry).file((file: File) => { this.uploadApi.UploadFile(file, name).subscribe(event => {
+          if(event)
+            this.newImage(event, name);
+        }); });
+      } else
+        console.log("Vous n'avez pas la permission de modifier cette page");
+    })
   }
 
-  private TitleChange(value: any): void {
-    this.page.title = value;
-    if(value.length > 24) {
-      this.new_title = value.substring(0,21) + " ...";
-    } else {
-      this.new_title = value;
-    }
+  public TitleChange(value: any): void {
+    this.Reponse_getUserById.subscribe((data: Api) => {
+      if(this._currentUser.group.rightGroupPage.SelectedPageManagement_EditPage) {
+        if(value.length > 24)
+          this.page.title = value.substring(0,21) + " ...";
+        else
+          this.page.title = value;
+      } else
+        console.log("Vous n'avez pas la permission de modifier cette page");
+    })
   }
 
-  private editPage(value: any): void {
-    console.log("Edition");
+  public editPage(value: any): void {
+    this.Reponse_getUserById.subscribe((data: Api) => {
+      this.page = new Page(value);
+      if(this._currentUser.group.rightGroupPage.SelectedPageManagement_EditPage) {
+        if(this.initial_page.refresh !== this.page.refresh) {
+          if(!this._currentUser.group.rightGroupPage.SelectedPageManagement_EditRefresh) {
+            this.page.refresh = this.initial_page.refresh;
+            console.log("Vous n'avez pas la permission de modifier le temps de refersh des données de cette page");
+          }
+        }
+        if(this.initial_page.route !== this.page.route) {
+          if(!this._currentUser.group.rightGroupPage.SelectedPageManagement_EditRoute) {
+            this.page.route = this.initial_page.route;
+            console.log("Vous n'avez pas la permission de modifier la route de cette page");
+          }
+        }
+        if(this.initial_page.needLogIn !== this.page.needLogIn) {
+          if(!this._currentUser.group.rightGroupPage.SelectedPageManagement_EditNeedLogIn) {
+            this.page.needLogIn = this.initial_page.needLogIn;
+            console.log("Vous n'avez pas la permission de modifier la condition de connexion pour cette page");
+          }
+        }
+        this.pageApi.putPage(this.page.id, this.page);
+      } else
+        console.log("Vous n'avez pas la permission de modifier cette page");
+    })
   }
-
-  private DeletePage(): void {
-    //#
-    // if(this._currentUser.group.rightGroupPage.SelectedUserManagement_DeleteUser) {
-      this.pageApi.deletePage(this.page.id);
-
-      this.router.navigate(['/PageManagement']);
-    // } else 
-    //   console.log("Vous n'avez pas la permission pour effectuer cette action");
-  }
-
 }

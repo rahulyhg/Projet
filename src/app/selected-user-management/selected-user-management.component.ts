@@ -63,7 +63,9 @@ export class SelectedUserManagementComponent implements OnInit {
         'UserManagement_EditDefaultUser' : null, 'GroupManagement_Access' : null, 'GroupManagement_AddGroup' : null,
         'GroupManagement_EditDefaultGroup' : null, 'SelectedGroupManagement_Access' : null,
         'SelectedGroupManagement_EditGroup' : null, 'SelectedGroupManagement_DeleteGroup' : null,
-        'SelectedGroupManagement_EditRightPage' : null, 'EditBar_Dev' : null, 'EditBar_Edit' : null});
+        'SelectedGroupManagement_EditRightPage' : null, 'EditBar_Dev' : null, 'EditBar_Edit' : null, 
+        'SelectedPageManagement_Access': null, 'SelectedPageManagement_EditPage': null, 'SelectedPageManagement_EditRefresh': null,
+        'SelectedPageManagement_EditRoute': null, 'SelectedPageManagement_EditNeedLogIn': null});
       this.user = new User(null);
       var id: number = 1;
       this.initial_user = new User(null);
@@ -403,15 +405,62 @@ export class SelectedUserManagementComponent implements OnInit {
     }
     if(rightGroupPage.GroupManagement_AddGroup || rightGroupPage.GroupManagement_EditDefaultGroup)
       rightGroupPage.GroupManagement_Access = true;
-      
+
+    // SelectedPageManagement Page
+    if(element === "SelectedPageManagement_Access"){
+      if(rightGroupPage.SelectedPageManagement_Access) {
+        rightGroupPage.SelectedPageManagement_EditPage = false;
+        rightGroupPage.SelectedPageManagement_EditRefresh = false;
+        rightGroupPage.SelectedPageManagement_EditRoute = false;
+        rightGroupPage.SelectedPageManagement_EditNeedLogIn = false;
+      }
+      rightGroupPage.SelectedPageManagement_Access = !(rightGroupPage.SelectedPageManagement_Access);
+    } else if(element === "SelectedPageManagement_EditPage") {
+      if(!rightGroupPage.SelectedPageManagement_EditPage) {
+        rightGroupPage.SelectedPageManagement_Access = true;
+      } else {
+        rightGroupPage.SelectedPageManagement_EditRefresh = false;
+        rightGroupPage.SelectedPageManagement_EditRoute = false;
+        rightGroupPage.SelectedPageManagement_EditNeedLogIn = false;
+      }
+      rightGroupPage.SelectedPageManagement_EditPage = !(rightGroupPage.SelectedPageManagement_EditPage);
+    }
+    else if(element === "SelectedPageManagement_EditRefresh") {
+      if(!rightGroupPage.SelectedPageManagement_EditRefresh) {
+        rightGroupPage.SelectedPageManagement_Access = true;
+        rightGroupPage.SelectedPageManagement_EditPage = true;
+      }
+      rightGroupPage.SelectedPageManagement_EditRefresh = !(rightGroupPage.SelectedPageManagement_EditRefresh);
+    }
+    else if(element === "SelectedPageManagement_EditRoute") {
+      if(!rightGroupPage.SelectedPageManagement_EditRoute) {
+        rightGroupPage.SelectedPageManagement_Access = true;
+        rightGroupPage.SelectedPageManagement_EditPage = true;
+      }
+      rightGroupPage.SelectedPageManagement_EditRoute = !(rightGroupPage.SelectedPageManagement_EditRoute);
+    }
+    else if(element === "SelectedPageManagement_EditNeedLogIn") {
+      if(!rightGroupPage.SelectedPageManagement_EditNeedLogIn) {
+        rightGroupPage.SelectedPageManagement_Access = true;
+        rightGroupPage.SelectedPageManagement_EditPage = true;
+      }
+      rightGroupPage.SelectedPageManagement_EditNeedLogIn = !(rightGroupPage.SelectedPageManagement_EditNeedLogIn);
+    }
+    if(rightGroupPage.SelectedPageManagement_EditPage || rightGroupPage.SelectedPageManagement_EditRefresh ||
+      rightGroupPage.SelectedPageManagement_EditRoute || rightGroupPage.SelectedPageManagement_EditNeedLogIn)
+      rightGroupPage.SelectedPageManagement_Access = true;
+    if(!rightGroupPage.SelectedPageManagement_EditPage && !rightGroupPage.SelectedPageManagement_EditRefresh &&
+      !rightGroupPage.SelectedPageManagement_EditRoute && !rightGroupPage.SelectedPageManagement_EditNeedLogIn)
+      rightGroupPage.SelectedPageManagement_Access = false;
+
     // EditBar
     if(element === "EditBar_Dev")
       rightGroupPage.EditBar_Dev = !(rightGroupPage.EditBar_Dev);
     if(rightGroupPage.SelectedGroupManagement_Access || rightGroupPage.SelectedUserManagement_Access ||
-      rightGroupPage.UserManagement_Access || rightGroupPage.GroupManagement_Access)
+      rightGroupPage.UserManagement_Access || rightGroupPage.GroupManagement_Access || rightGroupPage.SelectedPageManagement_Access)
       rightGroupPage.EditBar_Edit = true;
     if(!rightGroupPage.SelectedGroupManagement_Access && !rightGroupPage.SelectedUserManagement_Access &&
-      !rightGroupPage.UserManagement_Access && !rightGroupPage.GroupManagement_Access)
+      !rightGroupPage.UserManagement_Access && !rightGroupPage.GroupManagement_Access && !rightGroupPage.SelectedPageManagement_Access)
       rightGroupPage.EditBar_Edit = false;
 
     if(rightGroupPage.EditBar_Dev || rightGroupPage.EditBar_Edit)
@@ -422,11 +471,11 @@ export class SelectedUserManagementComponent implements OnInit {
     // Main Page
     if(rightGroupPage.Accueil_Access || rightGroupPage.Login_Access || rightGroupPage.MonCompte_Access || 
       rightGroupPage.EditBar_Access || rightGroupPage.SelectedUserManagement_Access || rightGroupPage.UserManagement_Access ||
-      rightGroupPage.SelectedGroupManagement_Access || rightGroupPage.GroupManagement_Access)
+      rightGroupPage.SelectedGroupManagement_Access || rightGroupPage.GroupManagement_Access || rightGroupPage.SelectedPageManagement_Access)
       rightGroupPage.Main_Access = true;
     if(!rightGroupPage.Accueil_Access && !rightGroupPage.Login_Access && !rightGroupPage.MonCompte_Access && 
       !rightGroupPage.EditBar_Access && !rightGroupPage.SelectedUserManagement_Access && !rightGroupPage.UserManagement_Access &&
-      !rightGroupPage.SelectedGroupManagement_Access && !rightGroupPage.GroupManagement_Access)
+      !rightGroupPage.SelectedGroupManagement_Access && !rightGroupPage.GroupManagement_Access && !rightGroupPage.SelectedPageManagement_Access)
       rightGroupPage.Main_Access = false;
 
     // On definit le group de droit de page de l'utilisateur par celui que l'on vient de créer et modifier
@@ -482,7 +531,12 @@ export class SelectedUserManagementComponent implements OnInit {
         'SelectedGroupManagement_DeleteGroup' : this.user.group.rightGroupPage.SelectedGroupManagement_DeleteGroup,
         'SelectedGroupManagement_EditRightPage' : this.user.group.rightGroupPage.SelectedGroupManagement_EditRightPage,
         'EditBar_Dev' : this.user.group.rightGroupPage.EditBar_Dev,
-        'EditBar_Edit' : this.user.group.rightGroupPage.EditBar_Edit
+        'EditBar_Edit' : this.user.group.rightGroupPage.EditBar_Edit,
+        'SelectedPageManagement_Access' : this.user.group.rightGroupPage.SelectedPageManagement_Access,
+        'SelectedPageManagement_EditPage' : this.user.group.rightGroupPage.SelectedPageManagement_EditPage,
+        'SelectedPageManagement_EditRefresh' : this.user.group.rightGroupPage.SelectedPageManagement_EditRefresh,
+        'SelectedPageManagement_EditRoute' : this.user.group.rightGroupPage.SelectedPageManagement_EditRoute,
+        'SelectedPageManagement_EditNeedLogIn' : this.user.group.rightGroupPage.SelectedPageManagement_EditNeedLogIn
       });
 
       if(this.route.snapshot.paramMap.get('id') === "New") {
@@ -520,15 +574,16 @@ export class SelectedUserManagementComponent implements OnInit {
         this._RightEdit = true;
       }
 
-      this.SelectedUserManagementForm.get('EditBar_Edit').disable();
-      this.SelectedUserManagementForm.get('EditBar_Access').disable();
-      this.SelectedUserManagementForm.get('Main_Access').disable();
-
       // On Bloque la modification du groupe et du login pour l'utilisateur par defaut
       if(Number(this.route.snapshot.paramMap.get('id')) === 1) {
         this.SelectedUserManagementForm.get('rightGroupPage').disable();
       }
     })
+
+    this.SelectedUserManagementForm.get('EditBar_Edit').disable();
+    this.SelectedUserManagementForm.get('EditBar_Access').disable();
+    this.SelectedUserManagementForm.get('Main_Access').disable();
+    this.SelectedUserManagementForm.get('SelectedPageManagement_Access').disable();
 
     if(Number(this.route.snapshot.paramMap.get('id')) === 1) {
       this.SelectedUserManagementForm.get('group').disable();

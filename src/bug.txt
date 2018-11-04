@@ -36,7 +36,7 @@ verifier les format de fichier que l'on upload
 => que des .ico pour les icone
 => que les format image pour les images ...
 
-bug : ExpressionChangedAfterItHasBeenCheckedError: Expression has changed after it was checked lorsque l'on change de page avec le popup ouvert
+Plus de problème donc résolu => bug : ExpressionChangedAfterItHasBeenCheckedError: Expression has changed after it was checked lorsque l'on change de page avec le popup ouvert
 
 faire page d'erreur par default pour page inconue
 

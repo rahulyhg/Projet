@@ -33,6 +33,12 @@ export class RightGroupPage {
     public SelectedGroupManagement_DeleteGroup: boolean;
     public SelectedGroupManagement_EditRightPage: boolean;
 
+    public SelectedPageManagement_Access: boolean;
+    public SelectedPageManagement_EditPage: boolean;
+    public SelectedPageManagement_EditRefresh: boolean;
+    public SelectedPageManagement_EditRoute: boolean;
+    public SelectedPageManagement_EditNeedLogIn: boolean;
+
     constructor(value: any) {
       if(value === null) { value = "" }
 
@@ -67,6 +73,12 @@ export class RightGroupPage {
       this.SelectedGroupManagement_EditGroup = this.setFormatBoolean(value.SelectedGroupManagement_EditGroup, value, false);
       this.SelectedGroupManagement_DeleteGroup = this.setFormatBoolean(value.SelectedGroupManagement_DeleteGroup, value, false);
       this.SelectedGroupManagement_EditRightPage = this.setFormatBoolean(value.SelectedGroupManagement_EditRightPage, value, false);
+
+      this.SelectedPageManagement_Access = this.setFormatBoolean(value.SelectedPageManagement_Access, value, false);
+      this.SelectedPageManagement_EditPage = this.setFormatBoolean(value.SelectedPageManagement_EditPage, value, false);
+      this.SelectedPageManagement_EditRefresh = this.setFormatBoolean(value.SelectedPageManagement_EditRefresh, value, false);
+      this.SelectedPageManagement_EditRoute = this.setFormatBoolean(value.SelectedPageManagement_EditRoute, value, false);
+      this.SelectedPageManagement_EditNeedLogIn = this.setFormatBoolean(value.SelectedPageManagement_EditNeedLogIn, value, false);
     }
 
     private setFormatNumber(attirb: any, value: any, defaut: any): number {
