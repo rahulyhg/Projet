@@ -95,10 +95,7 @@ export class UserService {
 
     if(regenerate_password) { user.password = this.create_md5(user.password) }
 
-    var reponse: Observable<Api> = this.http.put<Api>(this.Api + id, user).pipe(map((data: Api) => {
-      console.log(data)
-      return data
-    }));
+    var reponse: Observable<Api> = this.http.put<Api>(this.Api + id, user);
     this.InitReponse(reponse);
   }
 

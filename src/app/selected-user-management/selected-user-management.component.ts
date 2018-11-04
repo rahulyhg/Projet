@@ -2,7 +2,6 @@ import { Component, OnInit, Injectable } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { FileSystemFileEntry } from '../../../node_modules/ngx-file-drop';
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { AppComponent } from '../app.component';
@@ -72,8 +71,6 @@ export class SelectedUserManagementComponent implements OnInit {
       this.Reponse_getUserById_initial = this.userApi.getUserById(id);
       this.Reponse_getUserById_initial.subscribe((data: Api) => {
         this.initial_user = data.data
-        // if(this.initial_user.group.name.split('_')[1] === "user")
-        //   this.initial_user.group.name = this.initial_user.login
       })
       this.isPassword = true;
       this.MsgGroupDelete = null;
