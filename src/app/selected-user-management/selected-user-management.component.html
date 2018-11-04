@@ -21,8 +21,8 @@
         </div>
         <div *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_EditUser">
             <div class="profile">
-                <input style="display: none" type="file" (change)="imageChangeClick($event)" #File>
-                <file-drop (onFileDrop)="imageChangeDrag($event)" (click)="File.click()">
+                <input style="display: none" type="file" (change)="imageChangeClick($event, SelectedUserManagementForm.value)" #File>
+                <file-drop (onFileDrop)="imageChangeDrag($event, SelectedUserManagementForm.value)" (click)="File.click()">
                     <img src="{{ user.profile }}" appHighlight>
                     <div class="drop">Drop picture here</div>
                 </file-drop>

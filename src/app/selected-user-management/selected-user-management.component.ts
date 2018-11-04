@@ -660,13 +660,25 @@ export class SelectedUserManagementComponent implements OnInit {
       console.log("Vous n'avez pas la permission de supprimer cette utilisateurs");
   }
 
-  private imageChangeClick(event): void {
+  private imageChangeClick(event, value): void {
     if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditUser) {
+      // On Met dans l'object user les données que l'on a deja rentré
+      value.date_time_logIn = value.date_logIn + " " + value.time_logIn;
+      value.date_time_signIn = value.date_signIn + " " + value.time_signIn;
+      if(value.login === null) { value.login = "null" }
+      if(value.password === null) { value.password = "null" }
+      if(value.gameTag === null) { value.gameTag = "null" }
+      if(value.name === null) { value.name = "null" }
+      if(value.firstName === null) { value.firstName = "null" }
+      this.user = new User(value);
+
       var name: string = "profile" + Math.random() * 1000 + ".jpg";
-      this.uploadApi.UploadFile(event.target.files[0], name).subscribe(event => {
-        if(event)
-          this.newImage(event, name);
-      });
+      if(event.target.files[0] !==undefined) {
+        this.uploadApi.UploadFile(event.target.files[0], name).subscribe(event => {
+          if(event)
+            this.newImage(event, name);
+        });
+      }
     } else 
       console.log("Vous n'avez pas la permission de modifier l'image de profile de cette utilisateur");
   }
@@ -674,14 +686,24 @@ export class SelectedUserManagementComponent implements OnInit {
   private newImage(ok: any, name: string): void {
     if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditUser) {
       if(ok.ok)
-        this.user.profile = "https://dev.kevin-c.fr/api/uploads/" + name;
+        this.user.profile = "https://dev.kevin-c.fr/uploads/" + name;
       this.initData();
     } else 
       console.log("Vous n'avez pas la permission de modifier l'image de profile de cette utilisateur");
   }
 
-  public imageChangeDrag(event): void {
+  public imageChangeDrag(event, value): void {
     if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditUser) {
+      // On Met dans l'object user les données que l'on a deja rentré
+      value.date_time_logIn = value.date_logIn + " " + value.time_logIn;
+      value.date_time_signIn = value.date_signIn + " " + value.time_signIn;
+      if(value.login === null) { value.login = "null" }
+      if(value.password === null) { value.password = "null" }
+      if(value.gameTag === null) { value.gameTag = "null" }
+      if(value.name === null) { value.name = "null" }
+      if(value.firstName === null) { value.firstName = "null" }
+      this.user = new User(value);
+
       var name: string = "profile" + Math.random() * 1000 + ".jpg";
       (event.files[0].fileEntry as FileSystemFileEntry).file((file: File) => { this.uploadApi.UploadFile(file, name).subscribe(event => {
         if(event)
