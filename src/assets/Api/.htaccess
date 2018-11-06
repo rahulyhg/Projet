@@ -1,0 +1,5 @@
+RewriteEngine On
+
+RewriteRule ^(.*)/(.*)/(.*)/(.*)$ main.php?page=$1&param1=$2&param2=$3&param3=$4 [NC,L]
+RewriteRule ^(.*)/(.*)/(.*)$ main.php?page=$1&param1=$2&param2=$3 [NC,L]
+RewriteRule ^(.*)/(.*)$ main.php?page=$1&param1=$2 [NC,L]
