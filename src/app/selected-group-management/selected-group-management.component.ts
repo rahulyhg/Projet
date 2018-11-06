@@ -196,7 +196,7 @@ export class SelectedGroupManagementComponent implements OnInit {
       if(element === "Login_Access")
         rightGroupPage.Login_Access = !(rightGroupPage.Login_Access);
 
-      // User/{{ _currentUser.id }} Page
+      // User Page
       if(element === "User_Access")
         rightGroupPage.User_Access = !(rightGroupPage.User_Access);
 

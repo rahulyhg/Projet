@@ -31,7 +31,7 @@ export class UserComponent implements OnInit {
 
   ngOnInit(): void { 
     this.router.events.subscribe((path: any) => {
-      if(path.url !== undefined && path.url !== this.one) {
+      if(path.url !== undefined && path.url !== this.one && path.url.split("/")[1] === "User") {
         this.one = path.url
         this.ngOnInit();
       }
