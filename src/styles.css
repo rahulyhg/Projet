@@ -214,8 +214,17 @@ height: 50% !important;
 }
 
 .devPopup_content li {
-  margin: 20px;
+  margin: 5px;
+  display: inline-grid;
+  margin-left: 15px;
+  margin-top: 15px;
 }
+
+.devPopup_content li a {
+  padding: 5px;
+}
+
+
 
 .table {
   border: 2px solid black;
@@ -512,7 +521,7 @@ margin-top: 60px;
     font-size: 17.64px;
     font-family: sans-serif;
     color: #44494c;
-    width: 100%;
+    margin-right: -183px;
   }
 
 

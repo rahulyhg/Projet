@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Md5 } from 'ts-md5/dist/md5';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { map } from 'rxjs/operators';
 
@@ -90,13 +90,12 @@ export class UserService {
     return reponse;
   }
 
-  public putUser(id: number, user: User, regenerate_password: boolean): void {
+  public putUser(id: number, user: User, regenerate_password: boolean): Observable<HttpResponse<Object>> {
     console.log("PUT / USER / putUser");
 
     if(regenerate_password) { user.password = this.create_md5(user.password) }
 
-    var reponse: Observable<Api> = this.http.put<Api>(this.Api + id, user);
-    this.InitReponse(reponse);
+    return this.http.put(this.Api + id, user, { observe: 'response' });
   }
 
   public deleteUser(id: number): void {

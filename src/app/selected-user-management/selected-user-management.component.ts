@@ -1,4 +1,4 @@
-import { Component, OnInit, Injectable } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { FileSystemFileEntry } from '../../../node_modules/ngx-file-drop';
@@ -574,16 +574,16 @@ export class SelectedUserManagementComponent implements OnInit {
         this._RightEdit = true;
       }
 
+      this.SelectedUserManagementForm.get('EditBar_Edit').disable();
+      this.SelectedUserManagementForm.get('EditBar_Access').disable();
+      this.SelectedUserManagementForm.get('Main_Access').disable();
+      this.SelectedUserManagementForm.get('SelectedPageManagement_Access').disable();
+
       // On Bloque la modification du groupe et du login pour l'utilisateur par defaut
       if(Number(this.route.snapshot.paramMap.get('id')) === 1) {
         this.SelectedUserManagementForm.get('rightGroupPage').disable();
       }
     })
-
-    this.SelectedUserManagementForm.get('EditBar_Edit').disable();
-    this.SelectedUserManagementForm.get('EditBar_Access').disable();
-    this.SelectedUserManagementForm.get('Main_Access').disable();
-    this.SelectedUserManagementForm.get('SelectedPageManagement_Access').disable();
 
     if(Number(this.route.snapshot.paramMap.get('id')) === 1) {
       this.SelectedUserManagementForm.get('group').disable();
@@ -684,10 +684,14 @@ export class SelectedUserManagementComponent implements OnInit {
           if(this.user.password !== this.initial_user.password)
             regenerate_password = true;
   
-          this.userApi.putUser(this.initial_user.id, this.user, regenerate_password);
-          this.router.navigate(['/UserManagement']);
-          if(this.user.id === this._currentUser.id)
-            this.app.logOut();  
+          this.userApi.putUser(this.initial_user.id, this.user, regenerate_password).subscribe((data) => {
+            if(data.ok) {
+              this.router.navigate(['/UserManagement'])
+              if(this.user.id === this._currentUser.id) {
+                this.app.logOut()
+              }
+            }
+          });
         })
       } else
         console.log("Vous n'avez pas la permission de modifier cette utilisateur");

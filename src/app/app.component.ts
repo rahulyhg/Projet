@@ -89,8 +89,8 @@ export class AppComponent implements OnInit {
   public logOut(): void {
     console.log("deconnection");
     this.Reponse_getUserById.subscribe((data: Api) => {
-      data.data.statut = false;
-      this.userApi.putUser(data.data.id, data.data, false);
+      data.data.statut = false
+      this.userApi.putUser(data.data.id, data.data, false).subscribe()
     })
 
     this._GestionSitePopupStatut = false;
