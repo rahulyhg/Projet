@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute} from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
+import { Md5 } from 'ts-md5/dist/md5';
 
 import { AppComponent } from '../app.component';
 
@@ -18,6 +19,8 @@ import { RightGroupPageService } from '../Services/RightGroupPage.service';
   templateUrl: './selected-group-management.component.html'
 })
 export class SelectedGroupManagementComponent implements OnInit {
+  @ViewChild('name') private name: ElementRef;
+  
   private Reponse_getUserById: Observable<Api>;
   private Reponse_getGroupById_form: Observable<Api>;
   private Reponse_getGroupById_initial: Observable<Api>;
@@ -30,6 +33,7 @@ export class SelectedGroupManagementComponent implements OnInit {
   private group: Group;
   private initial_group: Group;
   private PlaceHolder: Group;
+  private one: boolean;
 
   constructor(private route: ActivatedRoute, private app: AppComponent, private router: Router,
     private fb: FormBuilder, private groupApi: GroupService, private rightGroupPageApi: RightGroupPageService,private userApi: UserService) { 
@@ -37,8 +41,6 @@ export class SelectedGroupManagementComponent implements OnInit {
       this.Reponse_getGroupById_form = null;
       this.Reponse_getGroupById_initial = null;
       this.Reponse_getRightGroupPageList = null;
-      
-
       this._currentUser = new User(null);
       this._ChangeRightPage = false;
       this.RightGroupPageList = null;
@@ -62,6 +64,7 @@ export class SelectedGroupManagementComponent implements OnInit {
         this.initial_group = data.data
       })
       this.PlaceHolder = new Group(null);
+      this.one = false;
     }
 
   ngOnInit(): void { 
@@ -87,22 +90,39 @@ export class SelectedGroupManagementComponent implements OnInit {
   }
 
   private verifRight(rightGroupPage: RightGroupPage) {
-    // Récupération des données du groupe que l'on va modiifier UNIQUEMENT si ce n'est pas la création d'un nouveau groupe
-    if(this.route.snapshot.paramMap.get('id') !== "New") {
-      this.Reponse_getGroupById_form = this.groupApi.getGroupById(Number(this.route.snapshot.paramMap.get('id')));
-      this.Reponse_getGroupById_form.subscribe((data: Api) => {
-        this.group = data.data
-      })
+    if(!rightGroupPage.SelectedGroupManagement_Access) {
+      console.log("Vous n'avez pas la permission d'accedez à la page de Gestion de ce groupe");
+      this.router.navigate(['/Accueil']);
     }
-    else {
-      this.Reponse_getGroupById_form = this.groupApi.getGroupById(1);
-      this.Reponse_getGroupById_form.subscribe((data: Api) => {
-        this.group = data.data
-      })
+    
+    if(!rightGroupPage.GroupManagement_AddGroup && this.route.snapshot.paramMap.get('id') === "New") {
+      console.log("Vous n'avez pas la permission de creer de nouveau groupe");
+      this.router.navigate(['/Accueil']);
     }
+    
+    if(!rightGroupPage.GroupManagement_EditDefaultGroup && Number(this.route.snapshot.paramMap.get('id')) === 1) {
+      console.log("Vous n'avez pas la permission de modifier le groupe par defaut");
+      this.router.navigate(['/Accueil']);
+    }
+ 
+    if(rightGroupPage.SelectedGroupManagement_Access) {
+      // Récupération des données du groupe que l'on va modiifier UNIQUEMENT si ce n'est pas la création d'un nouveau groupe
+      if(this.route.snapshot.paramMap.get('id') !== "New") {
+        this.Reponse_getGroupById_form = this.groupApi.getGroupById(Number(this.route.snapshot.paramMap.get('id')));
+        this.Reponse_getGroupById_form.subscribe((data: Api) => {
+          this.group = data.data
+        })
+      }
+      else {
+        this.Reponse_getGroupById_form = this.groupApi.getGroupById(1);
+        this.Reponse_getGroupById_form.subscribe((data: Api) => {
+          this.group = data.data
+        })
+      }
+    } else 
+      console.log("Vous n'avez pas la permission d'accedez à la page de Gestion de ce groupe");
 
     this.Reponse_getGroupById_form.subscribe((data: Api) => {
-
       // On vérifit que le groupe que l'on veux éditer réellement
       if(this.group.id !== Number(this.route.snapshot.paramMap.get('id')) && this.route.snapshot.paramMap.get('id') !== "New")
         this.router.navigate(['/GroupManagement']);
@@ -111,33 +131,33 @@ export class SelectedGroupManagementComponent implements OnInit {
       if(this.route.snapshot.paramMap.get('id') === "New" || this.route.snapshot.paramMap.get('id') === "1")
         this._currentUser.group.rightGroupPage.SelectedGroupManagement_DeleteGroup = false; //Pour enlever le bouton supprimer
 
-      
-
-      if(this.route.snapshot.paramMap.get('id') === "New") {
+      if(this.route.snapshot.paramMap.get('id') === "New")
         this.group.name = null;
-      }
     })
 
-    // Récupération de la liste des groupes de droits de pages
-    this.Reponse_getRightGroupPageList = this.rightGroupPageApi.getRightGroupPageList();
-    this.Reponse_getRightGroupPageList.subscribe((data: Api) => {
-      this.RightGroupPageList = data.data
+    if(rightGroupPage.SelectedGroupManagement_Access) {
+      // Récupération de la liste des groupes de droits de pages
+      this.Reponse_getRightGroupPageList = this.rightGroupPageApi.getRightGroupPageList();
+      this.Reponse_getRightGroupPageList.subscribe((data: Api) => {
+        this.RightGroupPageList = data.data
 
-      // On enlève les groupe perso de la liste de groupe de droit de page a afficher Que si on est sur un groupe generique
-      var RightGroupPageList: RightGroupPage[] = [];
-      for(var i: number = 0; i < this.RightGroupPageList.length; i++) {
-        if(this.RightGroupPageList[i].name.split('_')[1] === "user") {
-          var id_user = Number(this.group.name.split('_')[2]);
-          if(Number(id_user) === Number(this.RightGroupPageList[i].name.split('_')[2])) {
-            this.group.name = "Groupe personelle de l'utilisateur id: " + id_user;
-            this.RightGroupPageList[i].name = this.group.name;
-            RightGroupPageList.push(this.RightGroupPageList[i]);
-          }
-        } else
-        RightGroupPageList.push(this.RightGroupPageList[i]);
-      }
-      this.RightGroupPageList = RightGroupPageList;
-    })
+        // On enlève les groupe perso de la liste de groupe de droit de page a afficher Que si on est sur un groupe generique
+        var RightGroupPageList: RightGroupPage[] = [];
+        for(var i: number = 0; i < this.RightGroupPageList.length; i++) {
+          if(this.RightGroupPageList[i].name.split('_')[1] === "user") {
+            var id_user = Number(this.group.name.split('_')[2]);
+            if(Number(id_user) === Number(this.RightGroupPageList[i].name.split('_')[2])) {
+              this.group.name = "Groupe personelle de l'utilisateur id: " + id_user;
+              this.RightGroupPageList[i].name = this.group.name;
+              RightGroupPageList.push(this.RightGroupPageList[i]);
+            }
+          } else
+          RightGroupPageList.push(this.RightGroupPageList[i]);
+        }
+        this.RightGroupPageList = RightGroupPageList;
+      })
+    } else 
+      console.log("Vous n'avez pas la permission d'accedez à la page de Gestion de ce groupe");
 
     // Initialisation des données à afficher dans le formulaire
     this.initData();
@@ -423,11 +443,15 @@ export class SelectedGroupManagementComponent implements OnInit {
         'SelectedPageManagement_EditRoute' : this.group.rightGroupPage.SelectedPageManagement_EditRoute,
         'SelectedPageManagement_EditNeedLogIn' : this.group.rightGroupPage.SelectedPageManagement_EditNeedLogIn
       });
+
+      if(!this.one) {
+        this.name.nativeElement.focus();
+        this.one = !(this.one);
+      }
   
       // On enlève la valeur par defaut et on la met dans le placeHolder pour la création de nouveau groupe
-      if(this.route.snapshot.paramMap.get('id') === "New") {
+      if(this.route.snapshot.paramMap.get('id') === "New")
         this.PlaceHolder = this.initial_group;
-      }
   
       // On bloque la modification du nom et du groupe de droit de page pour le groupe par defaut ou pour un groupe personelle
       if(Number(this.route.snapshot.paramMap.get('id')) === 1 || this.initial_group.name.split('_').length !== 1) {
@@ -443,6 +467,14 @@ export class SelectedGroupManagementComponent implements OnInit {
         this.SelectedGroupManagementForm.get('name').enable();
       }
     })
+
+    if(!this._currentUser.group.rightGroupPage.SelectedGroupManagement_EditGroup)
+      this.SelectedGroupManagementForm.disable();
+
+    if(!this._currentUser.group.rightGroupPage.SelectedGroupManagement_EditRightPage) {
+      this.SelectedGroupManagementForm.disable();
+      this.SelectedGroupManagementForm.get('name').enable();
+    }
 
     this.SelectedGroupManagementForm.get('EditBar_Edit').disable();
     this.SelectedGroupManagementForm.get('EditBar_Access').disable();
@@ -466,57 +498,120 @@ export class SelectedGroupManagementComponent implements OnInit {
 
   private editGroup(post: any): void {
     this.Reponse_getGroupById_form.subscribe((data: Api) => {
-      if(Number(this.route.snapshot.paramMap.get('id')) === 1) {
-        this.group.rightGroupPage = new RightGroupPage(post);
 
-        this.group.id = 1;
-        this.group.name = "default";
-        
-        this.group.rightGroupPage.id = 1;
-        this.group.rightGroupPage.name = this.group.name;
-        
-        this.groupApi.putGroup(this.group.id, this.group).subscribe();;
-        this.router.navigate(['/GroupManagement']);
-      } else if(this.route.snapshot.paramMap.get('id') === "New") {
-        this.group.rightGroupPage = new RightGroupPage(post);
+      var same: boolean = false;
 
-        this.group.id = 0;
-        this.group.name = post.name;
-        
-        this.group.rightGroupPage.id = this.group.id;
-        this.group.rightGroupPage.name = this.group.name;
+      if(this.route.snapshot.paramMap.get('id') !== "New") {
+        if(this.initial_group.name.split('_').length !== 1) {
+          this.group.rightGroupPage = new RightGroupPage(post);
   
-        this.groupApi.postGroup(this.group);
-        this.router.navigate(['/GroupManagement']);
-      } else {
-        this.group.id = this.initial_group.id;
-        this.group.name = post.name;
-        this.group.rightGroupPage.id = this.initial_group.rightGroupPage.id;
-        this.group.rightGroupPage.name = this.group.name;
-
-        if(this.initial_group.name.split('_')[1] === "user") {
           this.group.id = this.initial_group.id;
           this.group.name = this.initial_group.name;
-          this.group.rightGroupPage.name = this.initial_group.rightGroupPage.name;
-          this.group.rightGroupPage.id = this.initial_group.rightGroupPage.id;
-        }
   
-        this.groupApi.putGroup(this.initial_group.id, this.group).subscribe((data) => {
-          if(data.ok) {
+          if(!this._currentUser.group.rightGroupPage.SelectedGroupManagement_EditRightPage)
+            this.group.rightGroupPage = this.initial_group.rightGroupPage;
+  
+          this.group.rightGroupPage.id = this.initial_group.rightGroupPage.id;
+          this.group.rightGroupPage.name = this.initial_group.rightGroupPage.name;
+  
+          if(this.create_md5(JSON.stringify(new Group(this.group))) === this.create_md5(JSON.stringify(new Group(this.initial_group)))) {
+            console.log("Aucune modification");
+            same = true;
             this.router.navigate(['/GroupManagement']);
-            if(this.group.id === this._currentUser.group.id)
-              this.app.logOut();
           }
-        });
+        } else {
+          if(this.create_md5(JSON.stringify(new Group(this.group))) === this.create_md5(JSON.stringify(new Group(this.initial_group)))) {
+            console.log("Aucune modification");
+            same = true;
+            this.router.navigate(['/GroupManagement']);
+          }
+        }
+      }
+
+      if(!same) {
+        if(this._currentUser.group.rightGroupPage.SelectedGroupManagement_EditGroup) {
+          if(Number(this.route.snapshot.paramMap.get('id')) === 1) {
+            if(this._currentUser.group.rightGroupPage.SelectedGroupManagement_EditGroup) {
+              this.group.rightGroupPage = new RightGroupPage(post);
+      
+              this.group.id = 1;
+              this.group.name = "default";
+  
+              if(!this._currentUser.group.rightGroupPage.SelectedGroupManagement_EditRightPage)
+                this.group.rightGroupPage = this.initial_group.rightGroupPage;
+
+              this.group.rightGroupPage.id = 1;
+              this.group.rightGroupPage.name = this.group.name;
+  
+              this.groupApi.putGroup(this.group.id, this.group).subscribe();;
+              this.router.navigate(['/GroupManagement']);
+            } else 
+              console.log("Vous n'avez pas la permission de modifier le groupe par defaut");
+          } else if(this.route.snapshot.paramMap.get('id') === "New") {
+            if(this._currentUser.group.rightGroupPage.SelectedGroupManagement_EditGroup) {
+              this.group.rightGroupPage = new RightGroupPage(post);
+      
+              this.group.id = 0;
+              this.group.name = post.name;
+  
+              if(!this._currentUser.group.rightGroupPage.SelectedGroupManagement_EditRightPage)
+                this.group.rightGroupPage = this.initial_group.rightGroupPage;
+              
+              this.group.rightGroupPage.id = this.group.id;
+              this.group.rightGroupPage.name = this.group.name;
+        
+              this.groupApi.postGroup(this.group);
+              this.router.navigate(['/GroupManagement']);
+            } else 
+              console.log("Vous n'avez pas la permission d'ajouter un groupe");
+          } else {
+            this.group.id = this.initial_group.id;
+            this.group.name = post.name;
+  
+            if(!this._currentUser.group.rightGroupPage.SelectedGroupManagement_EditRightPage)
+              this.group.rightGroupPage = this.initial_group.rightGroupPage;
+  
+            this.group.rightGroupPage.id = this.initial_group.rightGroupPage.id;
+            this.group.rightGroupPage.name = this.group.name;
+
+            if(this.initial_group.name.split('_')[1] === "user") {
+              this.group.id = this.initial_group.id;
+              this.group.name = this.initial_group.name;
+
+              if(!this._currentUser.group.rightGroupPage.SelectedGroupManagement_EditRightPage)
+                this.group.rightGroupPage = this.initial_group.rightGroupPage;
+
+              this.group.rightGroupPage.name = this.initial_group.rightGroupPage.name;
+              this.group.rightGroupPage.id = this.initial_group.rightGroupPage.id;
+            }
+  
+            this.groupApi.putGroup(this.initial_group.id, this.group).subscribe((data) => {
+              if(data.ok) {
+                this.router.navigate(['/GroupManagement']);
+                if(this.group.id === this._currentUser.group.id)
+                  this.app.logOut();
+              }
+            });
+          }
+        } else 
+          console.log("Vous n'avez pas la permission d'accedez à la page de Gestion de ce groupe");  
       }
     })
   }
 
   private DeleteGroup(): void {
-    this.groupApi.deleteGroup(this.group.id);
+    if(this._currentUser.group.rightGroupPage.SelectedGroupManagement_EditGroup) {
+      this.groupApi.deleteGroup(this.group.id);
 
-    this.router.navigate(['/GroupManagement']);
-    if(this.group.id === this._currentUser.id)
-      this.app.logOut();
+      this.router.navigate(['/GroupManagement']);
+      if(this.group.id === this._currentUser.id)
+        this.app.logOut();
+    } else 
+      console.log("Vous n'avez pas la permission de supprimer ce groupe");
+  }
+
+  private create_md5(attrib: string): any {
+    const md5 = new Md5();
+    return md5.appendStr(attrib).end();
   }
 }

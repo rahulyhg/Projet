@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { FileSystemFileEntry } from '../../../node_modules/ngx-file-drop';
 import { Observable } from 'rxjs';
+import { Md5 } from 'ts-md5/dist/md5';
 
 import { AppComponent } from '../app.component';
 
@@ -20,6 +21,8 @@ import { UploadService } from '../Services/uploads.service';
   templateUrl: './selected-user-management.component.html'
 })
 export class SelectedUserManagementComponent implements OnInit {
+  @ViewChild('login') private login: ElementRef;
+
   private Reponse_getUserById: Observable<Api>;
   private Reponse_getUserById_initial: Observable<Api>;
   private Reponse_getUserById_form: Observable<Api>;
@@ -38,6 +41,7 @@ export class SelectedUserManagementComponent implements OnInit {
   private MsgGroupDelete: string;
   private MsgGroupPerso: string;
   private PlaceHolder: User;
+  private one: boolean;
 
   constructor(private route: ActivatedRoute, private app: AppComponent, private userApi: UserService, private router: Router,
     private fb: FormBuilder, private groupApi: GroupService, private rightGroupPageApi: RightGroupPageService, private uploadApi: UploadService) { 
@@ -46,7 +50,6 @@ export class SelectedUserManagementComponent implements OnInit {
       this.Reponse_getUserById_form = null;
       this.Reponse_getRightGroupPageList = null;
       this.Reponse_getGroupList = null;
-      
       this._currentUser = new User(null);
       this._RightEdit = false;
       this._ChangeRightPage = false;
@@ -78,6 +81,7 @@ export class SelectedUserManagementComponent implements OnInit {
       this.MsgGroupDelete = null;
       this.MsgGroupPerso = null;
       this.PlaceHolder = new User(null);
+      this.one = false;
     }
 
   ngOnInit(): void { 
@@ -136,7 +140,6 @@ export class SelectedUserManagementComponent implements OnInit {
 
           if(this.initial_user.group.name === this.initial_user.login)
             this.MsgGroupPerso = "Groupe personnel de droit";
-
         })
       }
 
@@ -237,7 +240,6 @@ export class SelectedUserManagementComponent implements OnInit {
     if(value.name === null) { value.name = "null" }
     if(value.firstName === null) { value.firstName = "null" }
     this.user = new User(value);
-
     this.user.group = this.GroupList[Number(id.split(":")[0])];
     
     // Affiche en fonction du groupe choisi s'il sagit d'un groupe perso ou non
@@ -539,9 +541,13 @@ export class SelectedUserManagementComponent implements OnInit {
         'SelectedPageManagement_EditNeedLogIn' : this.user.group.rightGroupPage.SelectedPageManagement_EditNeedLogIn
       });
 
-      if(this.route.snapshot.paramMap.get('id') === "New") {
-        this.PlaceHolder = this.initial_user;
+      if(!this.one) {
+        this.login.nativeElement.focus();
+        this.one = !(this.one);
       }
+
+      if(this.route.snapshot.paramMap.get('id') === "New")
+        this.PlaceHolder = this.initial_user;
 
       // Definit quelle groupe est a séléctionner par defaut dans la liste des groupes
       this.SelectedUserManagementForm.get('group').setValue(this.GroupList[this.GroupList.findIndex(d => d.id === this.user.group.id)]);
@@ -580,14 +586,12 @@ export class SelectedUserManagementComponent implements OnInit {
       this.SelectedUserManagementForm.get('SelectedPageManagement_Access').disable();
 
       // On Bloque la modification du groupe et du login pour l'utilisateur par defaut
-      if(Number(this.route.snapshot.paramMap.get('id')) === 1) {
+      if(Number(this.route.snapshot.paramMap.get('id')) === 1)
         this.SelectedUserManagementForm.get('rightGroupPage').disable();
-      }
     })
 
-    if(Number(this.route.snapshot.paramMap.get('id')) === 1) {
+    if(Number(this.route.snapshot.paramMap.get('id')) === 1)
       this.SelectedUserManagementForm.get('group').disable();
-    }
   }
 
   private ChangeRightEdit(): void {
@@ -595,107 +599,126 @@ export class SelectedUserManagementComponent implements OnInit {
   }
 
   private editUse(post: any): void {
-    if(this.route.snapshot.paramMap.get('id') === "New") {
-      if(this._currentUser.group.rightGroupPage.UserManagement_AddUser) {
-        post.date_time_logIn = post.date_logIn + " " + post.time_logIn;
-        post.date_time_signIn = post.date_signIn + " " + post.time_signIn;
-    
-        this.user = new User(post);
-        if(this._ChangeRightPage || post.group.name !== post.group.rightGroupPage.name) {
-          this.user.id = 0;
-          this.user.group = new Group(null);
-          if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser) {
-            this.user.group.id = this.user.id;
-            this.user.group.name = "_user_" + this.user.id;
-            this.user.group.rightGroupPage = new RightGroupPage(post);
-            this.user.group.rightGroupPage.id = this.user.id;
-            this.user.group.rightGroupPage.name = this.user.group.name;
-          }
-        }
-        this.userApi.postUser(this.user);
-        this.router.navigate(['/UserManagement']);
-      } else
-        console.log("Vous n'avez pas la permission de créer un nouvelle utilisateur");
-    }
-    else if(Number(this.route.snapshot.paramMap.get('id')) === 1) {
-      if(this._currentUser.group.rightGroupPage.UserManagement_EditDefaultUser) {
-        post.date_time_logIn = post.date_logIn + " " + post.time_logIn;
-        post.date_time_signIn = post.date_signIn + " " + post.time_signIn;
+    this.Reponse_getUserById_initial.subscribe((data: Api) => {
+      var same: boolean = false;
 
-        this.user = new User(post);
-        this.user.id = 1;
-        this.user.group = new Group(null);
+      post.date_time_logIn = post.date_logIn + " " + post.time_logIn;
+      post.date_time_signIn = post.date_signIn + " " + post.time_signIn;
+      this.user = new User(post);
 
-        if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser) {
-          this.user.group.id = 1;
-          this.user.group.name = "default";
-          this.user.group.rightGroupPage = new RightGroupPage(post);
-          this.user.group.rightGroupPage.id = 1;
-          this.user.group.rightGroupPage.name = "default";
-        }
+      if(!this._RightEdit) {
+        this.user.group.name = this.initial_user.group.name;
+        this.user.group.rightGroupPage.name = this.user.group.name;
+      }
 
-        var regenerate_password: boolean = false;
-        if(this.user.password !== this.initial_user.password)
-          regenerate_password = true;
+      if(this.create_md5(JSON.stringify(new User(this.user))) === this.create_md5(JSON.stringify(new User(this.initial_user)))) {
+        console.log("Aucune modification");
+          same = true;
+          this.router.navigate(['/UserManagement']);
+      }
+
+      if(!same) {
+        if(this.route.snapshot.paramMap.get('id') === "New") {
+          if(this._currentUser.group.rightGroupPage.UserManagement_AddUser) {
+            post.date_time_logIn = post.date_logIn + " " + post.time_logIn;
+            post.date_time_signIn = post.date_signIn + " " + post.time_signIn;
         
-        this.userApi.putUser(1, this.user, regenerate_password);
-        this.router.navigate(['/UserManagement']);
-      } else
-        console.log("Vous n'avez pas la permission de créer un nouvelle utilisateur");
-    } else {
-      if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditUser) {
-        this.Reponse_getUserById_initial.subscribe((data: Api) => {
-          post.date_time_logIn = post.date_logIn + " " + post.time_logIn;
-          post.date_time_signIn = post.date_signIn + " " + post.time_signIn;
+            this.user = new User(post);
+            if(this._ChangeRightPage || post.group.name !== post.group.rightGroupPage.name) {
+              this.user.id = 0;
+              this.user.group = new Group(null);
+              if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser) {
+                this.user.group.id = this.user.id;
+                this.user.group.name = "_user_" + this.user.id;
+                this.user.group.rightGroupPage = new RightGroupPage(post);
+                this.user.group.rightGroupPage.id = this.user.id;
+                this.user.group.rightGroupPage.name = this.user.group.name;
+              }
+            }
+            this.userApi.postUser(this.user);
+            this.router.navigate(['/UserManagement']);
+          } else
+            console.log("Vous n'avez pas la permission de créer un nouvelle utilisateur");
+        }
+        else if(Number(this.route.snapshot.paramMap.get('id')) === 1) {
+          if(this._currentUser.group.rightGroupPage.UserManagement_EditDefaultUser) {
+            post.date_time_logIn = post.date_logIn + " " + post.time_logIn;
+            post.date_time_signIn = post.date_signIn + " " + post.time_signIn;
     
-          this.user = new User(post);
-  
-          if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser) {
-            if(this.initial_user.group.name.split('_').length === 1) {
-              if(this._ChangeRightPage || post.group.name !== post.group.rightGroupPage.name) {
-                this.user.group = post.group;
-                this.user.group.rightGroupPage = post.group.rightGroupPage;
-                this.user.group.rightGroupPage.id = 0;
-                this.user.group.rightGroupPage.name = "_user_"+this.user.id;
-                this.user.group.id = 0;
-                this.user.group.name = "_user_"+this.user.id;
-              } else if(this.initial_user.group.name !== post.group.name)
-                this.user.group = post.group;
-            } else {
-              if(post.group.name !== this.initial_user.login)
-                this.user.group = post.group;
-              else {
-                if(this._ChangeRightPage || (Number(post.group.rightGroupPage.name.split('_')[2]) !== this.initial_user.id && post.group.rightGroupPage.name !== this.initial_user.login) && post.group.name === this.initial_user.login) {
+            this.user = new User(post);
+            this.user.id = 1;
+            this.user.group = new Group(null);
+    
+            if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser) {
+              this.user.group.id = 1;
+              this.user.group.name = "default";
+              this.user.group.rightGroupPage = new RightGroupPage(post);
+              this.user.group.rightGroupPage.id = 1;
+              this.user.group.rightGroupPage.name = "default";
+            }
+    
+            var regenerate_password: boolean = false;
+            if(this.user.password !== this.initial_user.password)
+              regenerate_password = true;
+            
+            this.userApi.putUser(1, this.user, regenerate_password).subscribe();
+            this.router.navigate(['/UserManagement']);
+          } else
+            console.log("Vous n'avez pas la permission de créer un nouvelle utilisateur");
+        } else {
+          if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditUser) {
+            post.date_time_logIn = post.date_logIn + " " + post.time_logIn;
+            post.date_time_signIn = post.date_signIn + " " + post.time_signIn;
+      
+            this.user = new User(post);
+    
+            if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser) {
+              if(this.initial_user.group.name.split('_').length === 1) {
+                if(this._ChangeRightPage || post.group.name !== post.group.rightGroupPage.name) {
                   this.user.group = post.group;
                   this.user.group.rightGroupPage = post.group.rightGroupPage;
+                  this.user.group.rightGroupPage.id = 0;
+                  this.user.group.rightGroupPage.name = "_user_"+this.user.id;
+                  this.user.group.id = 0;
+                  this.user.group.name = "_user_"+this.user.id;
+                } else if(this.initial_user.group.name !== post.group.name)
+                  this.user.group = post.group;
+              } else {
+                if(post.group.name !== this.initial_user.login)
+                  this.user.group = post.group;
+                else {
+                  if(this._ChangeRightPage || (Number(post.group.rightGroupPage.name.split('_')[2]) !== this.initial_user.id && post.group.rightGroupPage.name !== this.initial_user.login) && post.group.name === this.initial_user.login) {
+                    this.user.group = post.group;
+                    this.user.group.rightGroupPage = post.group.rightGroupPage;
 
-                  this.user.group.id = this.initial_user.group.id;
-                  this.user.group.name = this.initial_user.group.name;
-                  
-                  this.user.group.rightGroupPage.name = this.initial_user.group.name;
-                  this.user.group.rightGroupPage.id = this.initial_user.group.rightGroupPage.id;
-                } 
+                    this.user.group.id = this.initial_user.group.id;
+                    this.user.group.name = this.initial_user.group.name;
+                    
+                    this.user.group.rightGroupPage.name = this.initial_user.group.name;
+                    this.user.group.rightGroupPage.id = this.initial_user.group.rightGroupPage.id;
+                  } 
+                }
               }
-            }
+            } else
+              this.user.group = this.initial_user.group;
+    
+            var regenerate_password: boolean = false;
+            if(this.user.password !== this.initial_user.password)
+              regenerate_password = true;
+    
+            this.userApi.putUser(this.initial_user.id, this.user, regenerate_password).subscribe((data) => {
+              if(data.ok) {
+                this.router.navigate(['/UserManagement'])
+                if(this.user.id === this._currentUser.id) {
+                  this.app.logOut()
+                }
+              }
+            });
           } else
-            this.user.group = this.initial_user.group;
-  
-          var regenerate_password: boolean = false;
-          if(this.user.password !== this.initial_user.password)
-            regenerate_password = true;
-  
-          this.userApi.putUser(this.initial_user.id, this.user, regenerate_password).subscribe((data) => {
-            if(data.ok) {
-              this.router.navigate(['/UserManagement'])
-              if(this.user.id === this._currentUser.id) {
-                this.app.logOut()
-              }
-            }
-          });
-        })
-      } else
-        console.log("Vous n'avez pas la permission de modifier cette utilisateur");
-    }
+            console.log("Vous n'avez pas la permission de modifier cette utilisateur");
+        }
+      }
+    })
   }
 
   private showPassword(): void {
@@ -767,5 +790,10 @@ export class SelectedUserManagementComponent implements OnInit {
       }); });
     } else 
       console.log("Vous n'avez pas la permission de modifier l'image de profile de cette utilisateur");
+  }
+
+  private create_md5(attrib: string): any {
+    const md5 = new Md5();
+    return md5.appendStr(attrib).end();
   }
 }

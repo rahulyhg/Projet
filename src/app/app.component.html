@@ -37,7 +37,7 @@
       <div *ngIf="_currentUser.group.rightGroupPage.EditBar_Dev" class="dev"><a routerLink="/Developer"><i class="fas fa-code"></i></a></div>
   </section>
 
-  <div id="devPopup" *ngIf="_GestionSitePopupStatut" appMovable>
+  <div id="devPopup" *ngIf="_GestionSitePopupStatut && _currentUser.group.rightGroupPage.EditBar_Access" appMovable>
     <div id="bar_move" class="bar">
       <div class="bar_content">
         <div class="bar_content_title">

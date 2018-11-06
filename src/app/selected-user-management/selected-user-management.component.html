@@ -29,7 +29,7 @@
             </div>
             <div class="Account_content">
                 <ul>
-                    <li>Login : <input type="text" formControlName="login" [placeholder]="PlaceHolder.login"/></li>
+                    <li>Login : <input type="text" formControlName="login" [placeholder]="PlaceHolder.login" #login/></li>
                     <li *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_ViewPassword">Mot de passe : <input type="{{isPassword ? 'password' : 'text' }}" formControlName="password" [placeholder]="PlaceHolder.password"/><div *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_ShowPasswordButton" class="button" (click)="showPassword()">Voir le mot de passe</div></li>
                     <li *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser">Group :
                         <select formControlName="group" (change)="setGroupSelected($event.target.value, SelectedUserManagementForm.value)">
