@@ -6,10 +6,10 @@
     </div>
     <div class="page_header_block_droite">
       <div *ngIf="_currentUser.statut">
-        <a *ngIf="_currentUser.group.rightGroupPage.MonCompte_Access" class="profile_nav" routerLink="/MonCompte"><img src="{{ _currentUser.profile }}"></a>
-        <a *ngIf="!_currentUser.group.rightGroupPage.MonCompte_Access" class="profile_nav" ><img src="{{ _currentUser.profile }}"></a>
-        <li *ngIf="_currentUser.group.rightGroupPage.MonCompte_Access" class="lien"><a routerLink="/MonCompte">Mon Compte ({{ _currentUser.login }})</a></li>
-        <li *ngIf="!_currentUser.group.rightGroupPage.MonCompte_Access" style="color: #555;">Mon Compte ({{ _currentUser.login }})</li>
+        <a *ngIf="_currentUser.group.rightGroupPage.User_Access" class="profile_nav" routerLink="/User/MonCompte"><img src="{{ _currentUser.profile }}"></a>
+        <a *ngIf="!_currentUser.group.rightGroupPage.User_Access" class="profile_nav" ><img src="{{ _currentUser.profile }}"></a>
+        <li *ngIf="_currentUser.group.rightGroupPage.User_Access" class="lien"><a routerLink="/User/MonCompte">Mon Compte ({{ _currentUser.login }})</a></li>
+        <li *ngIf="!_currentUser.group.rightGroupPage.User_Access" style="color: #555;">Mon Compte ({{ _currentUser.login }})</li>
         <li class="lien" (click)="logOut()">Se déconnecter</li>
       </div>
       <div *ngIf="!_currentUser.statut">

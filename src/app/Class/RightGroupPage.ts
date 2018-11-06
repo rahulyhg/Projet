@@ -7,7 +7,7 @@ export class RightGroupPage {
     public Main_Access: boolean;
     public Accueil_Access: boolean;
     public Login_Access: boolean;
-    public MonCompte_Access: boolean;
+    public User_Access: boolean;
 
     public EditBar_Access: boolean;
     public EditBar_Edit: boolean;
@@ -48,7 +48,7 @@ export class RightGroupPage {
       this.Main_Access = this.setFormatBoolean(value.Main_Access, value, true);
       this.Accueil_Access = this.setFormatBoolean(value.Accueil_Access, value, true);
       this.Login_Access = this.setFormatBoolean(value.Login_Access, value, true);
-      this.MonCompte_Access = this.setFormatBoolean(value.MonCompte_Access, value, false);
+      this.User_Access = this.setFormatBoolean(value.User_Access, value, false);
 
       this.EditBar_Access = this.setFormatBoolean(value.EditBar_Access, value, false);
       this.EditBar_Edit = this.setFormatBoolean(value.EditBar_Edit, value, false);

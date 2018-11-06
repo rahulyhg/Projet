@@ -29,8 +29,8 @@
         <label style="font-weight: bold;">Peut affecter le bon fonctionnement du site !</label>
         <li>Login_Access : <input type="checkbox" formControlName="Login_Access" (click)="setRightSelected(SelectedGroupManagementForm.value, $event.target.attributes[0].nodeValue)"/></li>
 
-        <h2>MonCompte Page</h2>
-        <li>MonCompte_Access : <input type="checkbox" formControlName="MonCompte_Access" (click)="setRightSelected(SelectedGroupManagementForm.value, $event.target.attributes[0].nodeValue)"/></li>
+        <h2>User/{{ _currentUser.id }} Page</h2>
+        <li>User_Access : <input type="checkbox" formControlName="User_Access" (click)="setRightSelected(SelectedGroupManagementForm.value, $event.target.attributes[0].nodeValue)"/></li>
 
         <h2>EditBar</h2>
         <li class="disabledCheck">EditBar_Access : <input type="checkbox" formControlName="EditBar_Access" (click)="setRightSelected(SelectedGroupManagementForm.value, $event.target.attributes[0].nodeValue)"/></li>

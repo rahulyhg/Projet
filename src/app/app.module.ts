@@ -10,7 +10,6 @@ import { AppComponent } from './app.component';
 import { AccueilComponent } from './accueil/accueil.component';
 import { DraggableModule } from './draggable/draggable.module';
 import { LoginComponent } from './login/login.component';
-import { MonCompteComponent } from './mon-compte/mon-compte.component';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 import { UserManagementComponent } from './user-management/user-management.component';
@@ -20,12 +19,13 @@ import { SelectedGroupManagementComponent } from './selected-group-management/se
 import { HighlightDirective } from './Services/highlight.directive';
 import { PageManagementComponent } from './page-management/page-management.component';
 import { SelectedPageManagementComponent } from './selected-page-management/selected-page-management.component';
+import { UserComponent } from './user/user.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/Accueil', pathMatch: 'full' },
   { path: 'Accueil', component: AccueilComponent },
   { path: 'Login', component: LoginComponent },
-  { path: 'MonCompte', component: MonCompteComponent },
+  { path: 'User/:id', component: UserComponent },
   { path: 'UserManagement', component: UserManagementComponent},
   { path: 'UserManagement/:id', component: SelectedUserManagementComponent },
   { path: 'GroupManagement', component: GroupManagementComponent },
@@ -39,14 +39,14 @@ const routes: Routes = [
     AppComponent,
     AccueilComponent,
     LoginComponent,
-    MonCompteComponent,
     UserManagementComponent,
     SelectedUserManagementComponent,
     GroupManagementComponent,
     SelectedGroupManagementComponent,
     HighlightDirective,
     PageManagementComponent,
-    SelectedPageManagementComponent
+    SelectedPageManagementComponent,
+    UserComponent
   ],
   imports: [
     BrowserModule,

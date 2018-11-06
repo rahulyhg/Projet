@@ -46,7 +46,7 @@ export class SelectedGroupManagementComponent implements OnInit {
       this.RightGroupPageList = null;
       this.SelectedGroupManagementForm = this.fb.group({
         'id': null, 'name' : null, 'RightGroupPage' : null, 'Main_Access' : null, 'Accueil_Access' : null, 'Login_Access' : null,
-        'MonCompte_Access' : null, 'EditBar_Access' : null, 'SelectedUserManagement_Access' : null,
+        'User_Access' : null, 'EditBar_Access' : null, 'SelectedUserManagement_Access' : null,
         'SelectedUserManagement_ViewPassword' : null, 'SelectedUserManagement_ShowPasswordButton' : null,
         'SelectedUserManagement_EditRightGroupPageUser' : null, 'SelectedUserManagement_DeleteUser' : null,
         'SelectedUserManagement_EditUser' : null, 'UserManagement_Access' : null, 'UserManagement_AddUser' : null,
@@ -196,9 +196,9 @@ export class SelectedGroupManagementComponent implements OnInit {
       if(element === "Login_Access")
         rightGroupPage.Login_Access = !(rightGroupPage.Login_Access);
 
-      // MonCompte Page
-      if(element === "MonCompte_Access")
-        rightGroupPage.MonCompte_Access = !(rightGroupPage.MonCompte_Access);
+      // User/{{ _currentUser.id }} Page
+      if(element === "User_Access")
+        rightGroupPage.User_Access = !(rightGroupPage.User_Access);
 
       // SelectedUserManagement Page
       if(element === "SelectedUserManagement_Access") {
@@ -391,11 +391,11 @@ export class SelectedGroupManagementComponent implements OnInit {
         rightGroupPage.EditBar_Access = false;
 
       // Main Page
-      if(rightGroupPage.Accueil_Access || rightGroupPage.Login_Access || rightGroupPage.MonCompte_Access || 
+      if(rightGroupPage.Accueil_Access || rightGroupPage.Login_Access || rightGroupPage.User_Access || 
         rightGroupPage.EditBar_Access || rightGroupPage.SelectedUserManagement_Access || rightGroupPage.UserManagement_Access ||
         rightGroupPage.SelectedGroupManagement_Access || rightGroupPage.GroupManagement_Access || rightGroupPage.SelectedPageManagement_Access)
         rightGroupPage.Main_Access = true;
-      if(!rightGroupPage.Accueil_Access && !rightGroupPage.Login_Access && !rightGroupPage.MonCompte_Access && 
+      if(!rightGroupPage.Accueil_Access && !rightGroupPage.Login_Access && !rightGroupPage.User_Access && 
         !rightGroupPage.EditBar_Access && !rightGroupPage.SelectedUserManagement_Access && !rightGroupPage.UserManagement_Access &&
         !rightGroupPage.SelectedGroupManagement_Access && !rightGroupPage.GroupManagement_Access && !rightGroupPage.SelectedPageManagement_Access)
         rightGroupPage.Main_Access = false;
@@ -417,7 +417,7 @@ export class SelectedGroupManagementComponent implements OnInit {
         'Main_Access' : this.group.rightGroupPage.Main_Access,
         'Accueil_Access' : this.group.rightGroupPage.Accueil_Access,
         'Login_Access' : this.group.rightGroupPage.Login_Access,
-        'MonCompte_Access' : this.group.rightGroupPage.MonCompte_Access,
+        'User_Access' : this.group.rightGroupPage.User_Access,
         'EditBar_Access' : this.group.rightGroupPage.EditBar_Access,
         'SelectedUserManagement_Access' : this.group.rightGroupPage.SelectedUserManagement_Access,
         'SelectedUserManagement_ViewPassword' : this.group.rightGroupPage.SelectedUserManagement_ViewPassword,
