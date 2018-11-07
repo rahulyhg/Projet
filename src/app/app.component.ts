@@ -22,6 +22,8 @@ export class AppComponent implements OnInit {
   public _currentUser: User;
   public _currentPage: Page;
   public _GestionSitePopupStatut: boolean;
+
+  public style_m: boolean;
   
   constructor(private userApi: UserService, private router: Router, private pageApi: PageService, private titleService: Title) { 
     this.Reponse_getUserById = null;
@@ -30,10 +32,13 @@ export class AppComponent implements OnInit {
     this._currentUser = new User(null);
     this._GestionSitePopupStatut = false;
     this._currentPage = new Page(null);
+    this.style_m = false;
+
+    this.changeStyle();
   }
 
   ngOnInit(): void {
-    this.Init(); 
+    this.Init();
   }
 
   private Init(): void {
@@ -101,5 +106,63 @@ export class AppComponent implements OnInit {
 
   private GestionSitePopup(): void {
     this._GestionSitePopupStatut = !(this._GestionSitePopupStatut);
+  }
+
+  private changeStyle(): void {
+    var style = null;
+
+    this.style_m = !(this.style_m);
+    if(this.style_m) {
+      style = {
+        "general_background" : "#FFF",
+        "general_font_color" : "#000",
+        "general_border" : "2px solid #000",
+        "general_border_color" : "#000",
+        "devPopup" : "#AFAFAF",
+        "general_shadow" : "#888888",
+        "general_list_hover" : "rgba(0,0,0,.04)",
+        "general_slide_bar_disabled" : "rgba(0,0,0,.1)"
+      }
+    } else {
+      style = {
+        "general_background" : "#222222",
+        "general_font_color" : "#ccc",
+        "general_border" : "2px solid #ccc",
+        "general_border_color" : "#ccc",
+        "devPopup" : "#444444",
+        "general_shadow" : "#000",
+        "general_list_hover" : "rgba(34, 34, 34,0.9)",
+        "general_slide_bar_disabled" : "rgba(0,0,0,0.3)"
+      }
+    }
+    
+    var linkfav = document.head.querySelector("#style");
+    if (linkfav) { document.head.removeChild(linkfav) }
+
+    var linkElement = document.createElement( "style" );
+    linkElement.setAttribute( "type", "text/css" );
+    linkElement.setAttribute( "id", "style" );
+    var content:string = null;
+    content = "html { background-color: " + style.general_background + "; color: " + style.general_font_color + "; }" + 
+    "#page_header { background-color: " + style.general_background + "; color: " + style.general_font_color + "; border-bottom: " + style.general_border + "; }" + 
+    "#dev { border-top: " + style.general_border + "; }" + 
+    "#page_nav { border-right: " + style.general_border + " !important; }" +
+    ".EditBar { border-top: " + style.general_border + "; background-color: " + style.general_background + "; }" +
+    "#devPopup { background-color: " + style.devPopup + "; border: " + style.general_border + "; }" +
+    ".bar_content { border-bottom: " + style.general_border + "; } " +
+    ".profile_mon_compte img { border: " + style.general_border + "; box-shadow: 5px 5px 5px " + style.general_shadow + "; } " +
+    ".profile img { border: " + style.general_border + "; box-shadow: 5px 5px 5px " + style.general_shadow + "; } " +
+    "input:-webkit-autofill { -webkit-box-shadow: 0 0 0 30px " + style.general_background + " inset; background-color: " + style.general_background + "; -webkit-text-fill-color: " + style.general_font_color + " !important; }" +
+    "label, span, .mat-select-arrow { color: " + style.general_font_color + "!important; }" + 
+    ".mat-form-field-underline { background-color: " + style.general_border_color + " !important; }" + 
+    "mat-option { background: " + style.general_background + " !important; }" + 
+    // ".mat-option.mat-selected:not(.mat-option-multiple):not(.mat-option-disabled) { background: " + style.general_background + " !important; opacity: 0.9 !important; }" + 
+    ".mat-option.mat-selected:hover:not(.mat-option-multiple):not(.mat-option-disabled) { background: " + style.general_list_hover + " !important; }" + 
+    ".mat-option:hover:not(.mat-option-disabled) { background: " + style.general_list_hover + " !important; }" + 
+    ".mat-disabled .mat-slide-toggle-bar { background-color: " + style.general_slide_bar_disabled + "; }";
+    linkElement.textContent = content;
+    document.head.appendChild( linkElement );
+
+    
   }
 }

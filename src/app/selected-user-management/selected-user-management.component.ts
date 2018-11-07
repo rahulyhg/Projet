@@ -41,7 +41,6 @@ export class SelectedUserManagementComponent implements OnInit {
   private MsgGroupDelete: string;
   private MsgGroupPerso: string;
   private PlaceHolder: User;
-  private one: boolean;
 
   constructor(private route: ActivatedRoute, private app: AppComponent, private userApi: UserService, private router: Router,
     private fb: FormBuilder, private groupApi: GroupService, private rightGroupPageApi: RightGroupPageService, private uploadApi: UploadService) { 
@@ -81,7 +80,6 @@ export class SelectedUserManagementComponent implements OnInit {
       this.MsgGroupDelete = null;
       this.MsgGroupPerso = null;
       this.PlaceHolder = new User(null);
-      this.one = false;
     }
 
   ngOnInit(): void { 
@@ -220,7 +218,7 @@ export class SelectedUserManagementComponent implements OnInit {
     if(value.firstName === null) { value.firstName = "null" }
     this.user = new User(value);
 
-    this.user.group.rightGroupPage = this.RightGroupPageList[Number(id.split(":")[0])];
+    this.user.group.rightGroupPage = new RightGroupPage(id);
 
     // Initialisation des données à afficher dans le formulaire
     this.initData();
@@ -240,7 +238,7 @@ export class SelectedUserManagementComponent implements OnInit {
     if(value.name === null) { value.name = "null" }
     if(value.firstName === null) { value.firstName = "null" }
     this.user = new User(value);
-    this.user.group = this.GroupList[Number(id.split(":")[0])];
+    this.user.group = new Group(id);
     
     // Affiche en fonction du groupe choisi s'il sagit d'un groupe perso ou non
     if(this.user.group.name === this.user.login)
@@ -540,11 +538,6 @@ export class SelectedUserManagementComponent implements OnInit {
         'SelectedPageManagement_EditRoute' : this.user.group.rightGroupPage.SelectedPageManagement_EditRoute,
         'SelectedPageManagement_EditNeedLogIn' : this.user.group.rightGroupPage.SelectedPageManagement_EditNeedLogIn
       });
-
-      if(!this.one) {
-        this.login.nativeElement.focus();
-        this.one = !(this.one);
-      }
 
       if(this.route.snapshot.paramMap.get('id') === "New")
         this.PlaceHolder = this.initial_user;

@@ -3,6 +3,8 @@
   <header id="page_header">
     <div class="page_header_block_gauche">
       <li class="lien"><a routerLink="/Accueil">Accueil</a></li>
+      <li class="lien"><a *ngIf="style_m" (click)="changeStyle()">Passer en mode Nuit</a></li>
+      <li class="lien"><a *ngIf="!style_m" (click)="changeStyle()">Passer en mode Jour</a></li>
     </div>
     <div class="page_header_block_droite">
       <div *ngIf="_currentUser.statut">
@@ -32,7 +34,7 @@
     </div>
   </nav>
 
-  <section *ngIf="_currentUser.group.rightGroupPage.EditBar_Access" id="dev">
+  <section id="dev" *ngIf="_currentUser.group.rightGroupPage.EditBar_Access">
       <div *ngIf="_currentUser.group.rightGroupPage.EditBar_Edit" class="edit" (click)="GestionSitePopup()"><i class="far fa-edit"></i></div>
       <div *ngIf="_currentUser.group.rightGroupPage.EditBar_Dev" class="dev"><a routerLink="/Developer"><i class="fas fa-code"></i></a></div>
   </section>
