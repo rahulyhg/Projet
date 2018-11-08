@@ -148,7 +148,7 @@ export class AppComponent implements OnInit {
     var content:string = null;
     content = "html { background-color: " + style.general_background + "; color: " + style.general_font_color + "; }" + 
     "#page_header { background-color: " + style.general_background + "; color: " + style.general_font_color + "; border-bottom: " + style.general_border + "; }" + 
-    "#dev { border-top: " + style.general_border + "; }" + 
+    // "#dev { border-top: " + style.general_border + "; }" + 
     "#page_nav { border-right: " + style.general_border + " !important; }" +
     ".EditBar { border-top: " + style.general_border + "; background-color: " + style.general_background + "; }" +
     "#devPopup { background-color: " + style.devPopup + "; border: " + style.general_border + "; }" +

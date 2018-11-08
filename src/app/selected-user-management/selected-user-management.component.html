@@ -22,9 +22,9 @@
         <div *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_EditUser">
             <div class="profile">
                 <input style="display: none" type="file" (change)="imageChangeClick($event, SelectedUserManagementForm.value)" #File>
+                <!-- <div class="drop">Drop picture here</div> -->
                 <file-drop (onFileDrop)="imageChangeDrag($event, SelectedUserManagementForm.value)" (click)="File.click()">
                     <img src="{{ user.profile }}" appHighlight>
-                    <div class="drop">Drop picture here</div>
                 </file-drop>
             </div>
             <div class="Account_content">
@@ -40,7 +40,7 @@
                         <!-- <mat-icon *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_ShowPasswordButton" matSuffix (click)="showPassword()">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon> -->
                     </mat-form-field>
                     
-                    <mat-form-field style="float: left; width: 40%; margin-top: 0px !important; display: block !important;">
+                    <mat-form-field class="example-form-field">
                         <mat-select *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser" placeholder="Groupe" formControlName="group" (selectionChange)="setGroupSelected($event.value, SelectedUserManagementForm.value)">
                             <mat-option *ngFor="let group of GroupList" [value]="group">{{ group.name}}</mat-option>
                         </mat-select>
@@ -49,29 +49,29 @@
                             <mat-option [value]="user.group">{{ user.group.name }}</mat-option>
                         </mat-select>
                     </mat-form-field>
-                    <mat-chip-list style="float: left; margin: 20px;">
+                    <mat-chip-list>
                         <mat-chip *ngIf="_currentUser.group.rightGroupPage.SelectedGroupManagement_Access" (click)="showPassword()" routerLink="/GroupManagement/{{ user.group.id }}" selected>Editer ce groupe {{ MsgGroupPerso }}</mat-chip>
                     </mat-chip-list>
 
                     <mat-slide-toggle style="width: 100%; margin-bottom: 20px; margin-top: 20px;" formControlName="statut" color="primary" [checked]="user.statut"> Statut de connexion </mat-slide-toggle>
 
-                    <mat-form-field style="width: 40%">
+                    <mat-form-field style="width: 50%">
                         <input matInput [matDatepicker]="picker1" placeholder="Date de dernière connexion" formControlName="date_logIn">
                         <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
                         <mat-datepicker touchUi #picker1></mat-datepicker>
                     </mat-form-field>
 
-                    <mat-form-field style="margin-left: 10px; width: 40%">
+                    <mat-form-field style="width: 50%">
                         <input matInput type="time" placeholder="Heure de dernière connexion" atp-time-picker formControlName="time_logIn"/>
                     </mat-form-field>
 
-                    <mat-form-field style="width: 40%">
+                    <mat-form-field style="width: 50%">
                         <input matInput [matDatepicker]="picker2" placeholder="Date d'Inscription" formControlName="date_signIn">
                         <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
                         <mat-datepicker touchUi #picker2></mat-datepicker>
                     </mat-form-field>
 
-                    <mat-form-field style="margin-left: 10px; width: 40%">
+                    <mat-form-field style="width: 50%">
                         <input matInput type="time" placeholder="Heure d'Inscription" atp-time-picker formControlName="time_signIn"/>
                     </mat-form-field>
 
@@ -90,7 +90,7 @@
                         <mat-icon *ngIf="firstName.value" mat-button matSuffix mat-icon-button (click)="firstName.value = ''">close</mat-icon>
                     </mat-form-field>
 
-                    <mat-form-field style="width: 40%">
+                    <mat-form-field style="width: 100%">
                         <input matInput [matDatepicker]="picker3" placeholder="Date d'anniversaire" formControlName="birthDate">
                         <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
                         <mat-datepicker touchUi #picker3></mat-datepicker>

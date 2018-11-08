@@ -1,6 +1,9 @@
 <ngx-loading-bar [includeSpinner]="true" color="#00BE00" height="4px"></ngx-loading-bar>
 <div id="page_content">
   <header id="page_header">
+    <div class="bouton_nav_mobile">
+      <i class="fas fa-bars"></i>
+    </div>
     <div class="page_header_block_gauche">
       <li class="lien"><a routerLink="/Accueil">Accueil</a></li>
       <li class="lien"><a *ngIf="style_m" (click)="changeStyle()">Passer en mode Nuit</a></li>
