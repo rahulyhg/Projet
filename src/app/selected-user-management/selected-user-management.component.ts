@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { DatePipe } from '@angular/common';
 import { FileSystemFileEntry } from '../../../node_modules/ngx-file-drop';
 import { Observable } from 'rxjs';
 import { Md5 } from 'ts-md5/dist/md5';
@@ -37,13 +38,13 @@ export class SelectedUserManagementComponent implements OnInit {
   private SelectedUserManagementForm: FormGroup;
   private user: User;
   private initial_user: User;
-  private isPassword: boolean;
   private MsgGroupDelete: string;
   private MsgGroupPerso: string;
   private PlaceHolder: User;
+  private one: boolean;
 
   constructor(private route: ActivatedRoute, private app: AppComponent, private userApi: UserService, private router: Router,
-    private fb: FormBuilder, private groupApi: GroupService, private rightGroupPageApi: RightGroupPageService, private uploadApi: UploadService) { 
+    private fb: FormBuilder, private groupApi: GroupService, private rightGroupPageApi: RightGroupPageService, private uploadApi: UploadService, private date: DatePipe) { 
       this.Reponse_getUserById = null;
       this.Reponse_getUserById_initial = null;
       this.Reponse_getUserById_form = null;
@@ -76,10 +77,10 @@ export class SelectedUserManagementComponent implements OnInit {
       this.Reponse_getUserById_initial.subscribe((data: Api) => {
         this.initial_user = data.data
       })
-      this.isPassword = true;
       this.MsgGroupDelete = null;
       this.MsgGroupPerso = null;
       this.PlaceHolder = new User(null);
+      this.one = false;
     }
 
   ngOnInit(): void { 
@@ -193,12 +194,16 @@ export class SelectedUserManagementComponent implements OnInit {
 
       this.Reponse_getUserById_form.subscribe((data: Api) => {
         if(this.route.snapshot.paramMap.get('id') === "New") {
-          this.user.login = "null";
-          this.user.password = "null";
-          this.user.gameTag = "null";
-          this.user.name = "null";
-          this.user.firstName = "null";
+          this.user.login = "";
+          this.user.password = "";
+          this.user.gameTag = "";
+          this.user.name = "";
+          this.user.firstName = "";
         }
+
+        this.user.date_time_logIn = this.user.date_time_logIn.split(' ')[0].split('-')[0] + "-" + this.user.date_time_logIn.split(' ')[0].split('-')[2] + "-" + this.user.date_time_logIn.split(' ')[0].split('-')[1] + " " + this.user.date_time_logIn.split(' ')[1];
+        this.user.date_time_signIn = this.user.date_time_signIn.split(' ')[0].split('-')[0] + "-" + this.user.date_time_signIn.split(' ')[0].split('-')[2] + "-" + this.user.date_time_signIn.split(' ')[0].split('-')[1] + " " + this.user.date_time_signIn.split(' ')[1];
+        this.user.birthDate = this.user.birthDate.split(' ')[0].split('-')[0] + "-" + this.user.birthDate.split(' ')[0].split('-')[2] + "-" + this.user.birthDate.split(' ')[0].split('-')[1];
       })
 
       // Initialisation des données à afficher dans le formulaire
@@ -208,14 +213,12 @@ export class SelectedUserManagementComponent implements OnInit {
 
   // Permet de changer la valeur du groupe de droit de page de l'utilisateur par celui séléctionné (change l'object)
   private setRightGroupPageSelected(id: any, value: any): void {
+    this._ChangeRightPage = true;
+
     // On Met dans l'object user les données que l'on a deja rentré
-    value.date_time_logIn = value.date_logIn + " " + value.time_logIn;
-    value.date_time_signIn = value.date_signIn + " " + value.time_signIn;
-    if(value.login === null) { value.login = "null" }
-    if(value.password === null) { value.password = "null" }
-    if(value.gameTag === null) { value.gameTag = "null" }
-    if(value.name === null) { value.name = "null" }
-    if(value.firstName === null) { value.firstName = "null" }
+    value.date_time_logIn = this.date.transform(value.date_logIn, 'yyyy-dd-MM') + " " + value.time_logIn;
+    value.date_time_signIn = this.date.transform(value.date_signIn, 'yyyy-dd-MM') + " " + value.time_signIn;
+    value.birthDate = this.date.transform(value.birthDate, 'yyyy-dd-MM');
     this.user = new User(value);
 
     this.user.group.rightGroupPage = new RightGroupPage(id);
@@ -230,13 +233,9 @@ export class SelectedUserManagementComponent implements OnInit {
     this._RightEdit = true;
 
     // On Met dans l'object user les données que l'on a deja rentré
-    value.date_time_logIn = value.date_logIn + " " + value.time_logIn;
-    value.date_time_signIn = value.date_signIn + " " + value.time_signIn;
-    if(value.login === null) { value.login = "null" }
-    if(value.password === null) { value.password = "null" }
-    if(value.gameTag === null) { value.gameTag = "null" }
-    if(value.name === null) { value.name = "null" }
-    if(value.firstName === null) { value.firstName = "null" }
+    value.date_time_logIn = this.date.transform(value.date_logIn, 'yyyy-dd-MM') + " " + value.time_logIn;
+    value.date_time_signIn = this.date.transform(value.date_signIn, 'yyyy-dd-MM') + " " + value.time_signIn;
+    value.birthDate = this.date.transform(value.birthDate, 'yyyy-dd-MM');
     this.user = new User(value);
     this.user.group = new Group(id);
     
@@ -251,247 +250,246 @@ export class SelectedUserManagementComponent implements OnInit {
   }
 
   private setRightSelected(value: any, element: any): void {
-    this._ChangeRightPage = true;
+    if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser) {
+      this._ChangeRightPage = true;
   
-    value.date_time_logIn = value.date_logIn + " " + value.time_logIn;
-    value.date_time_signIn = value.date_signIn + " " + value.time_signIn;
-    if(value.login === null) { value.login = "null" }
-    if(value.password === null) { value.password = "null" }
-    if(value.gameTag === null) { value.gameTag = "null" }
-    if(value.name === null) { value.name = "null" }
-    if(value.firstName === null) { value.firstName = "null" }
-    this.user = new User(value);
+      value.date_time_logIn = this.date.transform(value.date_logIn, 'yyyy-dd-MM') + " " + value.time_logIn;
+      value.date_time_signIn = this.date.transform(value.date_signIn, 'yyyy-dd-MM') + " " + value.time_signIn;
+      value.birthDate = this.date.transform(value.birthDate, 'yyyy-dd-MM');
+      this.user = new User(value);
+  
+      var rightGroupPage: RightGroupPage = new RightGroupPage(value);
+      if(Number(this.route.snapshot.paramMap.get('id')) === 1)
+        rightGroupPage.name = this.initial_user.group.rightGroupPage.name;
+      else
+        rightGroupPage.name = "Nouveau groupe personnel de droit";
 
-    var rightGroupPage: RightGroupPage = new RightGroupPage(value);
-    rightGroupPage.name = this.initial_user.group.rightGroupPage.name;
-    rightGroupPage.id = this.initial_user.group.rightGroupPage.id;
-
-    // Accueil Page
-    if(element === "Accueil_Access")
-      rightGroupPage.Accueil_Access = !(rightGroupPage.Accueil_Access);
-
-    // Login Page
-    if(element === "Login_Access")
-      rightGroupPage.Login_Access = !(rightGroupPage.Login_Access);
-
-    // User Page
-    if(element === "User_Access")
-      rightGroupPage.User_Access = !(rightGroupPage.User_Access);
-
-    // SelectedUserManagement Page
-    if(element === "SelectedUserManagement_Access") {
-      if(rightGroupPage.SelectedUserManagement_Access) {
-        rightGroupPage.SelectedUserManagement_DeleteUser = false;
-        rightGroupPage.SelectedUserManagement_EditRightGroupPageUser = false;
-        rightGroupPage.SelectedUserManagement_EditUser = false;
-        rightGroupPage.SelectedUserManagement_ShowPasswordButton = false;
-        rightGroupPage.SelectedUserManagement_ViewPassword = false;
-        rightGroupPage.UserManagement_AddUser = false;
-        rightGroupPage.UserManagement_EditDefaultUser = false;
-        rightGroupPage.GroupManagement_EditDefaultGroup = false;
+      rightGroupPage.id = this.initial_user.group.rightGroupPage.id;
+  
+      // Accueil Page
+      if(element === "Accueil_Access")
+        rightGroupPage.Accueil_Access = !(rightGroupPage.Accueil_Access);
+  
+      // Login Page
+      if(element === "Login_Access")
+        rightGroupPage.Login_Access = !(rightGroupPage.Login_Access);
+  
+      // User Page
+      if(element === "User_Access")
+        rightGroupPage.User_Access = !(rightGroupPage.User_Access);
+  
+      // SelectedUserManagement Page
+      if(element === "SelectedUserManagement_Access") {
+        if(rightGroupPage.SelectedUserManagement_Access) {
+          rightGroupPage.SelectedUserManagement_DeleteUser = false;
+          rightGroupPage.SelectedUserManagement_EditRightGroupPageUser = false;
+          rightGroupPage.SelectedUserManagement_EditUser = false;
+          rightGroupPage.SelectedUserManagement_ShowPasswordButton = false;
+          rightGroupPage.SelectedUserManagement_ViewPassword = false;
+          rightGroupPage.UserManagement_AddUser = false;
+          rightGroupPage.UserManagement_EditDefaultUser = false;
+          rightGroupPage.GroupManagement_EditDefaultGroup = false;
+        }
+        rightGroupPage.SelectedUserManagement_Access = !(rightGroupPage.SelectedUserManagement_Access);
+      } else if(element === "SelectedUserManagement_ViewPassword") {
+        if(rightGroupPage.SelectedUserManagement_ViewPassword)
+          rightGroupPage.SelectedUserManagement_ShowPasswordButton = false;
+        rightGroupPage.SelectedUserManagement_ViewPassword = !(rightGroupPage.SelectedUserManagement_ViewPassword);
+      } else if(element === "SelectedUserManagement_ShowPasswordButton") {
+        if(!rightGroupPage.SelectedUserManagement_ShowPasswordButton)
+          rightGroupPage.SelectedUserManagement_ViewPassword = true;
+        rightGroupPage.SelectedUserManagement_ShowPasswordButton = !(rightGroupPage.SelectedUserManagement_ShowPasswordButton);
+      } else if(element === "SelectedUserManagement_EditRightGroupPageUser") {
+        if(!rightGroupPage.SelectedUserManagement_EditRightGroupPageUser)
+          rightGroupPage.SelectedUserManagement_EditUser = true;
+        rightGroupPage.SelectedUserManagement_EditRightGroupPageUser = !(rightGroupPage.SelectedUserManagement_EditRightGroupPageUser);
+      } else if(element === "SelectedUserManagement_EditUser") {
+        if(rightGroupPage.SelectedUserManagement_EditUser) {
+          rightGroupPage.SelectedUserManagement_EditRightGroupPageUser = false;
+          rightGroupPage.UserManagement_AddUser = false;
+          rightGroupPage.UserManagement_EditDefaultUser = false;
+          rightGroupPage.GroupManagement_EditDefaultGroup = false;
+        }
+        rightGroupPage.SelectedUserManagement_EditUser = !(rightGroupPage.SelectedUserManagement_EditUser);
+      } else if(element === "SelectedUserManagement_DeleteUser")
+        rightGroupPage.SelectedUserManagement_DeleteUser = !(rightGroupPage.SelectedUserManagement_DeleteUser);
+      if(rightGroupPage.SelectedUserManagement_ViewPassword || rightGroupPage.SelectedUserManagement_ShowPasswordButton || 
+        rightGroupPage.SelectedUserManagement_EditRightGroupPageUser || rightGroupPage.SelectedUserManagement_DeleteUser || 
+        rightGroupPage.SelectedUserManagement_EditUser) {
+          rightGroupPage.SelectedUserManagement_Access = true;
+        }
+      
+      // UserManagement Page
+      if(element === "UserManagement_Access") {
+        if(rightGroupPage.UserManagement_Access) {
+          rightGroupPage.UserManagement_AddUser = false;
+          rightGroupPage.UserManagement_EditDefaultUser = false;
+          rightGroupPage.GroupManagement_EditDefaultGroup = false;
+        }
+        rightGroupPage.UserManagement_Access = !(rightGroupPage.UserManagement_Access);
+      } else if(element === "UserManagement_AddUser") {
+        if(!rightGroupPage.UserManagement_AddUser) {
+          rightGroupPage.SelectedUserManagement_Access = true;
+          rightGroupPage.SelectedUserManagement_EditUser = true;
+        }
+        rightGroupPage.UserManagement_AddUser = !(rightGroupPage.UserManagement_AddUser);
+      } else if(element === "UserManagement_EditDefaultUser") {
+        if(!rightGroupPage.UserManagement_EditDefaultUser){
+          rightGroupPage.SelectedUserManagement_Access = true;
+          rightGroupPage.SelectedUserManagement_EditUser = true;
+          rightGroupPage.SelectedGroupManagement_Access = true;
+          rightGroupPage.GroupManagement_EditDefaultGroup = true;
+          rightGroupPage.SelectedGroupManagement_EditGroup = true;
+        } else
+          rightGroupPage.GroupManagement_EditDefaultGroup = false;
+        rightGroupPage.UserManagement_EditDefaultUser = !(rightGroupPage.UserManagement_EditDefaultUser);
       }
-      rightGroupPage.SelectedUserManagement_Access = !(rightGroupPage.SelectedUserManagement_Access);
-    } else if(element === "SelectedUserManagement_ViewPassword") {
-      if(rightGroupPage.SelectedUserManagement_ViewPassword)
-        rightGroupPage.SelectedUserManagement_ShowPasswordButton = false;
-      rightGroupPage.SelectedUserManagement_ViewPassword = !(rightGroupPage.SelectedUserManagement_ViewPassword);
-    } else if(element === "SelectedUserManagement_ShowPasswordButton") {
-      if(!rightGroupPage.SelectedUserManagement_ShowPasswordButton)
-        rightGroupPage.SelectedUserManagement_ViewPassword = true;
-      rightGroupPage.SelectedUserManagement_ShowPasswordButton = !(rightGroupPage.SelectedUserManagement_ShowPasswordButton);
-    } else if(element === "SelectedUserManagement_EditRightGroupPageUser") {
-      if(!rightGroupPage.SelectedUserManagement_EditRightGroupPageUser)
-        rightGroupPage.SelectedUserManagement_EditUser = true;
-      rightGroupPage.SelectedUserManagement_EditRightGroupPageUser = !(rightGroupPage.SelectedUserManagement_EditRightGroupPageUser);
-    } else if(element === "SelectedUserManagement_EditUser") {
-      if(rightGroupPage.SelectedUserManagement_EditUser) {
-        rightGroupPage.SelectedUserManagement_EditRightGroupPageUser = false;
-        rightGroupPage.UserManagement_AddUser = false;
-        rightGroupPage.UserManagement_EditDefaultUser = false;
-        rightGroupPage.GroupManagement_EditDefaultGroup = false;
-      }
-      rightGroupPage.SelectedUserManagement_EditUser = !(rightGroupPage.SelectedUserManagement_EditUser);
-    } else if(element === "SelectedUserManagement_DeleteUser")
-      rightGroupPage.SelectedUserManagement_DeleteUser = !(rightGroupPage.SelectedUserManagement_DeleteUser);
-    if(rightGroupPage.SelectedUserManagement_ViewPassword || rightGroupPage.SelectedUserManagement_ShowPasswordButton || 
-      rightGroupPage.SelectedUserManagement_EditRightGroupPageUser || rightGroupPage.SelectedUserManagement_DeleteUser || 
-      rightGroupPage.SelectedUserManagement_EditUser) {
-        rightGroupPage.SelectedUserManagement_Access = true;
-      }
-    
-    // UserManagement Page
-    if(element === "UserManagement_Access") {
-      if(rightGroupPage.UserManagement_Access) {
-        rightGroupPage.UserManagement_AddUser = false;
-        rightGroupPage.UserManagement_EditDefaultUser = false;
-        rightGroupPage.GroupManagement_EditDefaultGroup = false;
-      }
-      rightGroupPage.UserManagement_Access = !(rightGroupPage.UserManagement_Access);
-    } else if(element === "UserManagement_AddUser") {
-      if(!rightGroupPage.UserManagement_AddUser) {
-        rightGroupPage.SelectedUserManagement_Access = true;
-        rightGroupPage.SelectedUserManagement_EditUser = true;
-      }
-      rightGroupPage.UserManagement_AddUser = !(rightGroupPage.UserManagement_AddUser);
-    } else if(element === "UserManagement_EditDefaultUser") {
-      if(!rightGroupPage.UserManagement_EditDefaultUser){
-        rightGroupPage.SelectedUserManagement_Access = true;
-        rightGroupPage.SelectedUserManagement_EditUser = true;
-        rightGroupPage.SelectedGroupManagement_Access = true;
-        rightGroupPage.GroupManagement_EditDefaultGroup = true;
-        rightGroupPage.SelectedGroupManagement_EditGroup = true;
-      } else
-        rightGroupPage.GroupManagement_EditDefaultGroup = false;
-      rightGroupPage.UserManagement_EditDefaultUser = !(rightGroupPage.UserManagement_EditDefaultUser);
-    }
-    if(rightGroupPage.UserManagement_AddUser || rightGroupPage.UserManagement_EditDefaultUser)
-      rightGroupPage.UserManagement_Access = true;
-
-    // SelectedGroupManagement Page
-    if(element === "SelectedGroupManagement_Access"){
-      if(rightGroupPage.SelectedGroupManagement_Access) {
-        rightGroupPage.SelectedGroupManagement_EditGroup = false;
-        rightGroupPage.SelectedGroupManagement_DeleteGroup = false;
-        rightGroupPage.SelectedGroupManagement_EditRightPage = false;
-        rightGroupPage.GroupManagement_AddGroup = false;
-        rightGroupPage.GroupManagement_EditDefaultGroup = false;
-        rightGroupPage.UserManagement_EditDefaultUser = false;
-      }
-      rightGroupPage.SelectedGroupManagement_Access = !(rightGroupPage.SelectedGroupManagement_Access);
-    } else if(element === "SelectedGroupManagement_EditGroup") {
-      if(rightGroupPage.SelectedGroupManagement_EditGroup) {
-        rightGroupPage.SelectedGroupManagement_EditRightPage = false;
-        rightGroupPage.GroupManagement_AddGroup = false;
-        rightGroupPage.GroupManagement_EditDefaultGroup = false;
-        rightGroupPage.UserManagement_EditDefaultUser = false;
-      }
-      rightGroupPage.SelectedGroupManagement_EditGroup = !(rightGroupPage.SelectedGroupManagement_EditGroup);
-    } else if(element === "SelectedGroupManagement_DeleteGroup")
-      rightGroupPage.SelectedGroupManagement_DeleteGroup = !(rightGroupPage.SelectedGroupManagement_DeleteGroup);
-    else if(element === "SelectedGroupManagement_EditRightPage") {
-      if(!rightGroupPage.SelectedGroupManagement_EditRightPage)
-        rightGroupPage.SelectedGroupManagement_EditGroup = true;
-      rightGroupPage.SelectedGroupManagement_EditRightPage = !(rightGroupPage.SelectedGroupManagement_EditRightPage);
-    }
-    if(rightGroupPage.SelectedGroupManagement_DeleteGroup || rightGroupPage.SelectedGroupManagement_EditGroup ||
-      rightGroupPage.SelectedGroupManagement_EditRightPage)
-      rightGroupPage.SelectedGroupManagement_Access = true;
-    
-    // GroupManagement Page
-    if(element === "GroupManagement_Access") {
-      if(rightGroupPage.GroupManagement_Access) {
-        rightGroupPage.GroupManagement_AddGroup = false;
-        rightGroupPage.GroupManagement_EditDefaultGroup = false;
-        rightGroupPage.UserManagement_EditDefaultUser = false;
-      }
-      rightGroupPage.GroupManagement_Access = !(rightGroupPage.GroupManagement_Access);
-    } else if(element === "GroupManagement_AddGroup") {
-      if(!rightGroupPage.GroupManagement_AddGroup) {
-        rightGroupPage.SelectedGroupManagement_Access = true;
-        rightGroupPage.SelectedGroupManagement_EditGroup = true;
-      }
-      rightGroupPage.GroupManagement_AddGroup = !(rightGroupPage.GroupManagement_AddGroup);
-    } else if(element === "GroupManagement_EditDefaultGroup") {
-      if(!rightGroupPage.GroupManagement_EditDefaultGroup) {
-        rightGroupPage.SelectedGroupManagement_Access = true;
-        rightGroupPage.SelectedGroupManagement_EditGroup = true;
+      if(rightGroupPage.UserManagement_AddUser || rightGroupPage.UserManagement_EditDefaultUser)
         rightGroupPage.UserManagement_Access = true;
-        rightGroupPage.UserManagement_EditDefaultUser = true;
-        rightGroupPage.SelectedUserManagement_Access = true;
-        rightGroupPage.SelectedUserManagement_EditUser = true;
-      } else
-        rightGroupPage.UserManagement_EditDefaultUser = false;
-      rightGroupPage.GroupManagement_EditDefaultGroup = !(rightGroupPage.GroupManagement_EditDefaultGroup);
-    }
-    if(rightGroupPage.GroupManagement_AddGroup || rightGroupPage.GroupManagement_EditDefaultGroup)
-      rightGroupPage.GroupManagement_Access = true;
-
-    // SelectedPageManagement Page
-    if(element === "SelectedPageManagement_Access"){
-      if(rightGroupPage.SelectedPageManagement_Access) {
-        rightGroupPage.SelectedPageManagement_EditPage = false;
-        rightGroupPage.SelectedPageManagement_EditRefresh = false;
-        rightGroupPage.SelectedPageManagement_EditRoute = false;
-        rightGroupPage.SelectedPageManagement_EditNeedLogIn = false;
+  
+      // SelectedGroupManagement Page
+      if(element === "SelectedGroupManagement_Access"){
+        if(rightGroupPage.SelectedGroupManagement_Access) {
+          rightGroupPage.SelectedGroupManagement_EditGroup = false;
+          rightGroupPage.SelectedGroupManagement_DeleteGroup = false;
+          rightGroupPage.SelectedGroupManagement_EditRightPage = false;
+          rightGroupPage.GroupManagement_AddGroup = false;
+          rightGroupPage.GroupManagement_EditDefaultGroup = false;
+          rightGroupPage.UserManagement_EditDefaultUser = false;
+        }
+        rightGroupPage.SelectedGroupManagement_Access = !(rightGroupPage.SelectedGroupManagement_Access);
+      } else if(element === "SelectedGroupManagement_EditGroup") {
+        if(rightGroupPage.SelectedGroupManagement_EditGroup) {
+          rightGroupPage.SelectedGroupManagement_EditRightPage = false;
+          rightGroupPage.GroupManagement_AddGroup = false;
+          rightGroupPage.GroupManagement_EditDefaultGroup = false;
+          rightGroupPage.UserManagement_EditDefaultUser = false;
+        }
+        rightGroupPage.SelectedGroupManagement_EditGroup = !(rightGroupPage.SelectedGroupManagement_EditGroup);
+      } else if(element === "SelectedGroupManagement_DeleteGroup")
+        rightGroupPage.SelectedGroupManagement_DeleteGroup = !(rightGroupPage.SelectedGroupManagement_DeleteGroup);
+      else if(element === "SelectedGroupManagement_EditRightPage") {
+        if(!rightGroupPage.SelectedGroupManagement_EditRightPage)
+          rightGroupPage.SelectedGroupManagement_EditGroup = true;
+        rightGroupPage.SelectedGroupManagement_EditRightPage = !(rightGroupPage.SelectedGroupManagement_EditRightPage);
       }
-      rightGroupPage.SelectedPageManagement_Access = !(rightGroupPage.SelectedPageManagement_Access);
-    } else if(element === "SelectedPageManagement_EditPage") {
-      if(!rightGroupPage.SelectedPageManagement_EditPage) {
+      if(rightGroupPage.SelectedGroupManagement_DeleteGroup || rightGroupPage.SelectedGroupManagement_EditGroup ||
+        rightGroupPage.SelectedGroupManagement_EditRightPage)
+        rightGroupPage.SelectedGroupManagement_Access = true;
+      
+      // GroupManagement Page
+      if(element === "GroupManagement_Access") {
+        if(rightGroupPage.GroupManagement_Access) {
+          rightGroupPage.GroupManagement_AddGroup = false;
+          rightGroupPage.GroupManagement_EditDefaultGroup = false;
+          rightGroupPage.UserManagement_EditDefaultUser = false;
+        }
+        rightGroupPage.GroupManagement_Access = !(rightGroupPage.GroupManagement_Access);
+      } else if(element === "GroupManagement_AddGroup") {
+        if(!rightGroupPage.GroupManagement_AddGroup) {
+          rightGroupPage.SelectedGroupManagement_Access = true;
+          rightGroupPage.SelectedGroupManagement_EditGroup = true;
+        }
+        rightGroupPage.GroupManagement_AddGroup = !(rightGroupPage.GroupManagement_AddGroup);
+      } else if(element === "GroupManagement_EditDefaultGroup") {
+        if(!rightGroupPage.GroupManagement_EditDefaultGroup) {
+          rightGroupPage.SelectedGroupManagement_Access = true;
+          rightGroupPage.SelectedGroupManagement_EditGroup = true;
+          rightGroupPage.UserManagement_Access = true;
+          rightGroupPage.UserManagement_EditDefaultUser = true;
+          rightGroupPage.SelectedUserManagement_Access = true;
+          rightGroupPage.SelectedUserManagement_EditUser = true;
+        } else
+          rightGroupPage.UserManagement_EditDefaultUser = false;
+        rightGroupPage.GroupManagement_EditDefaultGroup = !(rightGroupPage.GroupManagement_EditDefaultGroup);
+      }
+      if(rightGroupPage.GroupManagement_AddGroup || rightGroupPage.GroupManagement_EditDefaultGroup)
+        rightGroupPage.GroupManagement_Access = true;
+  
+      // SelectedPageManagement Page
+      if(element === "SelectedPageManagement_Access"){
+        if(rightGroupPage.SelectedPageManagement_Access) {
+          rightGroupPage.SelectedPageManagement_EditPage = false;
+          rightGroupPage.SelectedPageManagement_EditRefresh = false;
+          rightGroupPage.SelectedPageManagement_EditRoute = false;
+          rightGroupPage.SelectedPageManagement_EditNeedLogIn = false;
+        }
+        rightGroupPage.SelectedPageManagement_Access = !(rightGroupPage.SelectedPageManagement_Access);
+      } else if(element === "SelectedPageManagement_EditPage") {
+        if(!rightGroupPage.SelectedPageManagement_EditPage) {
+          rightGroupPage.SelectedPageManagement_Access = true;
+        } else {
+          rightGroupPage.SelectedPageManagement_EditRefresh = false;
+          rightGroupPage.SelectedPageManagement_EditRoute = false;
+          rightGroupPage.SelectedPageManagement_EditNeedLogIn = false;
+        }
+        rightGroupPage.SelectedPageManagement_EditPage = !(rightGroupPage.SelectedPageManagement_EditPage);
+      }
+      else if(element === "SelectedPageManagement_EditRefresh") {
+        if(!rightGroupPage.SelectedPageManagement_EditRefresh) {
+          rightGroupPage.SelectedPageManagement_Access = true;
+          rightGroupPage.SelectedPageManagement_EditPage = true;
+        }
+        rightGroupPage.SelectedPageManagement_EditRefresh = !(rightGroupPage.SelectedPageManagement_EditRefresh);
+      }
+      else if(element === "SelectedPageManagement_EditRoute") {
+        if(!rightGroupPage.SelectedPageManagement_EditRoute) {
+          rightGroupPage.SelectedPageManagement_Access = true;
+          rightGroupPage.SelectedPageManagement_EditPage = true;
+        }
+        rightGroupPage.SelectedPageManagement_EditRoute = !(rightGroupPage.SelectedPageManagement_EditRoute);
+      }
+      else if(element === "SelectedPageManagement_EditNeedLogIn") {
+        if(!rightGroupPage.SelectedPageManagement_EditNeedLogIn) {
+          rightGroupPage.SelectedPageManagement_Access = true;
+          rightGroupPage.SelectedPageManagement_EditPage = true;
+        }
+        rightGroupPage.SelectedPageManagement_EditNeedLogIn = !(rightGroupPage.SelectedPageManagement_EditNeedLogIn);
+      }
+      if(rightGroupPage.SelectedPageManagement_EditPage || rightGroupPage.SelectedPageManagement_EditRefresh ||
+        rightGroupPage.SelectedPageManagement_EditRoute || rightGroupPage.SelectedPageManagement_EditNeedLogIn)
         rightGroupPage.SelectedPageManagement_Access = true;
-      } else {
-        rightGroupPage.SelectedPageManagement_EditRefresh = false;
-        rightGroupPage.SelectedPageManagement_EditRoute = false;
-        rightGroupPage.SelectedPageManagement_EditNeedLogIn = false;
-      }
-      rightGroupPage.SelectedPageManagement_EditPage = !(rightGroupPage.SelectedPageManagement_EditPage);
+  
+      // EditBar
+      if(element === "EditBar_Dev")
+        rightGroupPage.EditBar_Dev = !(rightGroupPage.EditBar_Dev);
+      if(rightGroupPage.SelectedGroupManagement_Access || rightGroupPage.SelectedUserManagement_Access ||
+        rightGroupPage.UserManagement_Access || rightGroupPage.GroupManagement_Access || rightGroupPage.SelectedPageManagement_Access)
+        rightGroupPage.EditBar_Edit = true;
+      if(!rightGroupPage.SelectedGroupManagement_Access && !rightGroupPage.SelectedUserManagement_Access &&
+        !rightGroupPage.UserManagement_Access && !rightGroupPage.GroupManagement_Access && !rightGroupPage.SelectedPageManagement_Access)
+        rightGroupPage.EditBar_Edit = false;
+  
+      if(rightGroupPage.EditBar_Dev || rightGroupPage.EditBar_Edit)
+        rightGroupPage.EditBar_Access = true;
+      if(!rightGroupPage.EditBar_Dev && !rightGroupPage.EditBar_Edit)
+        rightGroupPage.EditBar_Access = false;
+  
+      // Main Page
+      if(rightGroupPage.Accueil_Access || rightGroupPage.Login_Access || rightGroupPage.User_Access || 
+        rightGroupPage.EditBar_Access || rightGroupPage.SelectedUserManagement_Access || rightGroupPage.UserManagement_Access ||
+        rightGroupPage.SelectedGroupManagement_Access || rightGroupPage.GroupManagement_Access || rightGroupPage.SelectedPageManagement_Access)
+        rightGroupPage.Main_Access = true;
+      if(!rightGroupPage.Accueil_Access && !rightGroupPage.Login_Access && !rightGroupPage.User_Access && 
+        !rightGroupPage.EditBar_Access && !rightGroupPage.SelectedUserManagement_Access && !rightGroupPage.UserManagement_Access &&
+        !rightGroupPage.SelectedGroupManagement_Access && !rightGroupPage.GroupManagement_Access && !rightGroupPage.SelectedPageManagement_Access)
+        rightGroupPage.Main_Access = false;
+  
+      // On definit le group de droit de page de l'utilisateur par celui que l'on vient de créer et modifier
+      this.user.group.rightGroupPage = rightGroupPage;
+  
+      // Initialisation des données à afficher dans le formulaire
+      this.initData();  
     }
-    else if(element === "SelectedPageManagement_EditRefresh") {
-      if(!rightGroupPage.SelectedPageManagement_EditRefresh) {
-        rightGroupPage.SelectedPageManagement_Access = true;
-        rightGroupPage.SelectedPageManagement_EditPage = true;
-      }
-      rightGroupPage.SelectedPageManagement_EditRefresh = !(rightGroupPage.SelectedPageManagement_EditRefresh);
-    }
-    else if(element === "SelectedPageManagement_EditRoute") {
-      if(!rightGroupPage.SelectedPageManagement_EditRoute) {
-        rightGroupPage.SelectedPageManagement_Access = true;
-        rightGroupPage.SelectedPageManagement_EditPage = true;
-      }
-      rightGroupPage.SelectedPageManagement_EditRoute = !(rightGroupPage.SelectedPageManagement_EditRoute);
-    }
-    else if(element === "SelectedPageManagement_EditNeedLogIn") {
-      if(!rightGroupPage.SelectedPageManagement_EditNeedLogIn) {
-        rightGroupPage.SelectedPageManagement_Access = true;
-        rightGroupPage.SelectedPageManagement_EditPage = true;
-      }
-      rightGroupPage.SelectedPageManagement_EditNeedLogIn = !(rightGroupPage.SelectedPageManagement_EditNeedLogIn);
-    }
-    if(rightGroupPage.SelectedPageManagement_EditPage || rightGroupPage.SelectedPageManagement_EditRefresh ||
-      rightGroupPage.SelectedPageManagement_EditRoute || rightGroupPage.SelectedPageManagement_EditNeedLogIn)
-      rightGroupPage.SelectedPageManagement_Access = true;
-    if(!rightGroupPage.SelectedPageManagement_EditPage && !rightGroupPage.SelectedPageManagement_EditRefresh &&
-      !rightGroupPage.SelectedPageManagement_EditRoute && !rightGroupPage.SelectedPageManagement_EditNeedLogIn)
-      rightGroupPage.SelectedPageManagement_Access = false;
-
-    // EditBar
-    if(element === "EditBar_Dev")
-      rightGroupPage.EditBar_Dev = !(rightGroupPage.EditBar_Dev);
-    if(rightGroupPage.SelectedGroupManagement_Access || rightGroupPage.SelectedUserManagement_Access ||
-      rightGroupPage.UserManagement_Access || rightGroupPage.GroupManagement_Access || rightGroupPage.SelectedPageManagement_Access)
-      rightGroupPage.EditBar_Edit = true;
-    if(!rightGroupPage.SelectedGroupManagement_Access && !rightGroupPage.SelectedUserManagement_Access &&
-      !rightGroupPage.UserManagement_Access && !rightGroupPage.GroupManagement_Access && !rightGroupPage.SelectedPageManagement_Access)
-      rightGroupPage.EditBar_Edit = false;
-
-    if(rightGroupPage.EditBar_Dev || rightGroupPage.EditBar_Edit)
-      rightGroupPage.EditBar_Access = true;
-    if(!rightGroupPage.EditBar_Dev && !rightGroupPage.EditBar_Edit)
-      rightGroupPage.EditBar_Access = false;
-
-    // Main Page
-    if(rightGroupPage.Accueil_Access || rightGroupPage.Login_Access || rightGroupPage.User_Access || 
-      rightGroupPage.EditBar_Access || rightGroupPage.SelectedUserManagement_Access || rightGroupPage.UserManagement_Access ||
-      rightGroupPage.SelectedGroupManagement_Access || rightGroupPage.GroupManagement_Access || rightGroupPage.SelectedPageManagement_Access)
-      rightGroupPage.Main_Access = true;
-    if(!rightGroupPage.Accueil_Access && !rightGroupPage.Login_Access && !rightGroupPage.User_Access && 
-      !rightGroupPage.EditBar_Access && !rightGroupPage.SelectedUserManagement_Access && !rightGroupPage.UserManagement_Access &&
-      !rightGroupPage.SelectedGroupManagement_Access && !rightGroupPage.GroupManagement_Access && !rightGroupPage.SelectedPageManagement_Access)
-      rightGroupPage.Main_Access = false;
-
-    // On definit le group de droit de page de l'utilisateur par celui que l'on vient de créer et modifier
-    this.user.group.rightGroupPage = rightGroupPage;
-
-    // Initialisation des données à afficher dans le formulaire
-    this.initData();
   }
 
-  private initData(): void {
+  public initData(): void {
     this.Reponse_getUserById_form.subscribe((data: Api) => {
-      if(this.user.login === "null") { this.user.login = null }
-      if(this.user.password === "null") { this.user.password = null }
-      if(this.user.gameTag === "null") { this.user.gameTag = null }
-      if(this.user.name === "null") { this.user.name = null }
-      if(this.user.firstName === "null") { this.user.firstName = null }
+      if(this.user.login === "") { this.user.login = null }
+      if(this.user.password === "") { this.user.password = null }
+      if(this.user.gameTag === "") { this.user.gameTag = null }
+      if(this.user.name === "") { this.user.name = null }
+      if(this.user.firstName === "") { this.user.firstName = null }
 
       this.SelectedUserManagementForm = this.fb.group({
         'id': this.user.id,
@@ -539,8 +537,12 @@ export class SelectedUserManagementComponent implements OnInit {
         'SelectedPageManagement_EditNeedLogIn' : this.user.group.rightGroupPage.SelectedPageManagement_EditNeedLogIn
       });
 
-      if(this.route.snapshot.paramMap.get('id') === "New")
-        this.PlaceHolder = this.initial_user;
+      if(this.route.snapshot.paramMap.get('id') === "New") {
+        if(!this.one) {
+          this.login.nativeElement.focus();
+          this.one = !(this.one);
+        }
+      }
 
       // Definit quelle groupe est a séléctionner par defaut dans la liste des groupes
       this.SelectedUserManagementForm.get('group').setValue(this.GroupList[this.GroupList.findIndex(d => d.id === this.user.group.id)]);
@@ -556,32 +558,31 @@ export class SelectedUserManagementComponent implements OnInit {
           this.MsgGroupDelete = "En séléctionnant un group prédefinit, vous allez supprimer le groupe personnalisé de l'utiliateur";
       }
 
-      if(!this._currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser) {
-        this.SelectedUserManagementForm.disable();
-        this.SelectedUserManagementForm.get('id').enable();
-        this.SelectedUserManagementForm.get('statut').enable();
-        this.SelectedUserManagementForm.get('login').enable();
-        this.SelectedUserManagementForm.get('password').enable();
-        this.SelectedUserManagementForm.get('date_signIn').enable();
-        this.SelectedUserManagementForm.get('time_signIn').enable();
-        this.SelectedUserManagementForm.get('date_logIn').enable();
-        this.SelectedUserManagementForm.get('time_logIn').enable();
-        this.SelectedUserManagementForm.get('gameTag').enable();
-        this.SelectedUserManagementForm.get('name').enable();
-        this.SelectedUserManagementForm.get('firstName').enable();
-        this.SelectedUserManagementForm.get('birthDate').enable();
-        this._RightEdit = true;
-      }
-
-      this.SelectedUserManagementForm.get('EditBar_Edit').disable();
-      this.SelectedUserManagementForm.get('EditBar_Access').disable();
-      this.SelectedUserManagementForm.get('Main_Access').disable();
-      this.SelectedUserManagementForm.get('SelectedPageManagement_Access').disable();
-
       // On Bloque la modification du groupe et du login pour l'utilisateur par defaut
       if(Number(this.route.snapshot.paramMap.get('id')) === 1)
         this.SelectedUserManagementForm.get('rightGroupPage').disable();
     })
+
+    if(!this._currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser) {
+      this.SelectedUserManagementForm.disable();
+      this.SelectedUserManagementForm.get('id').enable();
+      this.SelectedUserManagementForm.get('statut').enable();
+      this.SelectedUserManagementForm.get('login').enable();
+      this.SelectedUserManagementForm.get('password').enable();
+      this.SelectedUserManagementForm.get('date_signIn').enable();
+      this.SelectedUserManagementForm.get('time_signIn').enable();
+      this.SelectedUserManagementForm.get('date_logIn').enable();
+      this.SelectedUserManagementForm.get('time_logIn').enable();
+      this.SelectedUserManagementForm.get('gameTag').enable();
+      this.SelectedUserManagementForm.get('name').enable();
+      this.SelectedUserManagementForm.get('firstName').enable();
+      this.SelectedUserManagementForm.get('birthDate').enable();
+      this._RightEdit = true;
+    }
+
+    this.SelectedUserManagementForm.get('EditBar_Edit').disable();
+    this.SelectedUserManagementForm.get('EditBar_Access').disable();
+    this.SelectedUserManagementForm.get('Main_Access').disable();
 
     if(Number(this.route.snapshot.paramMap.get('id')) === 1)
       this.SelectedUserManagementForm.get('group').disable();
@@ -595,8 +596,8 @@ export class SelectedUserManagementComponent implements OnInit {
     this.Reponse_getUserById_initial.subscribe((data: Api) => {
       var same: boolean = false;
 
-      post.date_time_logIn = post.date_logIn + " " + post.time_logIn;
-      post.date_time_signIn = post.date_signIn + " " + post.time_signIn;
+      post.date_time_logIn = this.date.transform(post.date_logIn, 'yyyy-dd-MM') + " " + post.time_logIn;
+      post.date_time_signIn = this.date.transform(post.date_signIn, 'yyyy-dd-MM') + " " + post.time_signIn;
       this.user = new User(post);
 
       if(!this._RightEdit) {
@@ -605,16 +606,16 @@ export class SelectedUserManagementComponent implements OnInit {
       }
 
       if(this.create_md5(JSON.stringify(new User(this.user))) === this.create_md5(JSON.stringify(new User(this.initial_user)))) {
-        console.log("Aucune modification");
-          same = true;
-          this.router.navigate(['/UserManagement']);
+        same = true;
+        this.router.navigate(['/UserManagement']);
       }
 
       if(!same) {
         if(this.route.snapshot.paramMap.get('id') === "New") {
           if(this._currentUser.group.rightGroupPage.UserManagement_AddUser) {
-            post.date_time_logIn = post.date_logIn + " " + post.time_logIn;
-            post.date_time_signIn = post.date_signIn + " " + post.time_signIn;
+            post.date_time_logIn = this.date.transform(post.date_logIn, 'yyyy-dd-MM') + " " + post.time_logIn;
+            post.date_time_signIn = this.date.transform(post.date_signIn, 'yyyy-dd-MM') + " " + post.time_signIn;
+            post.birthDate = this.date.transform(post.birthDate, 'yyyy-dd-MM');
         
             this.user = new User(post);
             if(this._ChangeRightPage || post.group.name !== post.group.rightGroupPage.name) {
@@ -635,8 +636,9 @@ export class SelectedUserManagementComponent implements OnInit {
         }
         else if(Number(this.route.snapshot.paramMap.get('id')) === 1) {
           if(this._currentUser.group.rightGroupPage.UserManagement_EditDefaultUser) {
-            post.date_time_logIn = post.date_logIn + " " + post.time_logIn;
-            post.date_time_signIn = post.date_signIn + " " + post.time_signIn;
+            post.date_time_logIn = this.date.transform(post.date_logIn, 'yyyy-dd-MM') + " " + post.time_logIn;
+            post.date_time_signIn = this.date.transform(post.date_signIn, 'yyyy-dd-MM') + " " + post.time_signIn;
+            post.birthDate = this.date.transform(post.birthDate, 'yyyy-dd-MM');
     
             this.user = new User(post);
             this.user.id = 1;
@@ -660,27 +662,35 @@ export class SelectedUserManagementComponent implements OnInit {
             console.log("Vous n'avez pas la permission de créer un nouvelle utilisateur");
         } else {
           if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditUser) {
-            post.date_time_logIn = post.date_logIn + " " + post.time_logIn;
-            post.date_time_signIn = post.date_signIn + " " + post.time_signIn;
+            post.date_time_logIn = this.date.transform(post.date_logIn, 'yyyy-dd-MM') + " " + post.time_logIn;
+            post.date_time_signIn = this.date.transform(post.date_signIn, 'yyyy-dd-MM') + " " + post.time_signIn;
+            post.birthDate = this.date.transform(post.birthDate, 'yyyy-dd-MM');
       
             this.user = new User(post);
     
             if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser) {
               if(this.initial_user.group.name.split('_').length === 1) {
                 if(this._ChangeRightPage || post.group.name !== post.group.rightGroupPage.name) {
+                  // Création d'un nouveau groupe perso
                   this.user.group = post.group;
                   this.user.group.rightGroupPage = post.group.rightGroupPage;
                   this.user.group.rightGroupPage.id = 0;
                   this.user.group.rightGroupPage.name = "_user_"+this.user.id;
                   this.user.group.id = 0;
                   this.user.group.name = "_user_"+this.user.id;
-                } else if(this.initial_user.group.name !== post.group.name)
+                } else if(this.initial_user.group.name !== post.group.name) {
+                  // Attribution d'un group generique
                   this.user.group = post.group;
+                }
               } else {
-                if(post.group.name !== this.initial_user.login)
+                if(post.group.name !== this.initial_user.login) {
+                  // Attribution d'un group generique
+                  // Supression du groupe perso
                   this.user.group = post.group;
+                }
                 else {
                   if(this._ChangeRightPage || (Number(post.group.rightGroupPage.name.split('_')[2]) !== this.initial_user.id && post.group.rightGroupPage.name !== this.initial_user.login) && post.group.name === this.initial_user.login) {
+                    // Modification du group perso
                     this.user.group = post.group;
                     this.user.group.rightGroupPage = post.group.rightGroupPage;
 
@@ -714,13 +724,6 @@ export class SelectedUserManagementComponent implements OnInit {
     })
   }
 
-  private showPassword(): void {
-    if(this._currentUser.group.rightGroupPage.SelectedUserManagement_ShowPasswordButton)
-      this.isPassword = !(this.isPassword);
-    else 
-      console.log("Vous n'avez pas la permission de visualiser le mot de passe de cette utilisateur");
-  }
-
   private DeleteUser(): void {
     if(this._currentUser.group.rightGroupPage.SelectedUserManagement_DeleteUser && Number(this.route.snapshot.paramMap.get('id')) !== 1 && this.route.snapshot.paramMap.get('id') !== "New") {
       this.userApi.deleteUser(this.user.id);
@@ -735,8 +738,9 @@ export class SelectedUserManagementComponent implements OnInit {
   private imageChangeClick(event, value): void {
     if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditUser) {
       // On Met dans l'object user les données que l'on a deja rentré
-      value.date_time_logIn = value.date_logIn + " " + value.time_logIn;
-      value.date_time_signIn = value.date_signIn + " " + value.time_signIn;
+      value.date_time_logIn = this.date.transform(value.date_logIn, 'yyyy-dd-MM') + " " + value.time_logIn;
+      value.date_time_signIn = this.date.transform(value.date_signIn, 'yyyy-dd-MM') + " " + value.time_signIn;
+      value.birthDate = this.date.transform(value.birthDate, 'yyyy-dd-MM');
       if(value.login === null) { value.login = "null" }
       if(value.password === null) { value.password = "null" }
       if(value.gameTag === null) { value.gameTag = "null" }
@@ -767,8 +771,9 @@ export class SelectedUserManagementComponent implements OnInit {
   public imageChangeDrag(event, value): void {
     if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditUser) {
       // On Met dans l'object user les données que l'on a deja rentré
-      value.date_time_logIn = value.date_logIn + " " + value.time_logIn;
-      value.date_time_signIn = value.date_signIn + " " + value.time_signIn;
+      value.date_time_logIn = this.date.transform(value.date_logIn, 'yyyy-dd-MM') + " " + value.time_logIn;
+      value.date_time_signIn = this.date.transform(value.date_signIn, 'yyyy-dd-MM') + " " + value.time_signIn;
+      value.birthDate = this.date.transform(value.birthDate, 'yyyy-dd-MM');
       if(value.login === null) { value.login = "null" }
       if(value.password === null) { value.password = "null" }
       if(value.gameTag === null) { value.gameTag = "null" }

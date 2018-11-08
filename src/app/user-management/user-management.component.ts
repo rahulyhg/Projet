@@ -16,6 +16,8 @@ export class UserManagementComponent implements OnInit {
   private Reponse_getUserById: Observable<Api>;
   private Reponse_getUserList: Observable<Api>;
 
+  displayedColumns: string[] = ['id', 'login', 'inscription', 'connection', 'group'];
+
   public _currentUser: User;
   private UserList: User[];
 

@@ -77,12 +77,17 @@
     }
 
     public static function deleteUser($id) {
+      $ret = null;
       $user = User::getUserById($id);
+
+      if(count(explode("_", $user->group->name)) > 1) {
+        Group::deleteGroup($user->group->id);
+      }
 
       global $connection;
       $connection->query("DELETE FROM `User` WHERE `id`='$id'");
 
-      return null;
+      return $ret;
     }
 
     public static function postUser($json) {

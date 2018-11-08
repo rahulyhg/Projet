@@ -1,21 +1,18 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DatePipe } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
+
 import { FileDropModule } from 'ngx-file-drop';
-import { MatInputModule } from '@angular/material/input';
-import {MatIconModule} from '@angular/material/icon';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatButtonModule, MatCheckboxModule, MatCardModule, MatMenuModule, MatNativeDateModule } from '@angular/material';
-import {MatChipsModule} from '@angular/material/chips';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatDatepickerModule } from '@angular/material/datepicker';
 import { AmazingTimePickerModule } from 'amazing-time-picker/amazing-time-picker';
 
+import { 
+  MatButtonModule, MatNativeDateModule, MatTableModule, MatExpansionModule, MatChipsModule, 
+  MatSelectModule, MatSlideToggleModule, MatDatepickerModule, MatInputModule, MatIconModule
+} from '@angular/material';
 
 import { AppComponent } from './app.component';
 import { AccueilComponent } from './accueil/accueil.component';
@@ -71,21 +68,19 @@ const routes: Routes = [
     LoadingBarRouterModule,
     FileDropModule,
     MatInputModule,
-    MatFormFieldModule,
     MatButtonModule,
-    MatCheckboxModule,
     MatIconModule,
     MatChipsModule,
     MatSelectModule,
     MatSlideToggleModule,
-    MatCardModule,
     MatDatepickerModule,
-    MatMenuModule,
     MatNativeDateModule,
-    AmazingTimePickerModule
+    AmazingTimePickerModule,
+    MatTableModule,
+    MatExpansionModule
   ],
-  providers: [DatePipe],
-  bootstrap: [AppComponent],
-  exports: [ RouterModule, MatButtonModule, MatCheckboxModule]
+  providers: [ DatePipe ],
+  bootstrap: [ AppComponent ],
+  exports: [ RouterModule ]
 })
 export class AppModule { }

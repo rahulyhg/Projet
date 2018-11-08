@@ -368,7 +368,6 @@ margin-top: 60px;
 
 .profile:hover img {
   opacity: 0.7;
-  border: 2px dotted #000;
   height: 200px;
   width: 200px;
   max-height: 200px;
@@ -399,7 +398,6 @@ margin-top: 60px;
 .RightEdit {
   float: left;
   width: 100%;
-  margin-top: 30px;
 }
 .button {
   border-color: rgb(216, 216, 216) rgb(209, 209, 209) rgb(186, 186, 186);
@@ -567,5 +565,21 @@ margin-top: 60px;
   }
 
   .example-form-field {
+    width: 100%;
+  }
+
+  table {
+    width: 100%;
+  }
+
+  .drop-zone[_ngcontent-c2] {
+    border: none !important;
+  }
+
+  .boutton span {
+    color: #FFF !important;
+  }
+
+  mat-slide-toggle {
     width: 100%;
   }
