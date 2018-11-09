@@ -19,6 +19,8 @@ export class GroupManagementComponent implements OnInit {
   private Reponse_getUserList: Observable<Api>;
   private Reponse_getGroupList: Observable<Api>;
 
+  displayedColumns: string[] = ['id', 'name', 'rightGroupPage'];
+
   public _currentUser: User;
   private GroupList: Group[];
   private UserList: User[];

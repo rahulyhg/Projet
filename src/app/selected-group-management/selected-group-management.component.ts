@@ -34,6 +34,7 @@ export class SelectedGroupManagementComponent implements OnInit {
   private initial_group: Group;
   private PlaceHolder: Group;
   private one: boolean;
+  private _RightEdit: boolean;
 
   constructor(private route: ActivatedRoute, private app: AppComponent, private router: Router,
     private fb: FormBuilder, private groupApi: GroupService, private rightGroupPageApi: RightGroupPageService,private userApi: UserService) { 
@@ -65,6 +66,7 @@ export class SelectedGroupManagementComponent implements OnInit {
       })
       this.PlaceHolder = new Group(null);
       this.one = false;
+      this._RightEdit = false;
     }
 
   ngOnInit(): void { 
@@ -167,7 +169,7 @@ export class SelectedGroupManagementComponent implements OnInit {
   private setRightEditSelected(id: any, post: any): void {
     // On met dans l'object group les données que l'on a deja rentré
     this.group.name = post.name;
-    this.group.rightGroupPage = this.RightGroupPageList[Number(id.split(":")[0])];
+    this.group.rightGroupPage = new RightGroupPage(id);
 
     // Initialisation des données à afficher dans le formulaire
     this.initData();
@@ -371,9 +373,9 @@ export class SelectedGroupManagementComponent implements OnInit {
       if(rightGroupPage.SelectedPageManagement_EditPage || rightGroupPage.SelectedPageManagement_EditRefresh ||
         rightGroupPage.SelectedPageManagement_EditRoute || rightGroupPage.SelectedPageManagement_EditNeedLogIn)
         rightGroupPage.SelectedPageManagement_Access = true;
-      if(!rightGroupPage.SelectedPageManagement_EditPage && !rightGroupPage.SelectedPageManagement_EditRefresh &&
-        !rightGroupPage.SelectedPageManagement_EditRoute && !rightGroupPage.SelectedPageManagement_EditNeedLogIn)
-        rightGroupPage.SelectedPageManagement_Access = false;
+      // if(!rightGroupPage.SelectedPageManagement_EditPage && !rightGroupPage.SelectedPageManagement_EditRefresh &&
+      //   !rightGroupPage.SelectedPageManagement_EditRoute && !rightGroupPage.SelectedPageManagement_EditNeedLogIn)
+      //   rightGroupPage.SelectedPageManagement_Access = false;
 
       // EditBar
       if(element === "EditBar_Dev")
@@ -479,7 +481,7 @@ export class SelectedGroupManagementComponent implements OnInit {
     this.SelectedGroupManagementForm.get('EditBar_Edit').disable();
     this.SelectedGroupManagementForm.get('EditBar_Access').disable();
     this.SelectedGroupManagementForm.get('Main_Access').disable();
-    this.SelectedGroupManagementForm.get('SelectedPageManagement_Access').disable();
+    // this.SelectedGroupManagementForm.get('SelectedPageManagement_Access').disable();
 
     // On bloque la modification du nom et du groupe de droit de page pour le groupe par defaut ou pour un groupe personelle
     if(Number(this.route.snapshot.paramMap.get('id')) === 1 || this.initial_group.name.split('_').length !== 1) {

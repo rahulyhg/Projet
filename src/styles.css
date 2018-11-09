@@ -708,3 +708,7 @@ margin-top: 60px;
 @media (min-width: 992px) and (max-width: 1199px) {
 
 } */
+
+.drop-zone[_ngcontent-c10] {
+  height: unset;
+}
