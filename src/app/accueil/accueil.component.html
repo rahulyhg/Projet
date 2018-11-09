@@ -1,4 +1,15 @@
 <div *ngIf="_currentUser.group.rightGroupPage.Accueil_Access">
+        <button *ngIf="_currentUser.group.rightGroupPage.UserManagement_Access" class='lien'><a routerLink="/UserManagement">Gestion des utilisateurs</a></button>
+        <button *ngIf="!_currentUser.group.rightGroupPage.UserManagement_Access" style="color: #555;">Gestion des utilisateurs</button>
+        <button *ngIf="_currentUser.group.rightGroupPage.GroupManagement_Access" class='lien'><a routerLink="/GroupManagement">Gestion des groupes</a></button>
+        <button *ngIf="!_currentUser.group.rightGroupPage.GroupManagement_Access" style="color: #555;">Gestion des groupes</button>
+        <button class="lien"><a *ngIf="style_m" (click)="app.changeStyle()">Passer en mode Nuit</a></button>
+        <button class="lien"><a *ngIf="!style_m" (click)="app.changeStyle()">Passer en mode Jour</a></button>
+<br />  
+<br />  
+<br />  
+<br />  
+<br />  
     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque elementum tellus et enim consequat, in finibus ligula lobortis. Donec maximus ligula vulputate, dignissim eros nec, imperdiet felis. Praesent consequat diam ex, eu vehicula enim hendrerit in. Maecenas efficitur lacus odio, fermentum ullamcorper orci fermentum vel. Cras lobortis, orci quis auctor laoreet, metus libero sagittis eros, quis viverra nisl mi eu nisl. Praesent nec imperdiet elit. Donec volutpat ligula sed erat gravida cursus.
 
     Sed condimentum diam vehicula nulla aliquam accumsan. Ut ornare, est id pulvinar pretium, mauris lorem venenatis felis, vitae fringilla velit ligula vitae lacus. Nam mauris leo, gravida eget lacinia non, condimentum quis tellus. Proin malesuada, lorem eget tincidunt accumsan, enim leo convallis tellus, non pretium erat purus sit amet eros. Morbi bibendum mauris vel neque fringilla condimentum. Ut egestas erat nulla, et convallis erat venenatis id. Integer porttitor metus non ipsum iaculis efficitur. Quisque non libero tincidunt, blandit ipsum in, commodo justo. Praesent posuere dolor eu sem dapibus, sit amet varius nunc cursus. Proin id venenatis metus. Sed tempor consequat enim quis fermentum. Etiam luctus erat porta luctus aliquet. Duis facilisis convallis arcu, non mollis metus consectetur sit amet. Suspendisse vel iaculis urna, vitae lobortis urna. In aliquet mi quis pulvinar euismod.
