@@ -11,7 +11,8 @@ import { AmazingTimePickerModule } from 'amazing-time-picker/amazing-time-picker
 
 import { 
   MatButtonModule, MatNativeDateModule, MatTableModule, MatExpansionModule, MatChipsModule, 
-  MatSelectModule, MatSlideToggleModule, MatDatepickerModule, MatInputModule, MatIconModule
+  MatSelectModule, MatSlideToggleModule, MatDatepickerModule, MatInputModule, MatIconModule, 
+  MatDividerModule, MatListModule
 } from '@angular/material';
 
 import { AppComponent } from './app.component';
@@ -28,6 +29,8 @@ import { HighlightDirective } from './Services/highlight.directive';
 import { PageManagementComponent } from './page-management/page-management.component';
 import { SelectedPageManagementComponent } from './selected-page-management/selected-page-management.component';
 import { UserComponent } from './user/user.component';
+import { SettingsComponent } from './settings/settings.component';
+import { GenericModule } from './generic/generic.modules';
 
 const routes: Routes = [
   { path: '', redirectTo: '/Accueil', pathMatch: 'full' },
@@ -40,6 +43,7 @@ const routes: Routes = [
   { path: 'GroupManagement/:id', component: SelectedGroupManagementComponent },
   { path: 'PageManagement', component: PageManagementComponent },
   { path: 'PageManagement/:id', component: SelectedPageManagementComponent },
+  { path: 'Settings', component: SettingsComponent }
 ];
 
 @NgModule({
@@ -54,7 +58,8 @@ const routes: Routes = [
     HighlightDirective,
     PageManagementComponent,
     SelectedPageManagementComponent,
-    UserComponent
+    UserComponent,
+    SettingsComponent
   ],
   imports: [
     BrowserModule,
@@ -77,7 +82,10 @@ const routes: Routes = [
     MatNativeDateModule,
     AmazingTimePickerModule,
     MatTableModule,
-    MatExpansionModule
+    MatExpansionModule,
+    GenericModule,
+    MatDividerModule,
+    MatListModule
   ],
   providers: [ DatePipe ],
   bootstrap: [ AppComponent ],

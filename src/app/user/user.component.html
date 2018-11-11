@@ -1,21 +1,55 @@
 <div *ngIf="_currentUser.group.rightGroupPage.User_Access">
-    <form [formGroup]="UserForm" (ngSubmit)="editUser(UserForm.value)">
+    <form [formGroup]="UserForm" (ngSubmit)="editUser(UserForm.value)" class="example-form" style="display: inline-block; width: 100%;">
         <div *ngIf="!edit">
-            <div class="profile_mon_compte">
+            <div class="profile_mon_compte" style="float: right;">
                 <img src="{{ user.profile }}">
             </div>
-            <div class="Account_content">
+            <div class="Account_content" style="float: left;">
                 <ul>
-                    <li>Login : {{user.login}}</li>
-                    <li>Mot de passe : {{user.password}}</li>
-                    <li>Group : {{user.group.name}}</li>
-                    <li>Statut de connexion : {{user.statut}}</li>
-                    <li>Date de dernière connexion : {{user.date_time_logIn}}</li>
-                    <li>Date d'Inscription : {{user.date_time_signIn}}</li>
-                    <li>Game Tag : {{user.gameTag}}</li>
-                    <li>Name : {{user.name}}</li>
-                    <li>FirstName : {{user.firstName}}</li>
-                    <li>BirthDate : {{user.birthDate}}</li>
+                    <mat-list>
+                        <h3 mat-subheader>Informations sur le joueur</h3>
+                        <mat-list-item>
+                            <mat-icon mat-list-icon>account_circle</mat-icon>
+                            <h4 mat-line>Login</h4>
+                            <p mat-line>{{user.login}}</p>
+                        </mat-list-item>
+                        <mat-list-item>
+                            <mat-icon mat-list-icon>group</mat-icon>
+                            <h4 mat-line>Groupe</h4>
+                            <p mat-line>{{user.group.name}}</p>
+                        </mat-list-item>
+                        <mat-list-item>
+                            <mat-icon mat-list-icon>history</mat-icon>
+                            <h4 mat-line>Date de dernière connexion</h4>
+                            <p mat-line>{{user.date_time_logIn}}</p>
+                        </mat-list-item>
+                        <mat-list-item>
+                            <mat-icon mat-list-icon>fiber_new</mat-icon>
+                            <h4 mat-line>Date d'Inscription</h4>
+                            <p mat-line>{{user.date_time_signIn}}</p>
+                        </mat-list-item>
+                        <mat-list-item>
+                            <mat-icon mat-list-icon>videogame_asset</mat-icon>
+                            <h4 mat-line>Game Tag</h4>
+                            <p mat-line>{{user.gameTag}}</p>
+                        </mat-list-item>
+                        <mat-list-item>
+                            <mat-icon mat-list-icon>perm_identity</mat-icon>
+                            <h4 mat-line>Name</h4>
+                            <p mat-line>{{user.name}}</p>
+                        </mat-list-item>
+                        <mat-list-item>
+                            <mat-icon mat-list-icon>perm_identity</mat-icon>
+                            <h4 mat-line>FirstName</h4>
+                            <p mat-line>{{user.firstName}}</p>
+                        </mat-list-item>
+                        <mat-list-item>
+                            <mat-icon mat-list-icon><i class="fas fa-birthday-cake"></i></mat-icon>
+                            
+                            <h4 mat-line>BirthDate</h4>
+                            <p mat-line>{{user.birthDate}}</p>
+                        </mat-list-item>
+                    </mat-list>
                 </ul>
             </div>
         </div>
@@ -24,26 +58,48 @@
                 <input style="display: none" type="file" (change)="imageChangeClick($event, UserForm.value)" #File>
                 <file-drop (onFileDrop)="imageChangeDrag($event, UserForm.value)" (click)="File.click()">
                     <img src="{{ user.profile }}" appHighlight>
-                    <div class="drop">Drop picture here</div>
                 </file-drop>
             </div>
             <div class="Account_content">
                 <ul>
-                    <li>Login : <input type="text" formControlName="login"/></li>
-                    <li>Mot de passe : <input type="password" formControlName="password"/></li>
-                    <li>Statut de connexion : <input type="checkbox" formControlName="statut"/></li>
-                    <li>Date de dernière connexion : <input type="date" formControlName="date_logIn"/><input type="time" formControlName="time_logIn"/></li>
-                    <li>Date d'Inscription : <input type="date" formControlName="date_signIn"/><input type="time" formControlName="time_signIn"/></li>
-                    <li>Game Tag : <input type="text" formControlName="gameTag"/></li>
-                    <li>Name : <input type="text" formControlName="name"/></li>
-                    <li>FirstName : <input type="text" formControlName="firstName"/></li>
-                    <li>BirthDate : <input type="date" formControlName="birthDate"/></li>
+                    <mat-form-field class="example-form-field">
+                        <input matInput formControlName="login" placeholder="Login" #login>
+                        <mat-icon *ngIf="login.value" mat-button matSuffix mat-icon-button (click)="login.value = ''">close</mat-icon>
+                    </mat-form-field>
+
+                    <mat-form-field class="example-form-field" *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_ViewPassword">
+                        <input matInput formControlName="password" placeholder="Mot de passe" #password>
+                        <mat-icon *ngIf="password.value" mat-button matSuffix mat-icon-button (click)="password.value = ''" >close</mat-icon>
+                    </mat-form-field>
+
+                    <mat-form-field class="example-form-field">
+                        <input matInput formControlName="gameTag" placeholder="Game Tag" #gameTag>
+                        <mat-icon *ngIf="gameTag.value" mat-button matSuffix mat-icon-button (click)="gameTag.value = ''">close</mat-icon>
+                    </mat-form-field>
+
+                    <mat-form-field class="example-form-field">
+                        <input matInput formControlName="name" placeholder="name" #name>
+                        <mat-icon *ngIf="name.value" mat-button matSuffix mat-icon-button (click)="name.value = ''">close</mat-icon>
+                    </mat-form-field>
+
+                    <mat-form-field class="example-form-field">
+                        <input matInput formControlName="firstName" placeholder="firstName" #firstName>
+                        <mat-icon *ngIf="firstName.value" mat-button matSuffix mat-icon-button (click)="firstName.value = ''">close</mat-icon>
+                    </mat-form-field>
+
+                    <mat-form-field style="width: 100%">
+                        <input matInput [matDatepicker]="picker1" placeholder="Date d'anniversaire" formControlName="birthDate">
+                        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                        <mat-datepicker touchUi #picker1></mat-datepicker>
+                    </mat-form-field>
                 </ul>
             </div>
         </div>
         <div class="EditBar">
-            <div class="button" *ngIf="canEdit && !edit" (click)="edit = true">Modifier mon compte</div>
-            <button type="submit" *ngIf="edit" [disabled]="!UserForm.valid">Valider les modifications</button>
+            <button class="boutton_n" *ngIf="canEdit && !edit" mat-raised-button (click)="edit = true" type="button" color="primary">Modifier mon compte</button>
+            <button class="boutton_m" *ngIf="canEdit && !edit" mat-raised-button (click)="edit = true" style="margin-left: 2%; float: left;" color="primary" matBadge="8" matBadgePosition="before" matBadgeColor="primary"><i class="far fa-edit"></i></button>
+            <button class="boutton_n" style="margin-left: 20px !important;" type="submit" *ngIf="edit" mat-raised-button color="primary">Valider les modifications</button>
+            <button class="boutton_m" style="margin-left: 2%; float: left;" type="submit" *ngIf="edit" mat-raised-button color="primary" matBadge="8" matBadgePosition="before" matBadgeColor="accent"><i class="fas fa-user-check"></i></button>
         </div>
     </form>
   </div>

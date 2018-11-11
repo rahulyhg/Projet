@@ -1,23 +1,21 @@
 <div class="LoginForm_content" *ngIf="_currentUser.group.rightGroupPage.Login_Access">
+    <form [formGroup]="LoginForm" (ngSubmit)="logIn(LoginForm.value)" class="example-form" style="display: inline-block; width: 100%;">
+        <div> 
+            <ul>
+                <mat-form-field class="example-form-field">
+                    <input matInput formControlName="login" placeholder="Login" #login>
+                    <mat-icon *ngIf="login.value" mat-button matSuffix mat-icon-button (click)="login.value = ''">close</mat-icon>
+                </mat-form-field>
 
-    <h1>Sign In : </h1>
-    <form [formGroup]="LoginForm" (ngSubmit)="logIn(LoginForm.value)" class="LoginForm">
-            <div class="LoginForm_login">
-                <label><i class="far fa-user"></i></label>
-                <input type="text" formControlName="login">
-            </div>
-            
-            <div class="LoginForm_password">
-                <label><i class="fas fa-lock"></i></label>
-                <input type="password" formControlName="password">
-            </div>
+                <mat-form-field class="example-form-field">
+                    <input matInput type="password" formControlName="password" placeholder="Mot de passe" #password>
+                    <mat-icon *ngIf="password.value" mat-button matSuffix mat-icon-button (click)="password.value = ''">close</mat-icon>
+                </mat-form-field>
 
-            <div class="LoginForm_ErrorMsg">
-                    {{ ErrorMsg }}
-                </div>
-        
-            <input class="LoginForm_button" type="submit" value="Se connecter">
-        </form>
+                <button class="boutton" style="width: 100%;" mat-raised-button type="submit" color="primary">S'identifier</button>
+            </ul>
+        </div>
+    </form>
 </div>
 
     

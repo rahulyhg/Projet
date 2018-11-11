@@ -1,19 +1,30 @@
 <div *ngIf="_currentUser.group.rightGroupPage.SelectedPageManagement_Access">
-  <form [formGroup]="SelectedPageManagementForm" (ngSubmit)="editPage(SelectedPageManagementForm.value)">
+  <form [formGroup]="SelectedPageManagementForm" (ngSubmit)="editPage(SelectedPageManagementForm.value)" class="example-form" style="display: inline-block; width: 100%;">
     <div class="edit_page_gauche">
       <label>Icone de la page :</label>
-        <div class="favicon">
-            <input style="display: none" type="file" (change)="imageChangeClick($event, SelectedPageManagementForm.value)" #File>
-            <file-drop (onFileDrop)="imageChangeDrag($event, SelectedPageManagementForm.value)" (click)="File.click()">
-                <img src="{{ page.favicon }}" appHighlight>
-                <div class="drop">Drop icon here</div>
-            </file-drop>
-        </div>
-      <li>title : <input type="text" formControlName="title" (keyup)="TitleChange($event.target.value)"/></li>
-      <li>refresh : <input type="number" formControlName="refresh"/></li>
-      <li>route : <input type="text" formControlName="route"/></li>
-      <li>needLogIn : <input type="checkbox" formControlName="needLogIn"/></li>
+      <div class="favicon">
+          <input style="display: none" type="file" (change)="imageChangeClick($event, SelectedPageManagementForm.value)" #File>
+          <file-drop (onFileDrop)="imageChangeDrag($event, SelectedPageManagementForm.value)" (click)="File.click()">
+              <img src="{{ page.favicon }}" appHighlight>
+              <!-- <div class="drop">Drop icon here</div> -->
+          </file-drop>
+      </div>
+      <mat-form-field class="example-form-field">
+          <input matInput formControlName="title" placeholder="Titre de la page" #title>
+          <mat-icon *ngIf="title.value" mat-button matSuffix mat-icon-button (click)="title.value = ''">close</mat-icon>
+      </mat-form-field>
 
+      <mat-form-field class="example-form-field">
+          <input matInput type="number" formControlName="refresh" placeholder="Temps de refresh des données de la page" #refresh>
+          <mat-icon *ngIf="refresh.value" mat-button matSuffix mat-icon-button (click)="refresh.value = ''">close</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field class="example-form-field">
+          <input matInput formControlName="route" placeholder="Chemin de la page depuis la source" #route>
+          <mat-icon *ngIf="route.value" mat-button matSuffix mat-icon-button (click)="route.value = ''">close</mat-icon>
+      </mat-form-field>
+
+      <mat-slide-toggle formControlName="needLogIn" color="primary"> Cette page nécessite un utilisateur connécté </mat-slide-toggle>
     </div>
     <div class="edit_page_droite">
       <img class="onglet" src="assets/uploads/images/PageNotVoid.jpg">
@@ -21,7 +32,8 @@
       <div class="edit_page_title">{{ page.title }}</div>
     </div>
     <div class="EditBar" *ngIf="_currentUser.group.rightGroupPage.SelectedPageManagement_EditPage">
-        <button type="submit" *ngIf="_currentUser.group.rightGroupPage.SelectedPageManagement_EditPage" [disabled]="!SelectedPageManagementForm.valid">Valider les modifications</button>
+        <button class="boutton_n" *ngIf="_currentUser.group.rightGroupPage.SelectedPageManagement_EditPage" mat-raised-button (click)="DeleteGroup()" type="button" color="primary">Valider les modifications</button>
+        <button class="boutton_m" style="margin-left: 2%; float: left;" *ngIf="_currentUser.group.rightGroupPage.SelectedPageManagement_EditPage" mat-raised-button color="primary"matBadge="8" matBadgePosition="before" matBadgeColor="warn"><i (click)="DeleteGroup()" type="button" class="fas fa-trash-alt"></i></button>
     </div>
   </form>
 </div>

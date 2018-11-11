@@ -1,9 +1,10 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { FileSystemFileEntry } from '../../../node_modules/ngx-file-drop';
-import { Md5 } from 'ts-md5/dist/md5';
+
+import { GenericModule } from '../generic/generic.modules';
 
 import { AppComponent } from '../app.component';
 
@@ -11,6 +12,7 @@ import { Api } from '../Class/Api';
 import { User } from '../Class/User';
 
 import { UserService } from '../Services/user.service';
+import { UploadService } from '../Services/uploads.service';
 
 @Component({
   templateUrl: './user.component.html'
@@ -30,7 +32,7 @@ export class UserComponent implements OnInit {
   private edit: boolean;
 
   constructor(private app:AppComponent, private router: Router, private userApi: UserService, private route: ActivatedRoute, 
-    private fb: FormBuilder) { 
+    private fb: FormBuilder, private uploadApi: UploadService, private generic: GenericModule) { 
     this.Reponse_getUserById = null;
     this.Reponse_getUserById_form = null;
     this.Reponse_getUserById_initial = null;
@@ -74,28 +76,31 @@ export class UserComponent implements OnInit {
           this.router.navigate(['/Accueil']);
         }
 
-        if(this.router.url !== "/User/MonCompte") {
-          this.Reponse_getUserById_form = this.userApi.getUserById(Number(this.route.snapshot.paramMap.get('id')));
-          this.Reponse_getUserById_initial = this.Reponse_getUserById_form;
-        }
-        else {
-          this.Reponse_getUserById_form = this.userApi.getUserById(this._currentUser.id);
-          this.Reponse_getUserById_initial = this.Reponse_getUserById_form;
-        }
-
-        this.Reponse_getUserById_form.subscribe((data: Api) => {
-          this.user = data.data;
-          this.initial_User = data.data;
-
-          this.canEdit = false;
-
-          if(this._currentUser.id === this.user.id) {
-            this.canEdit = true;
-            this.initData();
-          }
-        })
+        this.verifRight(this._currentUser);
       })
     }
+  }
+
+  private verifRight(user: User) {
+    if(this.router.url !== "/User/MonCompte")
+      this.Reponse_getUserById_form = this.userApi.getUserById(Number(this.route.snapshot.paramMap.get('id')));
+    else
+      this.Reponse_getUserById_form = this.userApi.getUserById(user.id);
+
+    this.Reponse_getUserById_initial = this.Reponse_getUserById_form;
+    this.Reponse_getUserById_form.subscribe((data: Api) => {
+      this.user = data.data;
+      this.initial_User = data.data;
+      
+      this.user.birthDate = this.generic.changeDateTimeFormatFromBdd(this.user.birthDate);
+
+      this.canEdit = false;
+
+      if(this._currentUser.id === this.user.id) {
+        this.canEdit = true;
+        this.initData();
+      }
+    })
   }
 
   private initData(): void {
@@ -106,10 +111,6 @@ export class UserComponent implements OnInit {
         'login' : this.user.login,
         'password' : this.user.password,
         'profile': this.user.profile,
-        'date_signIn' : this.user.date_time_signIn.split(' ')[0],
-        'time_signIn' : this.user.date_time_signIn.split(' ')[1],
-        'date_logIn' : this.user.date_time_logIn.split(' ')[0],
-        'time_logIn' : this.user.date_time_logIn.split(' ')[1],
         'gameTag' : this.user.gameTag,
         'name' : this.user.name,
         'firstName' : this.user.firstName,
@@ -120,6 +121,8 @@ export class UserComponent implements OnInit {
 
   private editUser(post: any): void {
     this.Reponse_getUserById_form.subscribe((data: Api) => {
+      post.birthDate = this.generic.changeDateTimeFormatForBdd(post.birthDate, null);
+
       this.user = new User(post);
       this.user.id = this.initial_User.id;
       this.user.group = this.initial_User.group;
@@ -131,5 +134,43 @@ export class UserComponent implements OnInit {
       this.userApi.putUser(this.user.id, this.user, regenerate_password).subscribe();
       this.edit = false;
     })
+  }
+
+  private imageChangeClick(event, value): void {
+    if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditUser) {
+      this.user = new User(value);
+
+      var name: string = "profile" + Math.random() * 1000 + ".jpg";
+      if(event.target.files[0] !==undefined) {
+        this.uploadApi.UploadFile(event.target.files[0], name).subscribe(event => {
+          if(event)
+            this.newImage(event, name);
+        });
+      }
+    } else 
+      console.log("Vous n'avez pas la permission de modifier l'image de profile de cette utilisateur");
+  }
+
+  private newImage(ok: any, name: string): void {
+    if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditUser) {
+      if(ok.ok)
+        this.user.profile = "https://dev.kevin-c.fr/uploads/" + name;
+      this.initData();
+    } else 
+      console.log("Vous n'avez pas la permission de modifier l'image de profile de cette utilisateur");
+  }
+
+  public imageChangeDrag(event, value): void {
+    if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditUser) {
+      // On Met dans l'object user les données que l'on a deja rentré
+      this.user = new User(value);
+
+      var name: string = "profile" + Math.random() * 1000 + ".jpg";
+      (event.files[0].fileEntry as FileSystemFileEntry).file((file: File) => { this.uploadApi.UploadFile(file, name).subscribe(event => {
+        if(event)
+          this.newImage(event, name);
+      }); });
+    } else 
+      console.log("Vous n'avez pas la permission de modifier l'image de profile de cette utilisateur");
   }
 }

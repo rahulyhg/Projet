@@ -39,6 +39,8 @@ export class RightGroupPage {
     public SelectedPageManagement_EditRoute: boolean;
     public SelectedPageManagement_EditNeedLogIn: boolean;
 
+    public Settings_Access: boolean;
+
     constructor(value: any) {
       if(value === null) { value = "" }
 
@@ -79,6 +81,8 @@ export class RightGroupPage {
       this.SelectedPageManagement_EditRefresh = this.setFormatBoolean(value.SelectedPageManagement_EditRefresh, value, false);
       this.SelectedPageManagement_EditRoute = this.setFormatBoolean(value.SelectedPageManagement_EditRoute, value, false);
       this.SelectedPageManagement_EditNeedLogIn = this.setFormatBoolean(value.SelectedPageManagement_EditNeedLogIn, value, false);
+
+      this.Settings_Access = this.setFormatBoolean(value.Settings_Access, value, false);
     }
 
     private setFormatNumber(attirb: any, value: any, defaut: any): number {

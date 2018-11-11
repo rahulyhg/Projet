@@ -2,7 +2,8 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute} from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { Md5 } from 'ts-md5/dist/md5';
+
+import { GenericModule } from '../generic/generic.modules';
 
 import { AppComponent } from '../app.component';
 
@@ -37,7 +38,8 @@ export class SelectedGroupManagementComponent implements OnInit {
   private _RightEdit: boolean;
 
   constructor(private route: ActivatedRoute, private app: AppComponent, private router: Router,
-    private fb: FormBuilder, private groupApi: GroupService, private rightGroupPageApi: RightGroupPageService,private userApi: UserService) { 
+    private fb: FormBuilder, private groupApi: GroupService, private rightGroupPageApi: RightGroupPageService, 
+    private generic: GenericModule) { 
       this.Reponse_getUserById = null;
       this.Reponse_getGroupById_form = null;
       this.Reponse_getGroupById_initial = null;
@@ -56,7 +58,7 @@ export class SelectedGroupManagementComponent implements OnInit {
         'SelectedGroupManagement_EditGroup' : null, 'SelectedGroupManagement_DeleteGroup' : null,
         'SelectedGroupManagement_EditRightPage' : null, 'EditBar_Dev' : null, 'EditBar_Edit' : null, 
         'SelectedPageManagement_Access': null, 'SelectedPageManagement_EditPage': null, 'SelectedPageManagement_EditRefresh': null,
-        'SelectedPageManagement_EditRoute': null, 'SelectedPageManagement_EditNeedLogIn': null});
+        'SelectedPageManagement_EditRoute': null, 'SelectedPageManagement_EditNeedLogIn': null, 'Settings_Access': null});
       this.group = new Group(null);
       var id: number = 1;
       if(this.route.snapshot.paramMap.get('id') !== "New") { id = Number(this.route.snapshot.paramMap.get('id')) }
@@ -126,8 +128,10 @@ export class SelectedGroupManagementComponent implements OnInit {
 
     this.Reponse_getGroupById_form.subscribe((data: Api) => {
       // On vérifit que le groupe que l'on veux éditer réellement
-      if(this.group.id !== Number(this.route.snapshot.paramMap.get('id')) && this.route.snapshot.paramMap.get('id') !== "New")
+      if(this.group.id !== Number(this.route.snapshot.paramMap.get('id')) && this.route.snapshot.paramMap.get('id') !== "New") {
+        console.log("Le group que vous tentez d'etiter n'existe pas");
         this.router.navigate(['/GroupManagement']);
+      }
 
       // Si on créer un groupe ou que l'on edite de le groupe par defaut, on enlève le bouton supprimers
       if(this.route.snapshot.paramMap.get('id') === "New" || this.route.snapshot.paramMap.get('id') === "1")
@@ -190,220 +194,8 @@ export class SelectedGroupManagementComponent implements OnInit {
         rightGroupPage.id = this.initial_group.rightGroupPage.id;
       }
 
-      // Accueil Page
-      if(element === "Accueil_Access")
-        rightGroupPage.Accueil_Access = !(rightGroupPage.Accueil_Access);
-
-      // Login Page
-      if(element === "Login_Access")
-        rightGroupPage.Login_Access = !(rightGroupPage.Login_Access);
-
-      // User Page
-      if(element === "User_Access")
-        rightGroupPage.User_Access = !(rightGroupPage.User_Access);
-
-      // SelectedUserManagement Page
-      if(element === "SelectedUserManagement_Access") {
-        if(rightGroupPage.SelectedUserManagement_Access) {
-          rightGroupPage.SelectedUserManagement_DeleteUser = false;
-          rightGroupPage.SelectedUserManagement_EditRightGroupPageUser = false;
-          rightGroupPage.SelectedUserManagement_EditUser = false;
-          rightGroupPage.SelectedUserManagement_ShowPasswordButton = false;
-          rightGroupPage.SelectedUserManagement_ViewPassword = false;
-          rightGroupPage.UserManagement_AddUser = false;
-          rightGroupPage.UserManagement_EditDefaultUser = false;
-          rightGroupPage.GroupManagement_EditDefaultGroup = false;
-        }
-        rightGroupPage.SelectedUserManagement_Access = !(rightGroupPage.SelectedUserManagement_Access);
-      } else if(element === "SelectedUserManagement_ViewPassword") {
-        if(rightGroupPage.SelectedUserManagement_ViewPassword)
-          rightGroupPage.SelectedUserManagement_ShowPasswordButton = false;
-        rightGroupPage.SelectedUserManagement_ViewPassword = !(rightGroupPage.SelectedUserManagement_ViewPassword);
-      } else if(element === "SelectedUserManagement_ShowPasswordButton") {
-        if(!rightGroupPage.SelectedUserManagement_ShowPasswordButton)
-          rightGroupPage.SelectedUserManagement_ViewPassword = true;
-        rightGroupPage.SelectedUserManagement_ShowPasswordButton = !(rightGroupPage.SelectedUserManagement_ShowPasswordButton);
-      } else if(element === "SelectedUserManagement_EditRightGroupPageUser") {
-        if(!rightGroupPage.SelectedUserManagement_EditRightGroupPageUser)
-          rightGroupPage.SelectedUserManagement_EditUser = true;
-        rightGroupPage.SelectedUserManagement_EditRightGroupPageUser = !(rightGroupPage.SelectedUserManagement_EditRightGroupPageUser);
-      } else if(element === "SelectedUserManagement_EditUser") {
-        if(rightGroupPage.SelectedUserManagement_EditUser) {
-          rightGroupPage.SelectedUserManagement_EditRightGroupPageUser = false;
-          rightGroupPage.UserManagement_AddUser = false;
-          rightGroupPage.UserManagement_EditDefaultUser = false;
-          rightGroupPage.GroupManagement_EditDefaultGroup = false;
-        }
-        rightGroupPage.SelectedUserManagement_EditUser = !(rightGroupPage.SelectedUserManagement_EditUser);
-      } else if(element === "SelectedUserManagement_DeleteUser")
-        rightGroupPage.SelectedUserManagement_DeleteUser = !(rightGroupPage.SelectedUserManagement_DeleteUser);
-      if(rightGroupPage.SelectedUserManagement_ViewPassword || rightGroupPage.SelectedUserManagement_ShowPasswordButton || 
-        rightGroupPage.SelectedUserManagement_EditRightGroupPageUser || rightGroupPage.SelectedUserManagement_DeleteUser || 
-        rightGroupPage.SelectedUserManagement_EditUser) {
-          rightGroupPage.SelectedUserManagement_Access = true;
-        }
-      
-      // UserManagement Page
-      if(element === "UserManagement_Access") {
-        if(rightGroupPage.UserManagement_Access) {
-          rightGroupPage.UserManagement_AddUser = false;
-          rightGroupPage.UserManagement_EditDefaultUser = false;
-          rightGroupPage.GroupManagement_EditDefaultGroup = false;
-        }
-        rightGroupPage.UserManagement_Access = !(rightGroupPage.UserManagement_Access);
-      } else if(element === "UserManagement_AddUser") {
-        if(!rightGroupPage.UserManagement_AddUser) {
-          rightGroupPage.SelectedUserManagement_Access = true;
-          rightGroupPage.SelectedUserManagement_EditUser = true;
-        }
-        rightGroupPage.UserManagement_AddUser = !(rightGroupPage.UserManagement_AddUser);
-      } else if(element === "UserManagement_EditDefaultUser") {
-        if(!rightGroupPage.UserManagement_EditDefaultUser){
-          rightGroupPage.SelectedUserManagement_Access = true;
-          rightGroupPage.SelectedUserManagement_EditUser = true;
-          rightGroupPage.SelectedGroupManagement_Access = true;
-          rightGroupPage.GroupManagement_EditDefaultGroup = true;
-          rightGroupPage.SelectedGroupManagement_EditGroup = true;
-        } else
-          rightGroupPage.GroupManagement_EditDefaultGroup = false;
-        rightGroupPage.UserManagement_EditDefaultUser = !(rightGroupPage.UserManagement_EditDefaultUser);
-      }
-      if(rightGroupPage.UserManagement_AddUser || rightGroupPage.UserManagement_EditDefaultUser)
-        rightGroupPage.UserManagement_Access = true;
-
-      // SelectedGroupManagement Page
-      if(element === "SelectedGroupManagement_Access"){
-        if(rightGroupPage.SelectedGroupManagement_Access) {
-          rightGroupPage.SelectedGroupManagement_EditGroup = false;
-          rightGroupPage.SelectedGroupManagement_DeleteGroup = false;
-          rightGroupPage.SelectedGroupManagement_EditRightPage = false;
-          rightGroupPage.GroupManagement_AddGroup = false;
-          rightGroupPage.GroupManagement_EditDefaultGroup = false;
-          rightGroupPage.UserManagement_EditDefaultUser = false;
-        }
-        rightGroupPage.SelectedGroupManagement_Access = !(rightGroupPage.SelectedGroupManagement_Access);
-      } else if(element === "SelectedGroupManagement_EditGroup") {
-        if(rightGroupPage.SelectedGroupManagement_EditGroup) {
-          rightGroupPage.SelectedGroupManagement_EditRightPage = false;
-          rightGroupPage.GroupManagement_AddGroup = false;
-          rightGroupPage.GroupManagement_EditDefaultGroup = false;
-          rightGroupPage.UserManagement_EditDefaultUser = false;
-        }
-        rightGroupPage.SelectedGroupManagement_EditGroup = !(rightGroupPage.SelectedGroupManagement_EditGroup);
-      } else if(element === "SelectedGroupManagement_DeleteGroup")
-        rightGroupPage.SelectedGroupManagement_DeleteGroup = !(rightGroupPage.SelectedGroupManagement_DeleteGroup);
-      else if(element === "SelectedGroupManagement_EditRightPage") {
-        if(!rightGroupPage.SelectedGroupManagement_EditRightPage)
-          rightGroupPage.SelectedGroupManagement_EditGroup = true;
-        rightGroupPage.SelectedGroupManagement_EditRightPage = !(rightGroupPage.SelectedGroupManagement_EditRightPage);
-      }
-      if(rightGroupPage.SelectedGroupManagement_DeleteGroup || rightGroupPage.SelectedGroupManagement_EditGroup ||
-        rightGroupPage.SelectedGroupManagement_EditRightPage)
-        rightGroupPage.SelectedGroupManagement_Access = true;
-      
-      // GroupManagement Page
-      if(element === "GroupManagement_Access") {
-        if(rightGroupPage.GroupManagement_Access) {
-          rightGroupPage.GroupManagement_AddGroup = false;
-          rightGroupPage.GroupManagement_EditDefaultGroup = false;
-          rightGroupPage.UserManagement_EditDefaultUser = false;
-        }
-        rightGroupPage.GroupManagement_Access = !(rightGroupPage.GroupManagement_Access);
-      } else if(element === "GroupManagement_AddGroup") {
-        if(!rightGroupPage.GroupManagement_AddGroup) {
-          rightGroupPage.SelectedGroupManagement_Access = true;
-          rightGroupPage.SelectedGroupManagement_EditGroup = true;
-        }
-        rightGroupPage.GroupManagement_AddGroup = !(rightGroupPage.GroupManagement_AddGroup);
-      } else if(element === "GroupManagement_EditDefaultGroup") {
-        if(!rightGroupPage.GroupManagement_EditDefaultGroup) {
-          rightGroupPage.SelectedGroupManagement_Access = true;
-          rightGroupPage.SelectedGroupManagement_EditGroup = true;
-          rightGroupPage.UserManagement_Access = true;
-          rightGroupPage.UserManagement_EditDefaultUser = true;
-          rightGroupPage.SelectedUserManagement_Access = true;
-          rightGroupPage.SelectedUserManagement_EditUser = true;
-        } else
-          rightGroupPage.UserManagement_EditDefaultUser = false;
-        rightGroupPage.GroupManagement_EditDefaultGroup = !(rightGroupPage.GroupManagement_EditDefaultGroup);
-      }
-      if(rightGroupPage.GroupManagement_AddGroup || rightGroupPage.GroupManagement_EditDefaultGroup)
-        rightGroupPage.GroupManagement_Access = true;
-
-      // SelectedPageManagement Page
-      if(element === "SelectedPageManagement_Access"){
-        if(rightGroupPage.SelectedPageManagement_Access) {
-          rightGroupPage.SelectedPageManagement_EditPage = false;
-          rightGroupPage.SelectedPageManagement_EditRefresh = false;
-          rightGroupPage.SelectedPageManagement_EditRoute = false;
-          rightGroupPage.SelectedPageManagement_EditNeedLogIn = false;
-        }
-        rightGroupPage.SelectedPageManagement_Access = !(rightGroupPage.SelectedPageManagement_Access);
-      } else if(element === "SelectedPageManagement_EditPage") {
-        if(!rightGroupPage.SelectedPageManagement_EditPage) {
-          rightGroupPage.SelectedPageManagement_Access = true;
-        } else {
-          rightGroupPage.SelectedPageManagement_EditRefresh = false;
-          rightGroupPage.SelectedPageManagement_EditRoute = false;
-          rightGroupPage.SelectedPageManagement_EditNeedLogIn = false;
-        }
-        rightGroupPage.SelectedPageManagement_EditPage = !(rightGroupPage.SelectedPageManagement_EditPage);
-      }
-      else if(element === "SelectedPageManagement_EditRefresh") {
-        if(!rightGroupPage.SelectedPageManagement_EditRefresh) {
-          rightGroupPage.SelectedPageManagement_Access = true;
-          rightGroupPage.SelectedPageManagement_EditPage = true;
-        }
-        rightGroupPage.SelectedPageManagement_EditRefresh = !(rightGroupPage.SelectedPageManagement_EditRefresh);
-      }
-      else if(element === "SelectedPageManagement_EditRoute") {
-        if(!rightGroupPage.SelectedPageManagement_EditRoute) {
-          rightGroupPage.SelectedPageManagement_Access = true;
-          rightGroupPage.SelectedPageManagement_EditPage = true;
-        }
-        rightGroupPage.SelectedPageManagement_EditRoute = !(rightGroupPage.SelectedPageManagement_EditRoute);
-      }
-      else if(element === "SelectedPageManagement_EditNeedLogIn") {
-        if(!rightGroupPage.SelectedPageManagement_EditNeedLogIn) {
-          rightGroupPage.SelectedPageManagement_Access = true;
-          rightGroupPage.SelectedPageManagement_EditPage = true;
-        }
-        rightGroupPage.SelectedPageManagement_EditNeedLogIn = !(rightGroupPage.SelectedPageManagement_EditNeedLogIn);
-      }
-      if(rightGroupPage.SelectedPageManagement_EditPage || rightGroupPage.SelectedPageManagement_EditRefresh ||
-        rightGroupPage.SelectedPageManagement_EditRoute || rightGroupPage.SelectedPageManagement_EditNeedLogIn)
-        rightGroupPage.SelectedPageManagement_Access = true;
-      // if(!rightGroupPage.SelectedPageManagement_EditPage && !rightGroupPage.SelectedPageManagement_EditRefresh &&
-      //   !rightGroupPage.SelectedPageManagement_EditRoute && !rightGroupPage.SelectedPageManagement_EditNeedLogIn)
-      //   rightGroupPage.SelectedPageManagement_Access = false;
-
-      // EditBar
-      if(element === "EditBar_Dev")
-        rightGroupPage.EditBar_Dev = !(rightGroupPage.EditBar_Dev);
-      if(rightGroupPage.SelectedGroupManagement_Access || rightGroupPage.SelectedUserManagement_Access ||
-        rightGroupPage.UserManagement_Access || rightGroupPage.GroupManagement_Access || rightGroupPage.SelectedPageManagement_Access)
-        rightGroupPage.EditBar_Edit = true;
-      if(!rightGroupPage.SelectedGroupManagement_Access && !rightGroupPage.SelectedUserManagement_Access &&
-        !rightGroupPage.UserManagement_Access && !rightGroupPage.GroupManagement_Access && !rightGroupPage.SelectedPageManagement_Access)
-        rightGroupPage.EditBar_Edit = false;
-
-      if(rightGroupPage.EditBar_Dev || rightGroupPage.EditBar_Edit)
-        rightGroupPage.EditBar_Access = true;
-      if(!rightGroupPage.EditBar_Dev && !rightGroupPage.EditBar_Edit)
-        rightGroupPage.EditBar_Access = false;
-
-      // Main Page
-      if(rightGroupPage.Accueil_Access || rightGroupPage.Login_Access || rightGroupPage.User_Access || 
-        rightGroupPage.EditBar_Access || rightGroupPage.SelectedUserManagement_Access || rightGroupPage.UserManagement_Access ||
-        rightGroupPage.SelectedGroupManagement_Access || rightGroupPage.GroupManagement_Access || rightGroupPage.SelectedPageManagement_Access)
-        rightGroupPage.Main_Access = true;
-      if(!rightGroupPage.Accueil_Access && !rightGroupPage.Login_Access && !rightGroupPage.User_Access && 
-        !rightGroupPage.EditBar_Access && !rightGroupPage.SelectedUserManagement_Access && !rightGroupPage.UserManagement_Access &&
-        !rightGroupPage.SelectedGroupManagement_Access && !rightGroupPage.GroupManagement_Access && !rightGroupPage.SelectedPageManagement_Access)
-        rightGroupPage.Main_Access = false;
-
       // On definit le group de droit de page de l'utilisateur par celui que l'on vient de créer et modifier
-      this.group.rightGroupPage = rightGroupPage;
+      this.group.rightGroupPage = this.generic.setRightSelected(value, element, rightGroupPage);
 
       // Initialisation des données à afficher dans le formulaire
       this.initData();
@@ -443,7 +235,8 @@ export class SelectedGroupManagementComponent implements OnInit {
         'SelectedPageManagement_EditPage' : this.group.rightGroupPage.SelectedPageManagement_EditPage,
         'SelectedPageManagement_EditRefresh' : this.group.rightGroupPage.SelectedPageManagement_EditRefresh,
         'SelectedPageManagement_EditRoute' : this.group.rightGroupPage.SelectedPageManagement_EditRoute,
-        'SelectedPageManagement_EditNeedLogIn' : this.group.rightGroupPage.SelectedPageManagement_EditNeedLogIn
+        'SelectedPageManagement_EditNeedLogIn' : this.group.rightGroupPage.SelectedPageManagement_EditNeedLogIn,
+        'Settings_Access' : this.group.rightGroupPage.Settings_Access
       });
 
       if(!this.one) {
@@ -478,24 +271,19 @@ export class SelectedGroupManagementComponent implements OnInit {
       this.SelectedGroupManagementForm.get('name').enable();
     }
 
-    this.SelectedGroupManagementForm.get('EditBar_Edit').disable();
     this.SelectedGroupManagementForm.get('EditBar_Access').disable();
     this.SelectedGroupManagementForm.get('Main_Access').disable();
-    // this.SelectedGroupManagementForm.get('SelectedPageManagement_Access').disable();
-
-    // On bloque la modification du nom et du groupe de droit de page pour le groupe par defaut ou pour un groupe personelle
-    if(Number(this.route.snapshot.paramMap.get('id')) === 1 || this.initial_group.name.split('_').length !== 1) {
-      this.SelectedGroupManagementForm.get('name').disable();
-      this.SelectedGroupManagementForm.get('RightGroupPage').disable();
-    }
+    this.SelectedGroupManagementForm.get('SelectedPageManagement_Access').disable();
   }
 
   // Permet de modifier le nom du groupe de droit de page en meme temps que celui du groupe
   private NameChange(post: string): void {
-    this.RightGroupPageList[0].name = post;
-    if(post === "")
-      this.RightGroupPageList[0].name = "default";
-    this.SelectedGroupManagementForm.get('RightGroupPage').setValue(this.RightGroupPageList[0]);
+    this.Reponse_getGroupById_form.subscribe((data: Api) => {
+      this.RightGroupPageList[0].name = post;
+      if(post === "")
+        this.RightGroupPageList[0].name = "default";
+      this.SelectedGroupManagementForm.get('RightGroupPage').setValue(this.RightGroupPageList[0]);  
+    })
   }
 
   private editGroup(post: any): void {
@@ -516,14 +304,12 @@ export class SelectedGroupManagementComponent implements OnInit {
           this.group.rightGroupPage.id = this.initial_group.rightGroupPage.id;
           this.group.rightGroupPage.name = this.initial_group.rightGroupPage.name;
   
-          if(this.create_md5(JSON.stringify(new Group(this.group))) === this.create_md5(JSON.stringify(new Group(this.initial_group)))) {
-            console.log("Aucune modification");
+          if(this.generic.create_md5(JSON.stringify(new Group(this.group))) === this.generic.create_md5(JSON.stringify(new Group(this.initial_group)))) {
             same = true;
             this.router.navigate(['/GroupManagement']);
           }
         } else {
-          if(this.create_md5(JSON.stringify(new Group(this.group))) === this.create_md5(JSON.stringify(new Group(this.initial_group)))) {
-            console.log("Aucune modification");
+          if(this.generic.create_md5(JSON.stringify(new Group(this.group))) === this.generic.create_md5(JSON.stringify(new Group(this.initial_group)))) {
             same = true;
             this.router.navigate(['/GroupManagement']);
           }
@@ -610,10 +396,5 @@ export class SelectedGroupManagementComponent implements OnInit {
         this.app.logOut();
     } else 
       console.log("Vous n'avez pas la permission de supprimer ce groupe");
-  }
-
-  private create_md5(attrib: string): any {
-    const md5 = new Md5();
-    return md5.appendStr(attrib).end();
   }
 }

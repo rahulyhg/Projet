@@ -38,35 +38,23 @@
   </nav>
 
   <section id="dev" *ngIf="_currentUser.group.rightGroupPage.EditBar_Access">
-      <div *ngIf="_currentUser.group.rightGroupPage.EditBar_Edit" class="edit" (click)="GestionSitePopup()"><i class="far fa-edit"></i></div>
+      <div *ngIf="_currentUser.group.rightGroupPage.SelectedPageManagement_Access" class="edit"><a routerLink="/PageManagement/{{ _currentPage.id }}"><i class="far fa-edit"></i></a></div>
       <div *ngIf="_currentUser.group.rightGroupPage.EditBar_Dev" class="dev"><a routerLink="/Developer"><i class="fas fa-code"></i></a></div>
+      <div *ngIf="_currentUser.group.rightGroupPage.Settings_Access" class="settings" ><a routerLink="/Settings"><i class="fas fa-cogs"></i></a></div>
   </section>
-
-  <div id="devPopup" *ngIf="_GestionSitePopupStatut && _currentUser.group.rightGroupPage.EditBar_Access" appMovable>
-    <div id="bar_move" class="bar">
-      <div class="bar_content">
-        <div class="bar_content_title">
-          <li>Test bar dev web</li>
-        </div>
-        <div class="bar_close_button" (click)="GestionSitePopup()"><i class="fas fa-times"></i></div>
-      </div>
-    </div>
-    <div class="devPopup_content">
-      <li *ngIf="_currentUser.group.rightGroupPage.UserManagement_Access" class='lien'><a routerLink="/UserManagement">Gestion des utilisateurs</a></li>
-      <li *ngIf="!_currentUser.group.rightGroupPage.UserManagement_Access" style="color: #555;">Gestion des utilisateurs</li>
-      <li *ngIf="_currentUser.group.rightGroupPage.GroupManagement_Access" class='lien'><a routerLink="/GroupManagement">Gestion des groupes</a></li>
-      <li *ngIf="!_currentUser.group.rightGroupPage.GroupManagement_Access" style="color: #555;">Gestion des groupes</li>
-      <li *ngIf="_currentUser.group.rightGroupPage.SelectedPageManagement_Access" class='lien'><a routerLink="/PageManagement/{{ _currentPage.id }}">Editer les Parametres de cette page</a></li>
-      <li *ngIf="!_currentUser.group.rightGroupPage.SelectedPageManagement_Access" style="color: #555;">Editer les Parametres de cette page</li> 
-    </div>
-  </div>
 
   <section id="page_section">
     <router-outlet></router-outlet>
   </section>
 
-<footer>
-    Footer
+<footer id="footer">
+  <div class="left_content">
+    Foogter
+  </div>
+  <div class="right_content">
+    App Version Alpha Pré-production (0.0.14)
+    <a href="https://github.com/dov118/Projet">Page Git du projet</a>
+  </div>
 </footer>
 
 </div>

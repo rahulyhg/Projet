@@ -107,6 +107,7 @@ cursor: pointer;
       padding-top: 100px;
       padding-bottom: 100px;
       margin-bottom: 100px !important;
+      min-height: 500px;
 }
 
 #page_nav {
@@ -151,14 +152,16 @@ margin-left: 20px;
 }
 
 #dev .edit,
-#dev .dev {
+#dev .dev,
+#dev .settings {
   cursor: pointer;
   float: left;
   margin: auto;
 }
 
 #dev .edit svg,
-#dev .dev svg {
+#dev .dev svg,
+#dev .settings svg {
   width: 50px;
     height: 50px;
 }
@@ -255,87 +258,11 @@ margin-left: 300px;
 margin-top: 60px;
 }
 
-/*
-
-.LoginForm {
-  width: 600px;
-  margin: auto;
-}
-
-.LoginForm_login,
-.LoginForm_password {
-    margin: 20px;
-    display: flex;
-    border: 2px solid #666;
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-}
-
-.LoginForm_button {
-  width: 50%;
-}
-
-.LoginForm label {
-  padding: 12px;
-  border-right: 2px solid #666;
-  width: 50px;
-}
-
-.LoginForm label svg {
-  width: 30px !important;
-  height: 30px;
-  color: #666;
-}
-
-.LoginForm input {
-  width: 470px;
-  border: none;
-  padding: 5px;
-  border-bottom-right-radius: 10px;
-  border-top-right-radius: 10px;
-  font-family: 'Titillium Web', sans-serif;
-  font-size: 20px;
-  padding-left: 25px;
-  font-weight: bold;
-}
-
-.LoginForm_ErrorMsg {
-  text-align: left;
-  padding-left: 50px;
-  font-size: 20px;
-  font-weight: bold;
-  color: red;
-}
-
-.ErrorMsg {
-  text-align: left;
-  font-size: 20px;
-  font-weight: bold;
-  color: red;
-}
-
 .LoginForm_content {
-  text-align: center;
+  width: 40%;
+  margin-left: 30%;
+  margin-right: 30%;
 }
-
-.LoginForm_button {
-  margin-top: 20px;
-    border: 2px solid #008800 !important;
-    background-color: #00BE00;
-    border-radius: 10px;
-    color: white;
-    cursor: pointer;
-    padding-left: 5px !important;
-}
-
-.LoginForm_button:hover {
-    border: 2px solid #00BE00 !important;
-    background-color: #008800;
-}
-
-*/
 
 .Account_content {
   float: left;
@@ -352,24 +279,22 @@ margin-top: 60px;
 .profile {
   float: left;
   text-align: center;
-  /* display: flex; */
-  cursor: pointer;
+  display: flex;
   width: 30%;
 }
 
 .profile img {
-  /* height: 200px;
-  width: 200px; */
   width: 100%;
   height: 100%;
-  /* max-height: 200px;
-  max-width: 200px; */
+  max-height: 200px;
+  max-width: 200px;
   border-radius: 50%;
   opacity: 1;
   transition: 0.3s;
   border: 2px dotted transparent;
   box-shadow: 5px 5px 5px #888888;
   z-index: 2;
+  cursor: pointer;
 }
 
 .profile:hover .drop {
@@ -377,12 +302,8 @@ margin-top: 60px;
   transition: 0.3s;
 }
 
-.profile:hover img {
+file-drop:hover img {
   opacity: 0.7;
-  /* height: 200px;
-  width: 200px;
-  max-height: 200px;
-  max-width: 200px; */
   transition: 0.3s;
 }
 
@@ -443,23 +364,19 @@ margin-top: 60px;
   left: 302Px;
   text-align: center;
   right: 0;
-  height: 40px;
   z-index: 10;
 }
 
   file-drop {
-    /* height: 204px;
-    width: 204px; */
-    /* position: absolute; */
     display: block;
     padding: 5%;
     padding-top: 0;
+    max-width: 200px;
+    max-height: 200px;
   }
 
   .drop-zone[_ngcontent-c1],
   .content[_ngcontent-c1] {
-    /* height: 204px !important;
-    width: 204px !important; */
     border: none !important;
     border-radius: initial !important;
     width: 100% !important;
@@ -468,7 +385,6 @@ margin-top: 60px;
 
   .content[_ngcontent-c1] {
     display: block !important;
-    /* height: initial !important; */
   }
 
   .drop {
@@ -485,14 +401,11 @@ margin-top: 60px;
   .profile_mon_compte {
     float: left;
     text-align: center;
-    display: flex;
   }
   
   .profile_mon_compte img {
     height: 200px;
     width: 200px;
-    max-height: 200px;
-    max-width: 200px;
     border-radius: 50%;
     opacity: 1;
     transition: 0.3s;
@@ -604,12 +517,12 @@ margin-top: 60px;
     color: #FFF !important;
   }
 
-  .boutton_m {
-    display: none !important;
+  .boutton span {
+    color: #FFF !important;
   }
 
-  mat-slide-toggle {
-    width: 100%;
+  .boutton_m {
+    display: none !important;
   }
 
   .um_n {
@@ -634,12 +547,14 @@ margin-top: 60px;
   }
 
 @media (max-width: 1000px) {
-  .profile {
+  .profile,
+  .profile_mon_compte {
     width: 30%;
     margin-left: 35%;
   }
   .Account_content {
     width: 100%;
+    margin-top: 100px !important;
   }
 
   #page_section {
@@ -686,6 +601,22 @@ margin-top: 60px;
   table td {
     padding: 2px !important;
   }
+
+  footer {
+    left: 0 !important;
+  }
+
+  footer .left_content,
+  footer .right_content,
+  .profile_mon_compte,
+  .Account_content {
+    float: left !important;
+  }
+
+  .LoginForm_content {
+    width: 100% !important;
+    margin: 0 !important;
+  }
 }
 
 .drop-zone[_ngcontent-c3] {
@@ -700,15 +631,33 @@ margin-top: 60px;
   height: 100px;
 }
 
-
-/* @media (min-width: 768px) {
-  
-}
-
+/*
 @media (min-width: 992px) and (max-width: 1199px) {
 
 } */
 
-.drop-zone[_ngcontent-c10] {
-  height: unset;
+.drop-zone[_ngcontent-c10], 
+.content[_ngcontent-c10] {
+  height: unset !important;
+  border: none !important;
+}
+
+
+.settings {
+  color: blue;
+}
+
+footer {
+  position: absolute;
+  right: 0;
+  left: 300px;
+  padding: 30px;
+  border-left: 2px solid;
+}
+
+footer .left_content {
+  float: left;
+}
+footer .right_content {
+  float: right;
 }

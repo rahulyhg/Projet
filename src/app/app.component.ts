@@ -34,7 +34,7 @@ export class AppComponent implements OnInit {
     this._currentPage = new Page(null);
 
     // Temporaire en attendant le style dynamique
-    this.style_m = false;
+    this.style_m = true;
 
     this.changeStyle();
   }
@@ -155,10 +155,10 @@ export class AppComponent implements OnInit {
     ".EditBar { border-top: " + style.general_border + "; background-color: " + style.general_background + "; }" +
     "#devPopup { background-color: " + style.devPopup + "; border: " + style.general_border + "; }" +
     ".bar_content { border-bottom: " + style.general_border + "; } " +
-    ".profile_mon_compte img { border: " + style.general_border + "; box-shadow: 5px 5px 5px " + style.general_shadow + "; } " +
+    ".profile_mon_compte img, .favicon img { border: " + style.general_border + "; box-shadow: 5px 5px 5px " + style.general_shadow + "; } " +
     ".profile img { border: " + style.general_border + "; box-shadow: 5px 5px 5px " + style.general_shadow + "; } " +
     "input:-webkit-autofill { -webkit-box-shadow: 0 0 0 30px " + style.general_background + " inset; background-color: " + style.general_background + "; -webkit-text-fill-color: " + style.general_font_color + " !important; }" +
-    "label, span, .mat-select-arrow, h2, li, mat-panel-title, mat-panel-description, th, td, button { color: " + style.general_font_color + "!important; }" + 
+    "label, span, .mat-select-arrow, h2, li, mat-panel-title, mat-panel-description, th, td, button, a, mat-icon, h4, p, h3 { color: " + style.general_font_color + "!important; }" + 
     ".mat-form-field-underline { background-color: " + style.general_border_color + " !important; }" + 
     "mat-option { background: " + style.general_background + " !important; }" + 
     ".mat-option.mat-selected:hover:not(.mat-option-multiple):not(.mat-option-disabled) { background: " + style.general_list_hover + " !important; }" + 
@@ -166,13 +166,14 @@ export class AppComponent implements OnInit {
     ".mat-disabled .mat-slide-toggle-bar { background-color: " + style.general_slide_bar_disabled + "; }" + 
     "mat-expansion-panel { background: " + style.general_list_hover + " !important; }" + 
     "table { background: " + style.general_list_hover + " !important; }" + 
-    ".profile:hover img { border: 2px dotted " + style.general_border_color + " !important; }" + 
+    "file-drop:hover img { border: 2px dotted " + style.general_border_color + " !important; }" + 
     ".mat-calendar-body-cell-content, .mat-calendar-arrow { color: " + style.general_font_color + "; }" + 
     ".mat-calendar-arrow { border-top-color: unset; }" +
     "mat-datepicker-content { background: " + style.general_list_hover + " !important; }" + 
     "#time-picker { background: " + style.general_list_hover + " !important; } " + 
     ".time-picker-clock { background: " + style.general_background + " !important; }" + 
-    ".time-picker-clock-origin, .time-picker-clock-arrow, #time-picker-wrapper.light[_ngcontent-c13] #time-picker[_ngcontent-c13] .time-picker-clock[_ngcontent-c13] > button.active[_ngcontent-c13] { background: white !important; }";
+    ".time-picker-clock-origin, .time-picker-clock-arrow, #time-picker-wrapper.light[_ngcontent-c13] #time-picker[_ngcontent-c13] .time-picker-clock[_ngcontent-c13] > button.active[_ngcontent-c13] { background: white !important; }" + 
+    "footer { background-color: " + style.general_slide_bar_disabled + "; }";
     linkElement.textContent = content;
     document.head.appendChild( linkElement ); 
   }
