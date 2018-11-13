@@ -59,16 +59,10 @@ faire en sorte que les page ne s'affiche que lorsque les données sont chargé e
 
 Les liste déroulante pour proposer des valeur deja rentré dans ces champ sont avec un bacground white en mode sombre
 
-OK => Mettre en place le menu pour les version tablette et mobile
-
 Voir pour centrer le contenue de la page User
 
 remettre les messages d'erreur pour la page de login
 
 Revoir pour remettre les variable api, auth, ErrorMsg dans l'API et le traitement via une methode generic
-
-PAS REVU => le texte "Icone de la page" de la page Selected Page magangement est en dessous de l'icone (a la meme frequence que le panqaque)
-
-PAS REVU => par momennt le nom de groupe perso n'est pas modifier dans GroupManagment
 
 enlever la case pour supprimer le contenue d'un input si le input est desactivé (et quand on a pas les droit de modifier)

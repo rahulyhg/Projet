@@ -173,7 +173,7 @@ export class AppComponent implements OnInit {
   
       var linkElement = document.createElement( "style" );
       linkElement.setAttribute( "type", "text/css" );
-      linkElement.setAttribute( "id", "this.setting" );
+      linkElement.setAttribute( "id", "style" );
       var content:string = null;
       content = "html { background-color: " + this.setting.primary_background_color + "; color: " + this.setting.primary_font_color + "; }" + 
       "#page_header { background-color: " + this.setting.primary_background_color + "; color: " + this.setting.primary_font_color + "; border-bottom: 2px solid " + this.setting.primary_border_color + "; }" + 
@@ -214,5 +214,4 @@ export class AppComponent implements OnInit {
   }
 
   shouldRun = true;
-  // shouldRun = [/(^|\.)plnkr\.co$/, /(^|\.)stackblitz\.io$/].some(h => h.test(window.location.host));
 }
