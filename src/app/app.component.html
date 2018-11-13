@@ -1,13 +1,14 @@
 <ngx-loading-bar [includeSpinner]="true" color="#00BE00" height="4px"></ngx-loading-bar>
-<div id="page_content">
+<div id="page_content" [class.example-is-mobile]="mobileQuery.matches">
   <header id="page_header">
-    <div class="bouton_nav_mobile" routerLink="/Accueil">
-      <i class="fas fa-bars"></i>
+    <div class="bouton_nav_mobile nav_m">
+      <mat-toolbar>
+        <button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
+      </mat-toolbar>
     </div>
     <div class="page_header_block_gauche">
       <li class="lien"><a routerLink="/Accueil">Accueil</a></li>
-      <li class="lien"><a *ngIf="style_m" (click)="changeStyle()">Passer en mode Nuit</a></li>
-      <li class="lien"><a *ngIf="!style_m" (click)="changeStyle()">Passer en mode Jour</a></li>
+      <li style="border-bottom: none;">{{ setting.version }}</li>
     </div>
     <div class="page_header_block_droite">
       <div *ngIf="_currentUser.statut">
@@ -23,36 +24,76 @@
     </div>
   </header>
 
-  <nav id="page_nav">
+  <mat-sidenav-container class="example-sidenav-container nav_m" [style.marginTop.px]="mobileQuery.matches ? 56 : 0">
+    <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches" fixedTopGap="56">
+      <mat-nav-list>
+        <!-- <nav id="page_nav"> -->
+          <div id="page_nav">
+            <div class="page_nav_content">
+                <div class="page_nav_logo">
+                  <a routerLink="/Accueil"><img class="lien" src="assets/uploads/images/logo.jpg"></a>
+                </div>
+                <div class="page_nav_liens">
+                  <li class="lien" >Lien 1</li>
+                  <li class="lien" >Lien 2</li>
+                  <li class="lien" >Lien 3</li>
+                  <li class="lien" >Lien 4</li>
+                </div>
+              </div>
+          </div>
+          
+        <!-- </nav> -->
+          <section id="dev" *ngIf="_currentUser.group.rightGroupPage.EditBar_Access">
+            <div *ngIf="_currentUser.group.rightGroupPage.SelectedPageManagement_Access" class="edit"><a routerLink="/PageManagement/{{ _currentPage.id }}"><i class="far fa-edit"></i></a></div>
+            <div *ngIf="_currentUser.group.rightGroupPage.EditBar_Dev" class="dev"><a routerLink="/Developer"><i class="fas fa-code"></i></a></div>
+            <div *ngIf="_currentUser.group.rightGroupPage.Settings_Access" class="settings" ><a routerLink="/Settings"><i class="fas fa-cogs"></i></a></div>
+        </section>
+      </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+      <!-- <section id="page_section">
+        <router-outlet></router-outlet>
+      </section> -->
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+
+<div class="nav_n">
+  <div id="page_nav">
     <div class="page_nav_content">
-      <div class="page_nav_logo">
-        <a routerLink="/Accueil"><img class="lien" src="assets/uploads/images/logo.jpg"></a>
+        <div class="page_nav_logo">
+          <a routerLink="/Accueil"><img class="lien" src="assets/uploads/images/logo.jpg"></a>
+        </div>
+        <div class="page_nav_liens">
+          <li class="lien" >Lien 1</li>
+          <li class="lien" >Lien 2</li>
+          <li class="lien" >Lien 3</li>
+          <li class="lien" >Lien 4</li>
+        </div>
       </div>
-      <div class="page_nav_liens">
-        <li class="lien" >Lien 1</li>
-        <li class="lien" >Lien 2</li>
-        <li class="lien" >Lien 3</li>
-        <li class="lien" >Lien 4</li>
-      </div>
-    </div>
-  </nav>
-
+  </div>
+  
   <section id="dev" *ngIf="_currentUser.group.rightGroupPage.EditBar_Access">
-      <div *ngIf="_currentUser.group.rightGroupPage.SelectedPageManagement_Access" class="edit"><a routerLink="/PageManagement/{{ _currentPage.id }}"><i class="far fa-edit"></i></a></div>
-      <div *ngIf="_currentUser.group.rightGroupPage.EditBar_Dev" class="dev"><a routerLink="/Developer"><i class="fas fa-code"></i></a></div>
-      <div *ngIf="_currentUser.group.rightGroupPage.Settings_Access" class="settings" ><a routerLink="/Settings"><i class="fas fa-cogs"></i></a></div>
+    <div *ngIf="_currentUser.group.rightGroupPage.SelectedPageManagement_Access" class="edit"><a routerLink="/PageManagement/{{ _currentPage.id }}"><i class="far fa-edit"></i></a></div>
+    <div *ngIf="_currentUser.group.rightGroupPage.EditBar_Dev" class="dev"><a routerLink="/Developer"><i class="fas fa-code"></i></a></div>
+    <div *ngIf="_currentUser.group.rightGroupPage.Settings_Access" class="settings" ><a routerLink="/Settings"><i class="fas fa-cogs"></i></a></div>
   </section>
 
-  <section id="page_section">
+  <!-- <section id="page_section">
     <router-outlet></router-outlet>
-  </section>
+  </section> -->
+</div>
+
+<section id="page_section">
+  <router-outlet></router-outlet>
+</section>
 
 <footer id="footer">
   <div class="left_content">
     Foogter
   </div>
   <div class="right_content">
-    App Version Alpha Pré-production (0.0.14)
+    {{ setting.version }}
     <a href="https://github.com/dov118/Projet">Page Git du projet</a>
   </div>
 </footer>

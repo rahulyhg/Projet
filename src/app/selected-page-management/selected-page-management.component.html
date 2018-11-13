@@ -1,4 +1,4 @@
-<div *ngIf="_currentUser.group.rightGroupPage.SelectedPageManagement_Access">
+<!-- <div *ngIf="_currentUser.group.rightGroupPage.SelectedPageManagement_Access"> -->
   <form [formGroup]="SelectedPageManagementForm" (ngSubmit)="editPage(SelectedPageManagementForm.value)" class="example-form" style="display: inline-block; width: 100%;">
     <div class="edit_page_gauche">
       <label>Icone de la page :</label>
@@ -31,9 +31,9 @@
       <div class="edit_page_logo"><img src="{{ page.favicon }}"></div>
       <div class="edit_page_title">{{ page.title }}</div>
     </div>
-    <div class="EditBar" *ngIf="_currentUser.group.rightGroupPage.SelectedPageManagement_EditPage">
+    <div class="EditBar" #EditBar>
         <button class="boutton_n" *ngIf="_currentUser.group.rightGroupPage.SelectedPageManagement_EditPage" mat-raised-button (click)="DeleteGroup()" type="button" color="primary">Valider les modifications</button>
         <button class="boutton_m" style="margin-left: 2%; float: left;" *ngIf="_currentUser.group.rightGroupPage.SelectedPageManagement_EditPage" mat-raised-button color="primary"matBadge="8" matBadgePosition="before" matBadgeColor="warn"><i (click)="DeleteGroup()" type="button" class="fas fa-trash-alt"></i></button>
     </div>
   </form>
-</div>
+<!-- </div> -->

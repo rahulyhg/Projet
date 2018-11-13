@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -18,6 +18,8 @@ import { UploadService } from '../Services/uploads.service';
   templateUrl: './user.component.html'
 })
 export class UserComponent implements OnInit {
+  @ViewChild('EditBar') private EditBar: ElementRef;
+
   private Reponse_getUserById: Observable<Api>;
   private Reponse_getUserById_form: Observable<Api>;
   private Reponse_getUserById_initial: Observable<Api>;
@@ -79,6 +81,8 @@ export class UserComponent implements OnInit {
         this.verifRight(this._currentUser);
       })
     }
+    if(this.EditBar.nativeElement !== null)
+      document.getElementById("footer").style.marginBottom = this.EditBar.nativeElement.offsetHeight - 6 + "px";
   }
 
   private verifRight(user: User) {

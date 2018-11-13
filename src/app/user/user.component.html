@@ -1,4 +1,4 @@
-<div *ngIf="_currentUser.group.rightGroupPage.User_Access">
+<!-- <div *ngIf="_currentUser.group.rightGroupPage.User_Access"> -->
     <form [formGroup]="UserForm" (ngSubmit)="editUser(UserForm.value)" class="example-form" style="display: inline-block; width: 100%;">
         <div *ngIf="!edit">
             <div class="profile_mon_compte" style="float: right;">
@@ -95,11 +95,11 @@
                 </ul>
             </div>
         </div>
-        <div class="EditBar">
+        <div class="EditBar" #EditBar>
             <button class="boutton_n" *ngIf="canEdit && !edit" mat-raised-button (click)="edit = true" type="button" color="primary">Modifier mon compte</button>
             <button class="boutton_m" *ngIf="canEdit && !edit" mat-raised-button (click)="edit = true" style="margin-left: 2%; float: left;" color="primary" matBadge="8" matBadgePosition="before" matBadgeColor="primary"><i class="far fa-edit"></i></button>
             <button class="boutton_n" style="margin-left: 20px !important;" type="submit" *ngIf="edit" mat-raised-button color="primary">Valider les modifications</button>
             <button class="boutton_m" style="margin-left: 2%; float: left;" type="submit" *ngIf="edit" mat-raised-button color="primary" matBadge="8" matBadgePosition="before" matBadgeColor="accent"><i class="fas fa-user-check"></i></button>
         </div>
     </form>
-  </div>
+  <!-- </div> -->

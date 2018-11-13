@@ -1,10 +1,10 @@
 Faire en sorte que la page soit afficher que quand les images sont chargé
 
-Faire en sorte que les utilisateurs puisse modifier les compte (avec les droit de page qui vont avec)
+OK => Faire en sorte que les utilisateurs puisse modifier les compte (avec les droit de page qui vont avec)
 
 Voir pour des droit sur autre personne et sur soit meme en fonction des cas
 
-Faire page de Modification de mon compte (la meme que pour voia la page de compte d'une autre personne mise a part le bouton modifier)
+OK => Faire page de Modification de mon compte (la meme que pour voia la page de compte d'une autre personne mise a part le bouton modifier)
 
 Faire une table avec les parametre globaux du site
 => possibilite de modifier l'interval de refresh
@@ -59,50 +59,35 @@ voir le format max pour chaque input et adapter cette taille dans la base de don
 
 Mettre un temp d'arret avant d'afficher les données
 
-OK => Faire le meme pour les format de date que pour userManagement
-
-dans new, le groupe defaut me propose d'diter le groupe default comme un groupe personnel (Dans userManagement/New)
-Dans /New (dans UserManagement), il y a les groupe peros dans les listes
-
-OK => Refaire le formulaire de connection (avec les template google)
+OK => dans new, le groupe defaut me propose d'diter le groupe default comme un groupe personnel (Dans userManagement/New)
+OK => (PAS VU) Dans /New (dans UserManagement), il y a les groupe peros dans les listes
 
 faire en sorte que les page ne s'affiche que lorsque les données sont chargé et traité
 
-OK => Modifier le style de la page d'affichage des compte (/User)
-
 Les liste déroulante pour proposer des valeur deja rentré dans ces champ sont avec un bacground white en mode sombre
 
-Remplacer "editer ce groupe de droit personelle" par "editer le groupe par defaut" dans UserManagement/1
+OK => Remplacer "editer ce groupe de droit personelle" par "editer le groupe par defaut" dans UserManagement/1
 
-Possibilité de modifier la couleur de action primaire (rond dans le slide, bouton modifier ...)
-
-OK => Modifier le footer pour qu'il ressemble a quelque chose
-
-Re-adaptation du contenue OK => Enlever le popup et le remplacer par un menu plus convesionelle
-
-OK => Faire une class (ou composant) gérérique ou l'on peut mettre :
-OK => => la création de md5
-OK => => formatage des date
-OK => => Gestion de droit automatique
-
-OK => Remplacer l'action de edit dans la barre edition du site par l'acces a la modification de la page
-
-OK => Mettre l'acces de la gestion des user et des groupe dans la page des paramètre globaux du site
-
-OK => Voir utilité EditBarr_Edit
-
-OK => Rajouter Page Setting dans la base de données et le droit qui vont avec (Acces pour le moment)
-
-OK => Modifier le mode nuit de la page PageManagement
+OK(mise en place dans l'objet Setting et mise en place dans un futur patch) => Possibilité de modifier la couleur de action primaire (rond dans le slide, bouton modifier ...)
 
 Mettre en place le menu pour les version tablette et mobile
 
-OK => Les slide prenne toute la largeur de la page
-
-system pour faire disparaitre la barre d'etite dans group et user (pour que l'on puisse voir le footer)
+OK (adaptation) => system pour faire disparaitre la barre d'etite dans group et user (pour que l'on puisse voir le footer)
 
 Voir pour centrer le contenue de la page User
 
-A chaque changement de page, remettre le curseur en haut
+OK=> A chaque changement de page, remettre le curseur en haut
 
-Quand on change le groupe de droit personelle dans la liste, le nom du grouop ne change pas (et le input se vide)
+OK => Quand on change le groupe de droit personelle dans la liste, le nom du grouop ne change pas (et le input se vide)
+
+remettre les messages d'erreur pour la page de login
+
+Revoir pour remettre les variable api, auth, ErrorMsg dans l'API et le traitement via une methode generic
+
+le texte "Icone de la page" de la page Selected Page magangement est en dessous de l'icone (a la meme frequence que le panqaque)
+
+par momennt le nom de groupe perso n'est pas modifier dans GroupManagment
+
+OK => changer couleur module heure (AM/PM et heure)
+
+enlever la case pour supprimer le contenue d'un input si le input est desactivé (et quand on a pas les droit de modifier)

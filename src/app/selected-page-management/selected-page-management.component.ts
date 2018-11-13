@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from "@angular/router";
 import { FileSystemFileEntry } from '../../../node_modules/ngx-file-drop';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -18,6 +18,8 @@ import { UploadService } from '../Services/uploads.service';
   templateUrl: './selected-page-management.component.html',
 })
 export class SelectedPageManagementComponent implements OnInit {
+  @ViewChild('EditBar') private EditBar: ElementRef;
+
   private Reponse_getUserById: Observable<Api>;
   private Reponse_getPageById: Observable<Api>;
   private Reponse_getPageById_initial: Observable<Api>;
@@ -64,6 +66,9 @@ export class SelectedPageManagementComponent implements OnInit {
         this.verifRight(data.data.group.rightGroupPage);
       })
     }
+
+    if(this.EditBar.nativeElement !== null)
+      document.getElementById("footer").style.marginBottom = this.EditBar.nativeElement.offsetHeight - 6 + "px";
   }
 
   private verifRight(rightGroupPage: RightGroupPage) {

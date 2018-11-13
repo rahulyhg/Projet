@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router } from "@angular/router";
 import { Observable } from 'rxjs';
 
@@ -11,6 +11,8 @@ import { User } from '../Class/User';
   templateUrl: './settings.component.html'
 })
 export class SettingsComponent implements OnInit {
+  @ViewChild('EditBar') private EditBar: ElementRef;
+
   private Reponse_getUserById: Observable<Api>;
   public _currentUser: User;
 
@@ -40,5 +42,8 @@ export class SettingsComponent implements OnInit {
         }
       })
     }
+
+    if(this.EditBar.nativeElement !== null)
+      document.getElementById("footer").style.marginBottom = this.EditBar.nativeElement.offsetHeight - 6 + "px";
   }
 }

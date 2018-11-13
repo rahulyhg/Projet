@@ -24,6 +24,7 @@ import { UploadService } from '../Services/uploads.service';
 })
 export class SelectedUserManagementComponent implements OnInit {
   @ViewChild('login') private login: ElementRef;
+  @ViewChild('EditBar') private EditBar: ElementRef;
 
   private Reponse_getUserById: Observable<Api>;
   private Reponse_getUserById_initial: Observable<Api>;
@@ -105,6 +106,8 @@ export class SelectedUserManagementComponent implements OnInit {
         this.verifRight(data.data.group.rightGroupPage);
       })
     }
+    if(this.EditBar.nativeElement !== null)
+      document.getElementById("footer").style.marginBottom = this.EditBar.nativeElement.offsetHeight - 6 + "px";
   }
 
   private verifRight(rightGroupPage: RightGroupPage) {
@@ -131,16 +134,19 @@ export class SelectedUserManagementComponent implements OnInit {
         this.Reponse_getUserById_form.subscribe((data: Api) => {
           this.user = data.data
 
-          if(this.initial_user.group.name === this.initial_user.login)
-            this.MsgGroupPerso = "Groupe personnel de droit";
+          if(Number(this.initial_user.group.name.split('_')[2]) === this.initial_user.id)
+            this.MsgGroupPerso = "Editer ce groupe personnel de droit";
+          else if(Number(this.route.snapshot.paramMap.get('id')) === 1)
+            this.MsgGroupPerso = "Editer le groupe par defaut";
+          else
+            this.MsgGroupPerso = "Editer ce groupe";
         })
       } else {
         this.Reponse_getUserById_form = this.userApi.getUserById(1);
         this.Reponse_getUserById_form.subscribe((data: Api) => {
           this.user = data.data
 
-          if(this.initial_user.group.name === this.initial_user.login)
-            this.MsgGroupPerso = "Groupe personnel de droit";
+          this.MsgGroupPerso = "Editer le groupe par defaut";
         })
       }
 
@@ -225,7 +231,21 @@ export class SelectedUserManagementComponent implements OnInit {
     value.date_time_logIn = this.date.transform(value.date_logIn, 'yyyy-MM-dd') + " " + value.time_logIn;
     value.date_time_signIn = this.date.transform(value.date_signIn, 'yyyy-MM-dd') + " " + value.time_signIn;
     value.birthDate = this.date.transform(value.birthDate, 'yyyy-MM-dd');
-    this.user = new User(value);
+
+    if(this.route.snapshot.paramMap.get('id') !== "New") {
+      this.user = new User(value);
+    } else {
+      this.user.id = value.id;
+      this.user.login = value.login;
+      this.user.password = value.password;
+      this.user.profile = value.profile;
+      this.user.date_time_logIn = value.date_time_logIn;
+      this.user.date_time_signIn = value.date_time_signIn;
+      this.user.gameTag = value.gameTag;
+      this.user.name = value.name;
+      this.user.firstName = value.name;
+      this.user.birthDate = value.birthDate;
+    }
 
     this.user.group.rightGroupPage = new RightGroupPage(id);
 
@@ -242,14 +262,33 @@ export class SelectedUserManagementComponent implements OnInit {
     value.date_time_logIn = this.date.transform(value.date_logIn, 'yyyy-MM-dd') + " " + value.time_logIn;
     value.date_time_signIn = this.date.transform(value.date_signIn, 'yyyy-MM-dd') + " " + value.time_signIn;
     value.birthDate = this.date.transform(value.birthDate, 'yyyy-MM-dd');
-    this.user = new User(value);
+
+    if(this.route.snapshot.paramMap.get('id') !== "New") {
+      this.user = new User(value);
+    } else {
+      this.user.id = value.id;
+      this.user.login = value.login;
+      this.user.password = value.password;
+      this.user.profile = value.profile;
+      this.user.date_time_logIn = value.date_time_logIn;
+      this.user.date_time_signIn = value.date_time_signIn;
+      this.user.gameTag = value.gameTag;
+      this.user.name = value.name;
+      this.user.firstName = value.name;
+      this.user.birthDate = value.birthDate;
+    }
+
     this.user.group = new Group(id);
     
     // Affiche en fonction du groupe choisi s'il sagit d'un groupe perso ou non
     if(this.user.group.name === this.user.login)
-      this.MsgGroupPerso = "Groupe personnel de droit";
-    else
-      this.MsgGroupPerso = null;
+      this.MsgGroupPerso = "Editer ce groupe personnel de droit";
+    else {
+      this.MsgGroupPerso = "Editer ce groupe";
+      if(this.user.group.id === 1) {
+        this.MsgGroupPerso = "Editer le groupe par defaut";
+      }
+    }
 
     // Initialisation des données à afficher dans le formulaire
     this.initData();
@@ -259,10 +298,25 @@ export class SelectedUserManagementComponent implements OnInit {
     if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser) {
       this._ChangeRightPage = true;
 
-      value.date_time_logIn = this.date.transform(value.date_logIn, 'yyyy-MM-dd') + " " + value.time_logIn;
-      value.date_time_signIn = this.date.transform(value.date_signIn, 'yyyy-MM-dd') + " " + value.time_signIn;
-      value.birthDate = this.date.transform(value.birthDate, 'yyyy-MM-dd');
+    // On Met dans l'object user les données que l'on a deja rentré
+    value.date_time_logIn = this.date.transform(value.date_logIn, 'yyyy-MM-dd') + " " + value.time_logIn;
+    value.date_time_signIn = this.date.transform(value.date_signIn, 'yyyy-MM-dd') + " " + value.time_signIn;
+    value.birthDate = this.date.transform(value.birthDate, 'yyyy-MM-dd');
+
+    if(this.route.snapshot.paramMap.get('id') !== "New") {
       this.user = new User(value);
+    } else {
+      this.user.id = value.id;
+      this.user.login = value.login;
+      this.user.password = value.password;
+      this.user.profile = value.profile;
+      this.user.date_time_logIn = value.date_time_logIn;
+      this.user.date_time_signIn = value.date_time_signIn;
+      this.user.gameTag = value.gameTag;
+      this.user.name = value.name;
+      this.user.firstName = value.name;
+      this.user.birthDate = value.birthDate;
+    }
   
       var rightGroupPage: RightGroupPage = new RightGroupPage(value);
       if(Number(this.route.snapshot.paramMap.get('id')) === 1)
@@ -531,12 +585,21 @@ export class SelectedUserManagementComponent implements OnInit {
       value.date_time_logIn = this.date.transform(value.date_logIn, 'yyyy-MM-dd') + " " + value.time_logIn;
       value.date_time_signIn = this.date.transform(value.date_signIn, 'yyyy-MM-dd') + " " + value.time_signIn;
       value.birthDate = this.date.transform(value.birthDate, 'yyyy-MM-dd');
-      if(value.login === null) { value.login = "null" }
-      if(value.password === null) { value.password = "null" }
-      if(value.gameTag === null) { value.gameTag = "null" }
-      if(value.name === null) { value.name = "null" }
-      if(value.firstName === null) { value.firstName = "null" }
-      this.user = new User(value);
+
+      if(this.route.snapshot.paramMap.get('id') !== "New") {
+        this.user = new User(value);
+      } else {
+        this.user.id = value.id;
+        this.user.login = value.login;
+        this.user.password = value.password;
+        this.user.profile = value.profile;
+        this.user.date_time_logIn = value.date_time_logIn;
+        this.user.date_time_signIn = value.date_time_signIn;
+        this.user.gameTag = value.gameTag;
+        this.user.name = value.name;
+        this.user.firstName = value.name;
+        this.user.birthDate = value.birthDate;
+      }
 
       var name: string = "profile" + Math.random() * 1000 + ".jpg";
       if(event.target.files[0] !==undefined) {
@@ -564,12 +627,21 @@ export class SelectedUserManagementComponent implements OnInit {
       value.date_time_logIn = this.date.transform(value.date_logIn, 'yyyy-MM-dd') + " " + value.time_logIn;
       value.date_time_signIn = this.date.transform(value.date_signIn, 'yyyy-MM-dd') + " " + value.time_signIn;
       value.birthDate = this.date.transform(value.birthDate, 'yyyy-MM-dd');
-      if(value.login === null) { value.login = "null" }
-      if(value.password === null) { value.password = "null" }
-      if(value.gameTag === null) { value.gameTag = "null" }
-      if(value.name === null) { value.name = "null" }
-      if(value.firstName === null) { value.firstName = "null" }
-      this.user = new User(value);
+
+      if(this.route.snapshot.paramMap.get('id') !== "New") {
+        this.user = new User(value);
+      } else {
+        this.user.id = value.id;
+        this.user.login = value.login;
+        this.user.password = value.password;
+        this.user.profile = value.profile;
+        this.user.date_time_logIn = value.date_time_logIn;
+        this.user.date_time_signIn = value.date_time_signIn;
+        this.user.gameTag = value.gameTag;
+        this.user.name = value.name;
+        this.user.firstName = value.name;
+        this.user.birthDate = value.birthDate;
+      }
 
       var name: string = "profile" + Math.random() * 1000 + ".jpg";
       (event.files[0].fileEntry as FileSystemFileEntry).file((file: File) => { this.uploadApi.UploadFile(file, name).subscribe(event => {

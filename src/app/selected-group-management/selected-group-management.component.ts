@@ -21,6 +21,7 @@ import { RightGroupPageService } from '../Services/RightGroupPage.service';
 })
 export class SelectedGroupManagementComponent implements OnInit {
   @ViewChild('name') private name: ElementRef;
+  @ViewChild('EditBar') private EditBar: ElementRef;
   
   private Reponse_getUserById: Observable<Api>;
   private Reponse_getGroupById_form: Observable<Api>;
@@ -167,13 +168,20 @@ export class SelectedGroupManagementComponent implements OnInit {
 
     // Initialisation des données à afficher dans le formulaire
     this.initData();
+
+    if(this.EditBar.nativeElement !== null)
+      document.getElementById("footer").style.marginBottom = this.EditBar.nativeElement.offsetHeight - 6 + "px";
   }
 
   // Permet de changer la valeur du groupe de droit de page du group par celui séléctionné (change l'object)
   private setRightEditSelected(id: any, post: any): void {
     // On met dans l'object group les données que l'on a deja rentré
-    this.group.name = post.name;
     this.group.rightGroupPage = new RightGroupPage(id);
+
+    if(post.name === undefined)
+      this.group.name = this.group.name;
+    else
+      this.group.name = post.name
 
     // Initialisation des données à afficher dans le formulaire
     this.initData();
@@ -309,6 +317,7 @@ export class SelectedGroupManagementComponent implements OnInit {
             this.router.navigate(['/GroupManagement']);
           }
         } else {
+          this.group.name = post.name;
           if(this.generic.create_md5(JSON.stringify(new Group(this.group))) === this.generic.create_md5(JSON.stringify(new Group(this.initial_group)))) {
             same = true;
             this.router.navigate(['/GroupManagement']);

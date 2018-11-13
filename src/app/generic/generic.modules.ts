@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Md5 } from 'ts-md5/dist/md5';
 import { DatePipe } from '@angular/common';
+import { isString, isNumber, isBoolean, isObject } from 'util';
 
 import { RightGroupPage } from '../Class/RightGroupPage';
 
@@ -286,5 +287,61 @@ export class GenericModule {
       return this.date.transform(dat, 'yyyy-dd-MM');
     else 
       return this.date.transform(dat, 'yyyy-dd-MM') + " " + time;
+  }
+
+  public setFormatNumber(attirb: any, value: any, defaut: any): number {
+    var ret: number;
+    if(isNumber(attirb))
+      ret = attirb;
+    else
+      ret = Number(attirb);
+    if(attirb === null || attirb === undefined || attirb === "" || attirb === " " || attirb < 0 || value === "") {
+      if(isNumber(defaut))
+        ret = defaut;
+      else 
+        ret = 1;
+    }
+    return ret;
+  }
+
+  public setFormatString(attirb: any, value: any, defaut: any): string {
+    var ret: string;
+    if(isString(attirb))
+      ret = attirb;
+    else
+      ret = String(attirb);
+    if(attirb === null || attirb === undefined || attirb === "" || attirb === " " || value === "") {
+      if(isString(defaut))
+        ret = defaut;
+      else 
+        ret = "default";
+    }
+    return ret;
+  }
+
+  public setFormatBoolean(attirb: any, value: any, defaut: any): boolean {
+    var ret: boolean;
+    if((attirb || !attirb) && isBoolean(attirb))  
+      ret = attirb;
+    else
+      ret = Boolean(attirb);
+    if(attirb === "0" || attirb === 0)
+      ret = false;
+    if(attirb === "1" || attirb === 1)
+      ret = true;
+    if(attirb === null || attirb === undefined || attirb === "" || attirb === " "  || value === "") {
+      if(isBoolean(defaut))
+        ret = defaut;
+      else 
+        ret = false;
+    }
+    return ret;
+  }
+
+  public setFormat(attirb: any, value: any, defaut: any): any {
+    var ret: any = attirb;
+    if(attirb === null || attirb === undefined || value === "" || !isObject(attirb))
+      ret = defaut;
+    return ret;
   }
 }

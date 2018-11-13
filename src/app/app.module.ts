@@ -12,7 +12,7 @@ import { AmazingTimePickerModule } from 'amazing-time-picker/amazing-time-picker
 import { 
   MatButtonModule, MatNativeDateModule, MatTableModule, MatExpansionModule, MatChipsModule, 
   MatSelectModule, MatSlideToggleModule, MatDatepickerModule, MatInputModule, MatIconModule, 
-  MatDividerModule, MatListModule
+  MatDividerModule, MatListModule, MatSidenavModule, MatToolbarModule
 } from '@angular/material';
 
 import { AppComponent } from './app.component';
@@ -85,7 +85,9 @@ const routes: Routes = [
     MatExpansionModule,
     GenericModule,
     MatDividerModule,
-    MatListModule
+    MatListModule,
+    MatSidenavModule,
+    MatToolbarModule
   ],
   providers: [ DatePipe ],
   bootstrap: [ AppComponent ],

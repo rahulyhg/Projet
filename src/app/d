@@ -1,154 +1,30 @@
-<h2>Main Page</h2>
-                    <label style="font-weight: bold;">Peut affecter le bon fonctionnement du site !</label>
-                    <br />
-                    <mat-slide-toggle class="disabledCheck" formControlName="Main_Access" color="primary">
-                        Droit de l'utilisateur pour acceder au site
-                    </mat-slide-toggle>
-        
-                    <h2>Accueil Page</h2>
-                    <label style="font-weight: bold;">Peut affecter le bon fonctionnement du site !</label>
-                    <br />
-                    <mat-slide-toggle formControlName="Accueil_Access" color="primary" (click)="setRightSelected(SelectedGroupManagementForm.value, 'Accueil_Access')">
-                        Droit de l'utilisateur pour acceder à la page d'accueil
-                    </mat-slide-toggle>
-        
-                    <h2>Login Page</h2>
-                    <label style="font-weight: bold;">Peut affecter le bon fonctionnement du site !</label>
-                    <br />
-                    <mat-slide-toggle formControlName="Login_Access" color="primary" (click)="setRightSelected(SelectedGroupManagementForm.value, 'Login_Access')">
-                        Droit de l'utilisateur pour acceder à la page de connection
-                    </mat-slide-toggle>
-        
-                    <h2>User Page</h2>
-                    <mat-slide-toggle formControlName="User_Access" color="primary" (click)="setRightSelected(SelectedGroupManagementForm.value, 'User_Access')">
-                        Droit de l'utilisateur pour acceder à la page d'un utilisateur (et à la personne connécté à son compte)
-                    </mat-slide-toggle>
-        
-                    <h2>EditBar</h2>
-                    <mat-slide-toggle class="disabledCheck" formControlName="EditBar_Access" color="primary">
-                        Droit de l'utilisateur pour voir la bare de d'édition
-                    </mat-slide-toggle>
-                    <br />
-                    <mat-slide-toggle formControlName="EditBar_Edit" color="primary" (click)="setRightSelected(SelectedGroupManagementForm.value, 'EditBar_Edit')">
-                        Droit de l'utilisateur pour acceder à la page de gestion de la page en cours
-                    </mat-slide-toggle>
-                    <br />
-                    <mat-slide-toggle formControlName="EditBar_Dev" color="primary" (click)="setRightSelected(SelectedGroupManagementForm.value, 'EditBar_Dev')">
-                        Droit de l'utilisateur pour d'acceder à la page de développement
-                    </mat-slide-toggle>
-                    <br />
-                    <mat-slide-toggle formControlName="Settings_Access" color="primary" (click)="setRightSelected(SelectedGroupManagementForm.value, 'Settings_Access')">
-                        Droit de l'utilisateur pour d'acceder à la page de gestion de paramètre globaux du site
-                    </mat-slide-toggle>
+this.primary_background_color = this.generic.setFormatString(value.primary_background_color, value, "#FFF");
+this.secondary_background_color = this.generic.setFormatString(value.secondary_background_color, value, "#FFF");
+this.primary_font_color = this.generic.setFormatString(value.primary_font_color, value, "#FFF");
+this.secondary_font_color = this.generic.setFormatString(value.secondary_font_color, value, "#FFF");
+this.primary_menu_color = this.generic.setFormatString(value.primary_menu_color, value, "#FFF");
+this.secondary_menu_color = this.generic.setFormatString(value.secondary_menu_color, value, "#FFF");
+this.primary_button_color = this.generic.setFormatString(value.primary_button_color, value, "#FFF");
+this.secondary_button_color = this.generic.setFormatString(value.secondary_button_color, value, "#FFF");
+this.primary_border_color = this.generic.setFormatString(value.primary_border_color, value, "#FFF");
+this.secondary_border_color = this.generic.setFormatString(value.secondary_border_color, value, "#FFF");
+this.primary_shadow_color = this.generic.setFormatString(value.primary_shadow_color, value, "#FFF");
+this.secondary_shadow_color = this.generic.setFormatString(value.secondary_shadow_color, value, "#FFF");
+this.primary_action_color = this.generic.setFormatString(value.primary_action_color, value, "#FFF");
+this.secondary_action_color = this.generic.setFormatString(value.secondary_action_color, value, "#FFF");
+this.primary_action_disabled_color = this.generic.setFormatString(value.primary_action_disabled_color, value, "#FFF");
+this.secondary_action_disabled_color = this.generic.setFormatString(value.secondary_action_disabled_color, value, "#FFF");
+this.primary_background_color = this.generic.setFormatString(value.primary_background_color, value, "#FFF");
 
-                    <br />
-                    <br />
-
-                    <mat-expansion-panel> 
-                        <mat-expansion-panel-header>
-                            <mat-panel-title>Gestion des utilisateurs</mat-panel-title>
-                            <mat-panel-description>Modification des droit de l'utilisateur liés à la gestion des utilisateurs</mat-panel-description>
-                        </mat-expansion-panel-header>
-
-                        <mat-slide-toggle formControlName="SelectedUserManagement_Access" color="primary" (click)="setRightSelected(SelectedGroupManagementForm.value, 'SelectedUserManagement_Access')">
-                            Droit de l'utilisateur pour acceder à la page de gestion d'un utilisateur précis
-                        </mat-slide-toggle>
-                        <br />
-                        <mat-slide-toggle formControlName="SelectedUserManagement_ViewPassword" color="primary" (click)="setRightSelected(SelectedGroupManagementForm.value, 'SelectedUserManagement_ViewPassword')">
-                            Droit de l'utilisateur pour voir le mot de passe de l'utilisateur
-                        </mat-slide-toggle>
-                        <br />
-                        <mat-slide-toggle formControlName="SelectedUserManagement_ShowPasswordButton" color="primary" (click)="setRightSelected(SelectedGroupManagementForm.value, 'SelectedUserManagement_ShowPasswordButton')">
-                            Droit de l'utilisateur pour afficher le bouton pour faire apparaitre le mot de passe de l'utilisateur
-                        </mat-slide-toggle>
-                        <br />
-                        <mat-slide-toggle formControlName="SelectedUserManagement_EditRightGroupPageUser" color="primary" (click)="setRightSelected(SelectedGroupManagementForm.value, 'SelectedUserManagement_EditRightGroupPageUser')">
-                            Droit de l'utilisateur pour modifier les droit de l'utilisateur
-                        </mat-slide-toggle>
-                        <br />
-                        <mat-slide-toggle formControlName="SelectedUserManagement_DeleteUser" color="primary" (click)="setRightSelected(SelectedGroupManagementForm.value, 'SelectedUserManagement_DeleteUser')">
-                            Droit de l'utilisateur pour supprimer l'utilisateur
-                        </mat-slide-toggle>
-                        <br />
-                        <mat-slide-toggle formControlName="SelectedUserManagement_EditUser" color="primary" (click)="setRightSelected(SelectedGroupManagementForm.value, 'SelectedUserManagement_EditUser')">
-                            Droit de l'utilisateur pour modifier l'utilisateur
-                        </mat-slide-toggle>
-                        <br />
-                        <mat-slide-toggle formControlName="UserManagement_Access" color="primary" (click)="setRightSelected(SelectedGroupManagementForm.value, 'UserManagement_Access')">
-                            Droit de l'utilisateur pour acceder à la page de l'ensemble des utilisateurs
-                        </mat-slide-toggle>
-                        <br />
-                        <mat-slide-toggle formControlName="UserManagement_AddUser" color="primary" (click)="setRightSelected(SelectedGroupManagementForm.value, 'UserManagement_AddUser')">
-                            Droit de l'utilisateur pour ajouter un utilisateur
-                        </mat-slide-toggle>
-                        <br />
-                        <mat-slide-toggle formControlName="UserManagement_EditDefaultUser" color="primary" (click)="setRightSelected(SelectedGroupManagementForm.value, 'UserManagement_EditDefaultUser')">
-                            Droit de l'utilisateur pour modifier l'utilisateur par defaut
-                        </mat-slide-toggle>
-                    </mat-expansion-panel>
-
-                    <br />
-
-                    <mat-expansion-panel> 
-                        <mat-expansion-panel-header>
-                            <mat-panel-title>Gestion des groupes</mat-panel-title>
-                            <mat-panel-description>Modification des droit de l'utilisateur liés à la gestion des groupes</mat-panel-description>
-                        </mat-expansion-panel-header>
-
-                        <mat-slide-toggle formControlName="SelectedGroupManagement_Access" color="primary" (click)="setRightSelected(SelectedGroupManagementForm.value, 'SelectedGroupManagement_Access')">
-                            Droit de l'utilisateur pour acceder a la page de gestion du groupe précis
-                        </mat-slide-toggle>
-                        <br />
-                        <mat-slide-toggle formControlName="SelectedGroupManagement_EditGroup" color="primary" (click)="setRightSelected(SelectedGroupManagementForm.value, 'SelectedGroupManagement_EditGroup')">
-                            Droit de l'utilisateur pour modifier le groupe
-                        </mat-slide-toggle>
-                        <br />
-                        <mat-slide-toggle formControlName="SelectedGroupManagement_DeleteGroup" color="primary" (click)="setRightSelected(SelectedGroupManagementForm.value, 'SelectedGroupManagement_DeleteGroup')">
-                            Droit de l'utilisateur pour supprimer le groupe
-                        </mat-slide-toggle>
-                        <br />
-                        <mat-slide-toggle formControlName="SelectedGroupManagement_EditRightPage" color="primary" (click)="setRightSelected(SelectedGroupManagementForm.value, 'SelectedGroupManagement_EditRightPage')">
-                            Droit de l'utilisateur pour modifier les droits du groupe
-                        </mat-slide-toggle>
-                        <br />
-                        <mat-slide-toggle formControlName="GroupManagement_Access" color="primary" (click)="setRightSelected(SelectedGroupManagementForm.value, 'GroupManagement_Access')">
-                            Droit de l'utilisateur pour acceder a la page de gestion de l'ensemble des groupes
-                        </mat-slide-toggle>
-                        <br />
-                        <mat-slide-toggle formControlName="GroupManagement_AddGroup" color="primary" (click)="setRightSelected(SelectedGroupManagementForm.value, 'GroupManagement_AddGroup')">
-                            Droit de l'utilisateur pour ajouter un groupe
-                        </mat-slide-toggle>
-                        <br />
-                        <mat-slide-toggle formControlName="GroupManagement_EditDefaultGroup" color="primary" (click)="setRightSelected(SelectedGroupManagementForm.value, 'GroupManagement_EditDefaultGroup')">
-                            Droit de l'utilisateur pour modifier le groupe par defaut
-                        </mat-slide-toggle>
-                    </mat-expansion-panel>
-
-                    <br />
-
-                    <mat-expansion-panel> 
-                        <mat-expansion-panel-header>
-                            <mat-panel-title>Gestion des pages</mat-panel-title>
-                            <mat-panel-description>Modification des droit de l'utilisateur liés à la gestion des pages</mat-panel-description>
-                        </mat-expansion-panel-header>
-
-                        <mat-slide-toggle class="disabledCheck" formControlName="SelectedPageManagement_Access" color="primary">
-                            Droit de l'utilisateur pour accéder à la page de gestion de la page
-                        </mat-slide-toggle>
-                        <br />
-                        <mat-slide-toggle formControlName="SelectedPageManagement_EditPage" color="primary" (click)="setRightSelected(SelectedGroupManagementForm.value, 'SelectedPageManagement_EditPage')">
-                            Droit de l'utilisateur pour modifier la page
-                        </mat-slide-toggle>
-                        <br />
-                        <mat-slide-toggle formControlName="SelectedPageManagement_EditRefresh" color="primary" (click)="setRightSelected(SelectedGroupManagementForm.value, 'SelectedPageManagement_EditRefresh')">
-                            Droit de l'utilisateur pour modifier l'interval de refresh des données pour la page
-                        </mat-slide-toggle>
-                        <br />
-                        <mat-slide-toggle formControlName="SelectedPageManagement_EditRoute" color="primary" (click)="setRightSelected(SelectedGroupManagementForm.value, 'SelectedPageManagement_EditRoute')">
-                            Droit de l'utilisateur pour modifier le chemin depuis la racine pour la page
-                        </mat-slide-toggle>
-                        <br />
-                        <mat-slide-toggle formControlName="SelectedPageManagement_EditNeedLogIn" color="primary" (click)="setRightSelected(SelectedGroupManagementForm.value, 'SelectedPageManagement_EditNeedLogIn')">
-                            Droit de l'utilisateur pour modifier la néssécité ou non d'un utilisateur connécté pour la page
-                        </mat-slide-toggle>   
-                    </mat-expansion-panel>
+primary_background_color
+secondary_background_color
+primary_font_color
+secondary_font_color
+primary_border_color
+secondary_border_color
+primary_shadow_color
+secondary_shadow_color
+primary_action_color
+secondary_action_color
+primary_action_disabled_color
+secondary_action_disabled_color

@@ -1,7 +1,7 @@
-<div *ngIf="_currentUser.group.rightGroupPage.SelectedGroupManagement_Access">
+<!-- <div *ngIf="_currentUser.group.rightGroupPage.SelectedGroupManagement_Access"> -->
     <form [formGroup]="SelectedGroupManagementForm" (ngSubmit)="editGroup(SelectedGroupManagementForm.value)" class="example-form" style="display: inline-block;">
         <mat-form-field class="example-form-field">
-            <input matInput formControlName="name" placeholder="Name" #name>
+            <input matInput (keyup)="NameChange($event.target.value)" formControlName="name" placeholder="Name" #name>
             <mat-icon *ngIf="name.value && name.value !== 'default'" mat-button matSuffix mat-icon-button (click)="name.value = ''">close</mat-icon>
         </mat-form-field>
 
@@ -169,11 +169,11 @@
                 </mat-slide-toggle>   
             </mat-expansion-panel>
         </div>
-        <div class="EditBar" *ngIf="_currentUser.group.rightGroupPage.SelectedGroupManagement_EditGroup">
+        <div class="EditBar" #EditBar>
             <button class="boutton_n" *ngIf="_currentUser.group.rightGroupPage.SelectedGroupManagement_DeleteGroup" mat-raised-button (click)="DeleteGroup()" type="button" color="warn">Supprimer l'utilisateur</button>
             <button class="boutton_m" style="margin-left: 2%; float: left;" *ngIf="_currentUser.group.rightGroupPage.SelectedGroupManagement_DeleteGroup" mat-raised-button color="warn"matBadge="8" matBadgePosition="before" matBadgeColor="warn"><i (click)="DeleteGroup()" type="button" class="fas fa-trash-alt"></i></button>
             <button class="boutton_n" style="margin-left: 20px !important;" *ngIf="_currentUser.group.rightGroupPage.SelectedGroupManagement_EditGroup" mat-raised-button type="submit" color="primary">Valider les modifications</button>
             <button class="boutton_m" style="margin-left: 2%; float: left;" *ngIf="_currentUser.group.rightGroupPage.SelectedGroupManagement_EditGroup" mat-raised-button type="submit" color="primary" matBadge="8" matBadgePosition="before" matBadgeColor="accent"><i class="fas fa-user-check"></i></button>
         </div>
     </form>
-</div> 
+<!-- </div>  -->
