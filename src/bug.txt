@@ -1,10 +1,6 @@
 Faire en sorte que la page soit afficher que quand les images sont chargé
 
-OK => Faire en sorte que les utilisateurs puisse modifier les compte (avec les droit de page qui vont avec)
-
 Voir pour des droit sur autre personne et sur soit meme en fonction des cas
-
-OK => Faire page de Modification de mon compte (la meme que pour voia la page de compte d'une autre personne mise a part le bouton modifier)
 
 Faire une table avec les parametre globaux du site
 => possibilite de modifier l'interval de refresh
@@ -59,35 +55,20 @@ voir le format max pour chaque input et adapter cette taille dans la base de don
 
 Mettre un temp d'arret avant d'afficher les données
 
-OK => dans new, le groupe defaut me propose d'diter le groupe default comme un groupe personnel (Dans userManagement/New)
-OK => (PAS VU) Dans /New (dans UserManagement), il y a les groupe peros dans les listes
-
 faire en sorte que les page ne s'affiche que lorsque les données sont chargé et traité
 
 Les liste déroulante pour proposer des valeur deja rentré dans ces champ sont avec un bacground white en mode sombre
 
-OK => Remplacer "editer ce groupe de droit personelle" par "editer le groupe par defaut" dans UserManagement/1
-
-OK(mise en place dans l'objet Setting et mise en place dans un futur patch) => Possibilité de modifier la couleur de action primaire (rond dans le slide, bouton modifier ...)
-
-Mettre en place le menu pour les version tablette et mobile
-
-OK (adaptation) => system pour faire disparaitre la barre d'etite dans group et user (pour que l'on puisse voir le footer)
+OK => Mettre en place le menu pour les version tablette et mobile
 
 Voir pour centrer le contenue de la page User
-
-OK=> A chaque changement de page, remettre le curseur en haut
-
-OK => Quand on change le groupe de droit personelle dans la liste, le nom du grouop ne change pas (et le input se vide)
 
 remettre les messages d'erreur pour la page de login
 
 Revoir pour remettre les variable api, auth, ErrorMsg dans l'API et le traitement via une methode generic
 
-le texte "Icone de la page" de la page Selected Page magangement est en dessous de l'icone (a la meme frequence que le panqaque)
+PAS REVU => le texte "Icone de la page" de la page Selected Page magangement est en dessous de l'icone (a la meme frequence que le panqaque)
 
-par momennt le nom de groupe perso n'est pas modifier dans GroupManagment
-
-OK => changer couleur module heure (AM/PM et heure)
+PAS REVU => par momennt le nom de groupe perso n'est pas modifier dans GroupManagment
 
 enlever la case pour supprimer le contenue d'un input si le input est desactivé (et quand on a pas les droit de modifier)

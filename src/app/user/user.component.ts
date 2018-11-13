@@ -18,23 +18,23 @@ import { UploadService } from '../Services/uploads.service';
   templateUrl: './user.component.html'
 })
 export class UserComponent implements OnInit {
-  @ViewChild('EditBar') private EditBar: ElementRef;
+  @ViewChild('EditBar') public EditBar: ElementRef;
 
-  private Reponse_getUserById: Observable<Api>;
-  private Reponse_getUserById_form: Observable<Api>;
-  private Reponse_getUserById_initial: Observable<Api>;
+  public Reponse_getUserById: Observable<Api>;
+  public Reponse_getUserById_form: Observable<Api>;
+  public Reponse_getUserById_initial: Observable<Api>;
 
-  private UserForm: FormGroup;
-  private initial_User: User;
+  public UserForm: FormGroup;
+  public initial_User: User;
   public _currentUser: User;
-  private user: User;
-  private one: string;
-  private canEdit: boolean;
+  public user: User;
+  public one: string;
+  public canEdit: boolean;
 
-  private edit: boolean;
+  public edit: boolean;
 
-  constructor(private app:AppComponent, private router: Router, private userApi: UserService, private route: ActivatedRoute, 
-    private fb: FormBuilder, private uploadApi: UploadService, private generic: GenericModule) { 
+  constructor(public app:AppComponent, public router: Router, public userApi: UserService, public route: ActivatedRoute, 
+    public fb: FormBuilder, public uploadApi: UploadService, public generic: GenericModule) { 
     this.Reponse_getUserById = null;
     this.Reponse_getUserById_form = null;
     this.Reponse_getUserById_initial = null;
@@ -85,7 +85,7 @@ export class UserComponent implements OnInit {
       document.getElementById("footer").style.marginBottom = this.EditBar.nativeElement.offsetHeight - 6 + "px";
   }
 
-  private verifRight(user: User) {
+  public verifRight(user: User) {
     if(this.router.url !== "/User/MonCompte")
       this.Reponse_getUserById_form = this.userApi.getUserById(Number(this.route.snapshot.paramMap.get('id')));
     else
@@ -107,7 +107,7 @@ export class UserComponent implements OnInit {
     })
   }
 
-  private initData(): void {
+  public initData(): void {
     this.Reponse_getUserById_form.subscribe((data: Api) => {
       this.UserForm = this.fb.group({
         'id': this.user.id,
@@ -123,7 +123,7 @@ export class UserComponent implements OnInit {
     })
   }
 
-  private editUser(post: any): void {
+  public editUser(post: any): void {
     this.Reponse_getUserById_form.subscribe((data: Api) => {
       post.birthDate = this.generic.changeDateTimeFormatForBdd(post.birthDate, null);
 
@@ -140,7 +140,7 @@ export class UserComponent implements OnInit {
     })
   }
 
-  private imageChangeClick(event, value): void {
+  public imageChangeClick(event, value): void {
     if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditUser) {
       this.user = new User(value);
 
@@ -155,7 +155,7 @@ export class UserComponent implements OnInit {
       console.log("Vous n'avez pas la permission de modifier l'image de profile de cette utilisateur");
   }
 
-  private newImage(ok: any, name: string): void {
+  public newImage(ok: any, name: string): void {
     if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditUser) {
       if(ok.ok)
         this.user.profile = "https://dev.kevin-c.fr/uploads/" + name;

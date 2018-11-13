@@ -20,27 +20,27 @@ import { RightGroupPageService } from '../Services/RightGroupPage.service';
   templateUrl: './selected-group-management.component.html'
 })
 export class SelectedGroupManagementComponent implements OnInit {
-  @ViewChild('name') private name: ElementRef;
-  @ViewChild('EditBar') private EditBar: ElementRef;
+  @ViewChild('name') public name: ElementRef;
+  @ViewChild('EditBar') public EditBar: ElementRef;
   
-  private Reponse_getUserById: Observable<Api>;
-  private Reponse_getGroupById_form: Observable<Api>;
-  private Reponse_getGroupById_initial: Observable<Api>;
-  private Reponse_getRightGroupPageList: Observable<Api>;
+  public Reponse_getUserById: Observable<Api>;
+  public Reponse_getGroupById_form: Observable<Api>;
+  public Reponse_getGroupById_initial: Observable<Api>;
+  public Reponse_getRightGroupPageList: Observable<Api>;
 
   public _currentUser: User;
-  private _ChangeRightPage: boolean;
-  private RightGroupPageList: RightGroupPage[];
-  private SelectedGroupManagementForm: FormGroup;
-  private group: Group;
-  private initial_group: Group;
-  private PlaceHolder: Group;
-  private one: boolean;
-  private _RightEdit: boolean;
+  public _ChangeRightPage: boolean;
+  public RightGroupPageList: RightGroupPage[];
+  public SelectedGroupManagementForm: FormGroup;
+  public group: Group;
+  public initial_group: Group;
+  public PlaceHolder: Group;
+  public one: boolean;
+  public _RightEdit: boolean;
 
-  constructor(private route: ActivatedRoute, private app: AppComponent, private router: Router,
-    private fb: FormBuilder, private groupApi: GroupService, private rightGroupPageApi: RightGroupPageService, 
-    private generic: GenericModule) { 
+  constructor(public route: ActivatedRoute, public app: AppComponent, public router: Router,
+    public fb: FormBuilder, public groupApi: GroupService, public rightGroupPageApi: RightGroupPageService, 
+    public generic: GenericModule) { 
       this.Reponse_getUserById = null;
       this.Reponse_getGroupById_form = null;
       this.Reponse_getGroupById_initial = null;
@@ -94,7 +94,7 @@ export class SelectedGroupManagementComponent implements OnInit {
     }
   }
 
-  private verifRight(rightGroupPage: RightGroupPage) {
+  public verifRight(rightGroupPage: RightGroupPage) {
     if(!rightGroupPage.SelectedGroupManagement_Access) {
       console.log("Vous n'avez pas la permission d'accedez à la page de Gestion de ce groupe");
       this.router.navigate(['/Accueil']);
@@ -174,7 +174,7 @@ export class SelectedGroupManagementComponent implements OnInit {
   }
 
   // Permet de changer la valeur du groupe de droit de page du group par celui séléctionné (change l'object)
-  private setRightEditSelected(id: any, post: any): void {
+  public setRightEditSelected(id: any, post: any): void {
     // On met dans l'object group les données que l'on a deja rentré
     this.group.rightGroupPage = new RightGroupPage(id);
 
@@ -187,7 +187,7 @@ export class SelectedGroupManagementComponent implements OnInit {
     this.initData();
   }
 
-  private setRightSelected(value: any, element: any): void {
+  public setRightSelected(value: any, element: any): void {
     this.Reponse_getGroupById_form.subscribe((data: Api) => {
       this._ChangeRightPage = true;
 
@@ -210,7 +210,7 @@ export class SelectedGroupManagementComponent implements OnInit {
     })
   }
 
-  private initData(): void {
+  public initData(): void {
     this.Reponse_getGroupById_form.subscribe((data: Api) => {
       this.SelectedGroupManagementForm = this.fb.group({
         'id': this.group.id,
@@ -285,7 +285,7 @@ export class SelectedGroupManagementComponent implements OnInit {
   }
 
   // Permet de modifier le nom du groupe de droit de page en meme temps que celui du groupe
-  private NameChange(post: string): void {
+  public NameChange(post: string): void {
     this.Reponse_getGroupById_form.subscribe((data: Api) => {
       this.RightGroupPageList[0].name = post;
       if(post === "")
@@ -294,7 +294,7 @@ export class SelectedGroupManagementComponent implements OnInit {
     })
   }
 
-  private editGroup(post: any): void {
+  public editGroup(post: any): void {
     this.Reponse_getGroupById_form.subscribe((data: Api) => {
 
       var same: boolean = false;
@@ -396,7 +396,7 @@ export class SelectedGroupManagementComponent implements OnInit {
     })
   }
 
-  private DeleteGroup(): void {
+  public DeleteGroup(): void {
     if(this._currentUser.group.rightGroupPage.SelectedGroupManagement_EditGroup) {
       this.groupApi.deleteGroup(this.group.id);
 
