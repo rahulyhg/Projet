@@ -116,8 +116,6 @@ cursor: pointer;
       padding: 10%;
       padding-top: 100px;
       padding-bottom: 100px;
-      /* margin-bottom: 100px !important; */
-      /* min-height: 500px; */
       min-height: 100%;
 }
 
@@ -374,7 +372,7 @@ file-drop:hover img {
   left: 302Px;
   text-align: center;
   right: 0;
-  z-index: 10;
+  z-index: 8;
   height: 36px;
 }
 
@@ -545,11 +543,7 @@ file-drop:hover img {
   }
 
   .bouton_nav_mobile {
-    border: 2px solid black;
-    margin: 3px;
-    /* padding: 5px;
-    margin-left: 10px; */
-    /* border-radius: 8px; */
+    margin: 5px;
     float: left;
   }
 
@@ -603,14 +597,6 @@ file-drop:hover img {
   
   .nav_n {
     display: none !important
-  }
-
-  /* #page_nav, #dev {
-    display: none;
-  } */
-
-  #dev {
-    bottom: 76px;
   }
 
   #page_section, .EditBar {
@@ -699,7 +685,6 @@ footer {
   right: 0;
   margin-left: 300px;
   padding: 30px;
-  /* border-left: 2px solid; */
   bottom: 0;
   width: -webkit-fill-available;
 }
@@ -710,63 +695,6 @@ footer .left_content {
 footer .right_content {
   float: right;
 }
-
-/* input:-webkit-autofill {
-  -webkit-box-shadow: 0 0 0 30px black inset !important;
-}
-
-input:-webkit-autofill {
-  -webkit-text-fill-color: yellow !important;
-}
-
-@-webkit-keyframes autofill {
-  to {
-      color: #666 !important;
-      background: transparent !important;
-  }
-}
-
-input:-webkit-autofill {
-  -webkit-animation-name: autofill !important;
-  -webkit-animation-fill-mode: both !important;
-}
-
-input:-webkit-autofill {
-  -webkit-box-shadow:0 0 0 50px black inset !important;
-  -webkit-text-fill-color: #333 !important;
-}
-
-input:-webkit-autofill:focus {
-  -webkit-box-shadow: ,0 0 0 50px black inset !important;
-  -webkit-text-fill-color: #333 !important;
-}   */
-
-/* .example-container {
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-}
-
-.example-is-mobile .example-toolbar {
-  position: fixed;
-  z-index: 2;
-}
-
-h1.example-app-name {
-  margin-left: 8px;
-}
-
-.example-sidenav-container {
-  flex: 1;
-}
-
-.example-is-mobile .example-sidenav-container {
-  flex: 1 0 auto;
-} */
 
 .mat-toolbar-row, .mat-toolbar-single-row {
   padding: 0px !important;
@@ -789,4 +717,18 @@ h1.example-app-name {
 
 .content[_ngcontent-c7] {
   display: block !important;
+}
+
+.mat-drawer {
+  z-index: 9 !important;
+  position: fixed !important;
+  margin-top: 50px !important;
+}
+
+.mat-drawer-backdrop.mat-drawer-shown {
+  background-color: unset !important;
+}
+
+.mat-toolbar {
+  background: none !important;
 }

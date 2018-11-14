@@ -12,7 +12,7 @@ import { AmazingTimePickerModule } from 'amazing-time-picker/amazing-time-picker
 import { 
   MatButtonModule, MatNativeDateModule, MatTableModule, MatExpansionModule, MatChipsModule, 
   MatSelectModule, MatSlideToggleModule, MatDatepickerModule, MatInputModule, MatIconModule, 
-  MatDividerModule, MatListModule, MatSidenavModule, MatToolbarModule
+  MatDividerModule, MatListModule, MatSidenavModule, MatToolbarModule, MatDialogModule
 } from '@angular/material';
 
 import { AppComponent } from './app.component';
@@ -22,9 +22,9 @@ import { LoginComponent } from './login/login.component';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 import { UserManagementComponent } from './user-management/user-management.component';
-import { SelectedUserManagementComponent } from './selected-user-management/selected-user-management.component';
+import { SelectedUserManagementComponent, DeleteUserPopup } from './selected-user-management/selected-user-management.component';
 import { GroupManagementComponent } from './group-management/group-management.component';
-import { SelectedGroupManagementComponent } from './selected-group-management/selected-group-management.component';
+import { SelectedGroupManagementComponent, DeleteGroupPopup } from './selected-group-management/selected-group-management.component';
 import { HighlightDirective } from './Services/highlight.directive';
 import { PageManagementComponent } from './page-management/page-management.component';
 import { SelectedPageManagementComponent } from './selected-page-management/selected-page-management.component';
@@ -53,8 +53,10 @@ const routes: Routes = [
     LoginComponent,
     UserManagementComponent,
     SelectedUserManagementComponent,
+    DeleteUserPopup,
     GroupManagementComponent,
     SelectedGroupManagementComponent,
+    DeleteGroupPopup,
     HighlightDirective,
     PageManagementComponent,
     SelectedPageManagementComponent,
@@ -87,10 +89,12 @@ const routes: Routes = [
     MatDividerModule,
     MatListModule,
     MatSidenavModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatDialogModule
   ],
   providers: [ DatePipe ],
   bootstrap: [ AppComponent ],
-  exports: [ RouterModule ]
+  exports: [ RouterModule ],
+  entryComponents: [DeleteUserPopup, DeleteGroupPopup]
 })
 export class AppModule { }

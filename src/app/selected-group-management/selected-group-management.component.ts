@@ -2,6 +2,8 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute} from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
+import {MatDialog} from '@angular/material';
+
 
 import { GenericModule } from '../generic/generic.modules';
 
@@ -40,7 +42,7 @@ export class SelectedGroupManagementComponent implements OnInit {
 
   constructor(public route: ActivatedRoute, public app: AppComponent, public router: Router,
     public fb: FormBuilder, public groupApi: GroupService, public rightGroupPageApi: RightGroupPageService, 
-    public generic: GenericModule) { 
+    public generic: GenericModule, public dialog: MatDialog) { 
       this.Reponse_getUserById = null;
       this.Reponse_getGroupById_form = null;
       this.Reponse_getGroupById_initial = null;
@@ -71,6 +73,15 @@ export class SelectedGroupManagementComponent implements OnInit {
       this.one = false;
       this._RightEdit = false;
     }
+
+  openDialog() {
+    const dialogRef = this.dialog.open(DeleteGroupPopup);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result)
+        this.DeleteGroup();
+    });
+  }
 
   ngOnInit(): void { 
     // Initialisation de la page
@@ -407,3 +418,16 @@ export class SelectedGroupManagementComponent implements OnInit {
       console.log("Vous n'avez pas la permission de supprimer ce groupe");
   }
 }
+
+@Component({
+  selector: 'dialog-content-example-dialog',
+  template: `<h2 mat-dialog-title>Voulez vous vraiment supprimer ce groupe ?</h2>
+  <mat-dialog-content class="mat-typography">
+    <p>Confirmez-vous la suppression ?</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Supprimer</button>
+  </mat-dialog-actions>`,
+})
+export class DeleteGroupPopup { }

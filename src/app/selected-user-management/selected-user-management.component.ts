@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { FileSystemFileEntry } from '../../../node_modules/ngx-file-drop';
 import { Observable } from 'rxjs';
+import {MatDialog} from '@angular/material';
 
 import { GenericModule } from '../generic/generic.modules';
 
@@ -47,7 +48,7 @@ export class SelectedUserManagementComponent implements OnInit {
 
   constructor(public route: ActivatedRoute, public app: AppComponent, public userApi: UserService, public router: Router,
     public fb: FormBuilder, public groupApi: GroupService, public rightGroupPageApi: RightGroupPageService, 
-    public uploadApi: UploadService, public date: DatePipe, public generic: GenericModule) { 
+    public uploadApi: UploadService, public date: DatePipe, public generic: GenericModule, public dialog: MatDialog) { 
       this.Reponse_getUserById = null;
       this.Reponse_getUserById_initial = null;
       this.Reponse_getUserById_form = null;
@@ -85,6 +86,15 @@ export class SelectedUserManagementComponent implements OnInit {
       this.PlaceHolder = new User(null);
       this.one = false;
     }
+
+  openDialog() {
+    const dialogRef = this.dialog.open(DeleteUserPopup);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result)
+        this.DeleteUser();
+    });
+  }
 
   ngOnInit(): void { 
     // Initialisation de la page
@@ -652,3 +662,16 @@ export class SelectedUserManagementComponent implements OnInit {
       console.log("Vous n'avez pas la permission de modifier l'image de profile de cette utilisateur");
   }
 }
+
+@Component({
+  selector: 'dialog-content-example-dialog',
+  template: `<h2 mat-dialog-title>Voulez vous vraiment supprimer cette utilisateur ?</h2>
+  <mat-dialog-content class="mat-typography">
+    <p>Confirmez-vous la suppression ?</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Supprimer</button>
+  </mat-dialog-actions>`,
+})
+export class DeleteUserPopup { }

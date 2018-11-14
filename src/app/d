@@ -28,3 +28,15 @@ primary_action_color
 secondary_action_color
 primary_action_disabled_color
 secondary_action_disabled_color
+
+INSERT INTO vendeurs VALUES 
+(101,'Daniel Robert',45,12,'Vendeur','1986-10-20 00:00:00',104,300000,305673),
+(102,'Suzie Dupont',48,21,'Vendeur','10-12-1986',108,350000,474050),
+(103,'Paul Croix',29,12,'Vendeur','1-1-1987',104,275000,286775),
+(104,'Boris Dupond',33,12,'Chef des ventes','19-5-1987',106,200000,142594),
+(105,'Bill Adam',37,13,'Vendeur','12-2-1988',104,350000,367911),
+(106,'Samuel Clair',52,11,'Directeur commercial','14-6-1988',null,275000,299912),
+(107,'Nancy Angelli',49,22,'Vendeur','14-11-1988',108,300000,186042),
+(108,'Luc Fignon',62,21,'Chef des ventes','12-10-1989',106,350000,361865),
+(109,'Marie Jonas',31,11,'Vendeur','12-10-1989',106,300000,392725),
+(110,'Thomas Sueur',41,null,'Vendeur','13-1-1990',101,null,75985);

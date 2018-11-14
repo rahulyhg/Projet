@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { Router } from "@angular/router";
 import { Title } from '@angular/platform-browser';
 import { Observable } from 'rxjs';
@@ -28,6 +28,7 @@ export class AppComponent implements OnInit {
   public _currentPage: Page;
   public _GestionSitePopupStatut: boolean;
   public setting: Setting;
+  public opened: boolean;
 
   mobileQuery: MediaQueryList;
   private _mobileQueryListener: () => void;
@@ -50,6 +51,9 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     window.scroll(0,0);
     document.getElementById("footer").style.marginBottom = "-6px";
+    document.getElementById('page_section').style.filter = "none";
+    document.getElementById('footer').style.filter = "none";
+    this.opened = false;
     this.Init();
   }
 
@@ -211,6 +215,24 @@ export class AppComponent implements OnInit {
 
   ngOnDestroy(): void {
     this.mobileQuery.removeListener(this._mobileQueryListener);
+  }
+
+  public nav_m_blur(): void {
+    if(!this.opened) {
+      document.getElementById('page_section').style.filter = "blur(4px)";
+      document.getElementById('footer').style.filter = "blur(4px)";
+    }
+    else {
+      document.getElementById('page_section').style.filter = "none";
+      document.getElementById('footer').style.filter = "none";
+    }
+  }
+
+  public nav_m_blur_click(): void {
+    if(this.opened) {
+      document.getElementById('page_section').style.filter = "none";
+      document.getElementById('footer').style.filter = "none";
+    }
   }
 
   shouldRun = true;
