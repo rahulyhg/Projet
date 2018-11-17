@@ -1,5 +1,5 @@
 <!-- <div *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_Access"> -->
-    <form [formGroup]="SelectedUserManagementForm" (ngSubmit)="editUse(SelectedUserManagementForm.value)" class="example-form" style="display: inline-block;">
+    <form [formGroup]="SelectedUserManagementForm" (ngSubmit)="editUser(SelectedUserManagementForm.value)" class="example-form" style="display: inline-block;">
         <div *ngIf="!_currentUser.group.rightGroupPage.SelectedUserManagement_EditUser">
             <div class="profile">
                 <img src="{{ user.profile }}">
@@ -22,7 +22,6 @@
         <div *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_EditUser">
             <div class="profile">
                 <input style="display: none" type="file" (change)="imageChangeClick($event, SelectedUserManagementForm.value)" #File>
-                <!-- <div class="drop">Drop picture here</div> -->
                 <file-drop (onFileDrop)="imageChangeDrag($event, SelectedUserManagementForm.value)" (click)="File.click()">
                     <img src="{{ user.profile }}" appHighlight>
                 </file-drop>
@@ -31,7 +30,7 @@
                 <ul>
                     <mat-form-field class="example-form-field">
                         <input matInput formControlName="login" placeholder="Login" #login>
-                        <mat-icon *ngIf="login.value" mat-button matSuffix mat-icon-button (click)="login.value = ''">close</mat-icon>
+                        <mat-icon *ngIf="login.value && canChangeLogin" mat-button matSuffix mat-icon-button (click)="login.value = ''">close</mat-icon>
                     </mat-form-field>
 
                     <mat-form-field class="example-form-field" *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_ViewPassword">
@@ -276,9 +275,9 @@
         </div>
         <div class="EditBar" #EditBar>
             <button class="boutton_n" *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_DeleteUser" mat-raised-button (click)="openDialog()" type="button" color="warn">Supprimer l'utilisateur</button>
-            <button class="boutton_m" style="margin-left: 2%; float: left;" *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_DeleteUser" mat-raised-button color="warn" matBadge="8" matBadgePosition="before" matBadgeColor="warn"><i (click)="openDialog()" type="button" class="fas fa-trash-alt"></i></button>
+            <button class="boutton_m" *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_DeleteUser" mat-raised-button (click)="openDialog()" type="button" color="warn" style="margin-left: 2%; float: left;"><i class="fas fa-trash-alt"></i></button>
             <button class="boutton_n" style="margin-left: 20px !important;" *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_EditUser" mat-raised-button type="submit" color="primary">Valider les modifications</button>
-            <button class="boutton_m" style="margin-left: 2%; float: left;" *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_EditUser" mat-raised-button type="submit" color="primary" matBadge="8" matBadgePosition="before" matBadgeColor="accent"><i class="fas fa-user-check"></i></button>
+            <button class="boutton_m" *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_EditUser" mat-raised-button type="submit" color="primary" style="margin-left: 2%; float: left;"><i class="as fa-user-check"></i></button>
         </div>
     </form>
 <!-- </div>  -->

@@ -6,7 +6,6 @@
           <input style="display: none" type="file" (change)="imageChangeClick($event, SelectedPageManagementForm.value)" #File>
           <file-drop (onFileDrop)="imageChangeDrag($event, SelectedPageManagementForm.value)" (click)="File.click()">
               <img src="{{ page.favicon }}" appHighlight>
-              <!-- <div class="drop">Drop icon here</div> -->
           </file-drop>
       </div>
       <mat-form-field class="example-form-field">

@@ -26,13 +26,13 @@ structurer le peus de CSS présent  (par page)
 
 Mise en place d'in system de report de bug dans le footer
 
-le click droit sur le popup dev active le drop
+(PLUS DE DEV POPUP) OK => le click droit sur le popup dev active le drop
 
 verifier les format de fichier que l'on upload
 => que des .ico pour les icone
 => que les format image pour les images ...
 
-faire page d'erreur par default pour page inconue
+OK => faire page d'erreur par default pour page inconue
 
 voir pour mettre de la transparence sur le blanc dans les logo de page
 => via methode automatique
@@ -45,9 +45,9 @@ Mettre un fichier valide dans le contructeur de l'object Upload
 
 Faire la vérification des format de données (comme pour les @GameTag ou il y pas d'espace)
 
-Remettre la gestion de droit dans SelectedGroupManagement
+OK => Remettre la gestion de droit dans SelectedGroupManagement
 
-Faire la meme chose que pour UserDefault dans GroupManagement (griser si pas droit modif)
+OK => Faire la meme chose que pour UserDefault dans GroupManagement (griser si pas droit modif)
 
 Mettre a jour la date d edernier connection dans l'aPI
 
@@ -55,7 +55,7 @@ voir le format max pour chaque input et adapter cette taille dans la base de don
 
 Mettre un temp d'arret avant d'afficher les données
 
-faire en sorte que les page ne s'affiche que lorsque les données sont chargé et traité
+OK=> faire en sorte que les page ne s'affiche que lorsque les données sont chargé et traité
 
 Les liste déroulante pour proposer des valeur deja rentré dans ces champ sont avec un bacground white en mode sombre
 
@@ -65,4 +65,22 @@ remettre les messages d'erreur pour la page de login
 
 Revoir pour remettre les variable api, auth, ErrorMsg dans l'API et le traitement via une methode generic
 
-enlever la case pour supprimer le contenue d'un input si le input est desactivé (et quand on a pas les droit de modifier)
+OK =>enlever la case pour supprimer le contenue d'un input si le input est desactivé (et quand on a pas les droit de modifier)
+
+OK => rajouter "sur exemple de " a coté de la liste des template dans SelectedGroupManagement
+
+le min-height du page_section ,n'est pas bon quand il y a plus la console d'ouverte
+
+si on met une image en 16/9, ca fait un apercu oval
+
+empecher le nom de groupe "_user_ + chiffre" dans SelectedGroupManagement
+
+mettre un variable pour la couleur de l'animation de load page
+
+changer la couleur des slide en desactiver
+
+mettre couleur rouge sur le bouton supprimer (popup)
+
+Voir pour pouvoir get des element meme quand il sont dans des ngIf (voir user.compnent.ts et user.compnent.html)
+
+Voir pour la vérification de l'existence ou nom du groupe que l'on veut editer

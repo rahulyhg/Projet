@@ -1,4 +1,5 @@
 <ngx-loading-bar [includeSpinner]="true" color="#00BE00" height="4px"></ngx-loading-bar>
+<ngx-spinner bdColor="rgba(51,51,51,0)" size="medium" color="#333" class="la-ball-atom la-dark la-3x" type="ball-atom" la-dark></ngx-spinner>
 <div id="page_content" [class.example-is-mobile]="mobileQuery.matches" (click)="nav_m_blur_click()">
   <header id="page_header">
     <div class="bouton_nav_mobile nav_m">
@@ -79,7 +80,7 @@
 
 <footer id="footer">
   <div class="left_content">
-    Foogter
+    Footer
   </div>
   <div class="right_content">
     {{ setting.version }}

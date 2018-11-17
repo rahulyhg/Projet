@@ -16,20 +16,20 @@ export class UserManagementComponent implements OnInit {
   private Reponse_getUserById: Observable<Api>;
   private Reponse_getUserList: Observable<Api>;
 
-  displayedColumns: string[] = ['id', 'login', 'inscription', 'connection', 'group'];
-
+  private displayedColumns: string[];
   public _currentUser: User;
   private UserList: User[];
 
   constructor(private app:AppComponent, private router: Router, private userApi: UserService) {
-    this.Reponse_getUserById = null;
-    this.Reponse_getUserList = null;
+    this.Reponse_getUserById = new Observable<Api>();
+    this.Reponse_getUserList = new Observable<Api>();
 
+    this.displayedColumns = ['id', 'login', 'inscription', 'connection', 'group'];
     this._currentUser = new User(null);
-    this.UserList = null;
+    this.UserList = new User(null)[2];
   }
 
-  ngOnInit(): void { 
+  public ngOnInit(): void { 
     this.app.ngOnInit();
     this.Reponse_getUserById = this.app.Reponse_getUserById;
 

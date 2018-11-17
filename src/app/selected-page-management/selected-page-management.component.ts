@@ -18,29 +18,25 @@ import { UploadService } from '../Services/uploads.service';
   templateUrl: './selected-page-management.component.html',
 })
 export class SelectedPageManagementComponent implements OnInit {
-  @ViewChild('EditBar') public EditBar: ElementRef;
+  @ViewChild('EditBar') private EditBar: ElementRef;
 
-  public Reponse_getUserById: Observable<Api>;
-  public Reponse_getPageById: Observable<Api>;
-  public Reponse_getPageById_initial: Observable<Api>;
+  private Reponse_getUserById: Observable<Api>;
+  private Reponse_getPageById: Observable<Api>;
+  private Reponse_getPageById_initial: Observable<Api>;
 
   public _currentUser: User;
   public page: Page;
-  public initial_page: Page;
+  private initial_page: Page;
   public SelectedPageManagementForm: FormGroup;
 
-  constructor(public app:AppComponent, public router: Router, public pageApi: PageService, public route: ActivatedRoute, 
-    public fb: FormBuilder, public uploadApi: UploadService) { 
-    this.Reponse_getUserById = null;
-    this.Reponse_getPageById = null;
-    this.Reponse_getPageById_initial = null;
+  constructor(private app: AppComponent, private router: Router, private pageApi: PageService, private route: ActivatedRoute, private fb: FormBuilder, private uploadApi: UploadService) { 
+    this.Reponse_getUserById = new Observable<Api>();
+    this.Reponse_getPageById = new Observable<Api>();
     
     this._currentUser = new User(null);
     this.page = new Page(null);
     this.initial_page = new Page(null);
-    this.SelectedPageManagementForm = null;
-    this.SelectedPageManagementForm = this.fb.group({'id': null, 'title': null, 'favicon': null, 'refresh': null, 
-    'route': null, 'needLogIn': null});
+    this.SelectedPageManagementForm = this.fb.group({'id': null, 'title': null, 'favicon': null, 'refresh': null, 'route': null, 'needLogIn': null});
 
     this.Reponse_getPageById_initial = this.pageApi.getPageById(Number(this.route.snapshot.paramMap.get('id')));
     this.Reponse_getPageById_initial.subscribe((data: Api) => {
@@ -48,7 +44,7 @@ export class SelectedPageManagementComponent implements OnInit {
     })
   }
 
-  ngOnInit(): void { 
+  public ngOnInit(): void { 
     // Initialisation de la page
     this.app.ngOnInit();
     this.Reponse_getUserById = this.app.Reponse_getUserById;
@@ -71,7 +67,7 @@ export class SelectedPageManagementComponent implements OnInit {
       document.getElementById("footer").style.marginBottom = this.EditBar.nativeElement.offsetHeight - 6 + "px";
   }
 
-  public verifRight(rightGroupPage: RightGroupPage) {
+  private verifRight(rightGroupPage: RightGroupPage): void {
     if(!this._currentUser.group.rightGroupPage.SelectedPageManagement_Access) {
       console.log("Vous n'avez pas la permission d'accedez à cette page");
       this.router.navigate(['/Accueil']);
@@ -85,7 +81,7 @@ export class SelectedPageManagementComponent implements OnInit {
     this.initData();
   }
 
-  public initData(): void {
+  private initData(): void {
     this.Reponse_getPageById.subscribe((data: Api) => {
       this.SelectedPageManagementForm = this.fb.group({
         'id': this.page.id,
@@ -139,7 +135,7 @@ export class SelectedPageManagementComponent implements OnInit {
     })
   }
 
-  public newImage(ok: any, name: string): void {
+  private newImage(ok: any, name: string): void {
     this.Reponse_getUserById.subscribe((data: Api) => {
       if(this._currentUser.group.rightGroupPage.SelectedPageManagement_EditPage) {
         if(ok.ok)
@@ -165,7 +161,7 @@ export class SelectedPageManagementComponent implements OnInit {
     })
   }
 
-  public TitleChange(value: any): void {
+  private TitleChange(value: any): void {
     this.Reponse_getUserById.subscribe((data: Api) => {
       if(this._currentUser.group.rightGroupPage.SelectedPageManagement_EditPage) {
         if(value.length > 24)

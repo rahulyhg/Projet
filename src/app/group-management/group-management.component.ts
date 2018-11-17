@@ -19,23 +19,24 @@ export class GroupManagementComponent implements OnInit {
   private Reponse_getUserList: Observable<Api>;
   private Reponse_getGroupList: Observable<Api>;
 
-  displayedColumns: string[] = ['id', 'name', 'rightGroupPage'];
-
+  private displayedColumns: string[];
   public _currentUser: User;
   private GroupList: Group[];
   private UserList: User[];
 
-  constructor(private app:AppComponent, private router: Router, private groupApi: GroupService, private userApi: UserService) {
-    this.Reponse_getUserById = null;
-    this.Reponse_getUserList = null;
-    this.Reponse_getGroupList = null;
+  constructor(private app: AppComponent, private router: Router, private groupApi: GroupService, private userApi: UserService) {
+    this.Reponse_getUserById = new Observable<Api>();
+    this.Reponse_getUserList = new Observable<Api>();
+    this.Reponse_getGroupList = new Observable<Api>();
+
+    this.displayedColumns = ['id', 'name', 'rightGroupPage'];
 
     this._currentUser = new User(null);
-    this.GroupList = []
-    this.UserList = null;
+    this.GroupList = new Group(null)[2];
+    this.UserList = new User(null)[2];
   }
 
-  ngOnInit(): void { 
+  public ngOnInit(): void { 
     this.app.ngOnInit();
     this.Reponse_getUserById = this.app.Reponse_getUserById;
 

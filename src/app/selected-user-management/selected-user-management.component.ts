@@ -2,9 +2,10 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { DatePipe } from '@angular/common';
-import { FileSystemFileEntry } from '../../../node_modules/ngx-file-drop';
 import { Observable } from 'rxjs';
-import {MatDialog} from '@angular/material';
+import { MatDialog } from '@angular/material';
+
+import { FileSystemFileEntry } from '../../../node_modules/ngx-file-drop';
 
 import { GenericModule } from '../generic/generic.modules';
 
@@ -24,41 +25,41 @@ import { UploadService } from '../Services/uploads.service';
   templateUrl: './selected-user-management.component.html'
 })
 export class SelectedUserManagementComponent implements OnInit {
-  @ViewChild('login') public login: ElementRef;
-  @ViewChild('EditBar') public EditBar: ElementRef;
+  @ViewChild('login') private login: ElementRef;
+  @ViewChild('EditBar') private EditBar: ElementRef;
 
-  public Reponse_getUserById: Observable<Api>;
-  public Reponse_getUserById_initial: Observable<Api>;
-  public Reponse_getUserById_form: Observable<Api>;
-  public Reponse_getRightGroupPageList: Observable<Api>;
-  public Reponse_getGroupList: Observable<Api>;
+  private Reponse_getUserById: Observable<Api>;
+  private Reponse_getUserById_initial: Observable<Api>;
+  private Reponse_getUserById_form: Observable<Api>;
+  private Reponse_getRightGroupPageList: Observable<Object>;
+  private Reponse_getGroupList: Observable<Api>;
 
   public _currentUser: User;
   public _RightEdit: boolean;
-  public _ChangeRightPage: boolean;
+  private _ChangeRightPage: boolean;
   public RightGroupPageList: RightGroupPage[];
-  public GroupList: Group[];
+  private GroupList: Group[];
   public SelectedUserManagementForm: FormGroup;
-  public user: User;
-  public initial_user: User;
-  public MsgGroupDelete: string;
-  public MsgGroupPerso: string;
-  public PlaceHolder: User;
-  public one: boolean;
+  private user: User;
+  private initial_user: User;
+  private MsgGroupDelete: string;
+  private MsgGroupPerso: string;
+  private PlaceHolder: User;
+  private one: boolean;
+  private canChangeLogin: boolean;
 
-  constructor(public route: ActivatedRoute, public app: AppComponent, public userApi: UserService, public router: Router,
-    public fb: FormBuilder, public groupApi: GroupService, public rightGroupPageApi: RightGroupPageService, 
-    public uploadApi: UploadService, public date: DatePipe, public generic: GenericModule, public dialog: MatDialog) { 
-      this.Reponse_getUserById = null;
-      this.Reponse_getUserById_initial = null;
-      this.Reponse_getUserById_form = null;
-      this.Reponse_getRightGroupPageList = null;
-      this.Reponse_getGroupList = null;
+  constructor(private route: ActivatedRoute, private app: AppComponent, private userApi: UserService, private router: Router, private fb: FormBuilder, private groupApi: GroupService, private rightGroupPageApi: RightGroupPageService, private uploadApi: UploadService, private date: DatePipe, private generic: GenericModule, private dialog: MatDialog) { 
+      this.Reponse_getUserById = new Observable<Api>();
+      this.Reponse_getUserById_initial = new Observable<Api>();
+      this.Reponse_getUserById_form = new Observable<Api>();
+      this.Reponse_getRightGroupPageList = new Observable<Api>();
+      this.Reponse_getGroupList = new Observable<Api>();
+
       this._currentUser = new User(null);
       this._RightEdit = false;
       this._ChangeRightPage = false;
-      this.RightGroupPageList = null;
-      this.GroupList = null;
+      this.RightGroupPageList = new RightGroupPage(null)[2];
+      this.GroupList = new Group(null)[2];
       this.SelectedUserManagementForm = this.fb.group({
         'id': null, 'statut': null, 'login' : null, 'password' : null, 'profile': null, 'date_signIn' : null, 'time_signIn' : null,
         'date_logIn' : null, 'time_logIn' : null, 'group' : null, 'gameTag' : null, 'name' : null, 'firstName' : null,
@@ -85,9 +86,10 @@ export class SelectedUserManagementComponent implements OnInit {
       this.MsgGroupPerso = null;
       this.PlaceHolder = new User(null);
       this.one = false;
+      this.canChangeLogin = true;
     }
 
-  openDialog() {
+  private openDialog(): void {
     const dialogRef = this.dialog.open(DeleteUserPopup);
 
     dialogRef.afterClosed().subscribe(result => {
@@ -96,7 +98,7 @@ export class SelectedUserManagementComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void { 
+  public ngOnInit(): void { 
     // Initialisation de la page
     this.app.ngOnInit();
     this.Reponse_getUserById = this.app.Reponse_getUserById;
@@ -120,7 +122,7 @@ export class SelectedUserManagementComponent implements OnInit {
       document.getElementById("footer").style.marginBottom = this.EditBar.nativeElement.offsetHeight - 6 + "px";
   }
 
-  public verifRight(rightGroupPage: RightGroupPage) {
+  private verifRight(rightGroupPage: RightGroupPage): void {
     if(!rightGroupPage.SelectedUserManagement_Access) {
       console.log("Vous n'avez pas la permission d'accedez à la page de Gestion de cette utilisateur");
       this.router.navigate(['/Accueil']);
@@ -264,7 +266,7 @@ export class SelectedUserManagementComponent implements OnInit {
   }
 
   // Permet de changer la valeur du groupe de l'utilisateur par celui séléctionné (change l'object)
-  public setGroupSelected(id: any, value: any): void {
+  private setGroupSelected(id: any, value: any): void {
     // Permet de déplier la liste avec les different droit par page
     this._RightEdit = true;
 
@@ -337,14 +339,14 @@ export class SelectedUserManagementComponent implements OnInit {
       rightGroupPage.id = this.initial_user.group.rightGroupPage.id;
 
       // On definit le group de droit de page de l'utilisateur par celui que l'on vient de créer et modifier
-      this.user.group.rightGroupPage = this.generic.setRightSelected(value, element, rightGroupPage);
+      // this.user.group.rightGroupPage = this.generic.setRightSelected(value, element, rightGroupPage);
   
       // Initialisation des données à afficher dans le formulaire
       this.initData();  
     }
   }
 
-  public initData(): void {
+  private initData(): void {
     this.Reponse_getUserById_form.subscribe((data: Api) => {
       if(this.user.login === "") { this.user.login = null }
       if(this.user.password === "") { this.user.password = null }
@@ -421,8 +423,11 @@ export class SelectedUserManagementComponent implements OnInit {
       }
 
       // On Bloque la modification du groupe et du login pour l'utilisateur par defaut
-      if(Number(this.route.snapshot.paramMap.get('id')) === 1)
+      if(Number(this.route.snapshot.paramMap.get('id')) === 1) {
+        this.SelectedUserManagementForm.get('login').disable();
         this.SelectedUserManagementForm.get('rightGroupPage').disable();
+        this.canChangeLogin = false;
+      }
     })
 
     if(!this._currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser) {
@@ -449,11 +454,11 @@ export class SelectedUserManagementComponent implements OnInit {
       this.SelectedUserManagementForm.get('group').disable();
   }
 
-  public ChangeRightEdit(): void {
+  private ChangeRightEdit(): void {
     this._RightEdit = !(this._RightEdit);
   }
 
-  public editUse(post: any): void {
+  public editUser(post: any): void {
     this.Reponse_getUserById_initial.subscribe((data: Api) => {
       var same: boolean = false;
 
@@ -578,7 +583,7 @@ export class SelectedUserManagementComponent implements OnInit {
     })
   }
 
-  public DeleteUser(): void {
+  private DeleteUser(): void {
     if(this._currentUser.group.rightGroupPage.SelectedUserManagement_DeleteUser && Number(this.route.snapshot.paramMap.get('id')) !== 1 && this.route.snapshot.paramMap.get('id') !== "New") {
       this.userApi.deleteUser(this.user.id);
 
@@ -589,7 +594,7 @@ export class SelectedUserManagementComponent implements OnInit {
       console.log("Vous n'avez pas la permission de supprimer cette utilisateurs");
   }
 
-  public imageChangeClick(event, value): void {
+  private imageChangeClick(event, value): void {
     if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditUser) {
       // On Met dans l'object user les données que l'on a deja rentré
       value.date_time_logIn = this.date.transform(value.date_logIn, 'yyyy-MM-dd') + " " + value.time_logIn;
@@ -622,7 +627,7 @@ export class SelectedUserManagementComponent implements OnInit {
       console.log("Vous n'avez pas la permission de modifier l'image de profile de cette utilisateur");
   }
 
-  public newImage(ok: any, name: string): void {
+  private newImage(ok: any, name: string): void {
     if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditUser) {
       if(ok.ok)
         this.user.profile = "https://dev.kevin-c.fr/uploads/" + name;
@@ -631,7 +636,7 @@ export class SelectedUserManagementComponent implements OnInit {
       console.log("Vous n'avez pas la permission de modifier l'image de profile de cette utilisateur");
   }
 
-  public imageChangeDrag(event, value): void {
+  private imageChangeDrag(event, value): void {
     if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditUser) {
       // On Met dans l'object user les données que l'on a deja rentré
       value.date_time_logIn = this.date.transform(value.date_logIn, 'yyyy-MM-dd') + " " + value.time_logIn;

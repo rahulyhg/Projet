@@ -17,11 +17,11 @@ export class SettingsComponent implements OnInit {
   public _currentUser: User;
 
   constructor(private app:AppComponent, private router: Router) {
-    this.Reponse_getUserById = null;
+    this.Reponse_getUserById = new Observable<Api>();
     this._currentUser = new User(null);
   }
 
-  ngOnInit(): void { 
+  public ngOnInit(): void { 
     this.app.ngOnInit();
     this.Reponse_getUserById = this.app.Reponse_getUserById;
 

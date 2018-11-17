@@ -7,7 +7,6 @@ import { AppComponent } from '../app.component';
 
 import { Api } from '../Class/Api';
 import { User } from '../Class/User';
-import { Group } from '../Class/Group';
 
 import { UserService } from '../Services/user.service';
   
@@ -15,30 +14,23 @@ import { UserService } from '../Services/user.service';
   templateUrl: './login.component.html'
 })
 export class LoginComponent implements OnInit {
-  public Reponse_getUserById: Observable<Api>;
+  private Reponse_getUserById: Observable<Api>;
   private Reponse_Aut: Observable<Api>;
 
   public _currentUser: User;
   private LoginForm : FormGroup;
-  private post: any;
-  private ErrorMsg: string;
   private statut_requete: boolean;
 
   constructor(private fb: FormBuilder, private userApi: UserService, private app:AppComponent, private router: Router) { 
-    this.Reponse_getUserById = null;
-    this.Reponse_Aut = null;
+    this.Reponse_getUserById = new Observable<Api>();
+    this.Reponse_Aut = new Observable<Api>();
 
     this._currentUser = new User(null);
-    this.LoginForm = fb.group({
-      'login': '',
-      'password': ''
-    });
-    this.post = null;
-    this.ErrorMsg = null;
+    this.LoginForm = fb.group({'login': '', 'password': ''});
     this.statut_requete = false;
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.app.ngOnInit();
     this.Reponse_getUserById = this.app.Reponse_getUserById;
 

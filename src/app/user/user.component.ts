@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { Observable } from 'rxjs';
+
 import { FileSystemFileEntry } from '../../../node_modules/ngx-file-drop';
 
 import { GenericModule } from '../generic/generic.modules';
@@ -18,43 +19,41 @@ import { UploadService } from '../Services/uploads.service';
   templateUrl: './user.component.html'
 })
 export class UserComponent implements OnInit {
-  @ViewChild('EditBar') public EditBar: ElementRef;
+  @ViewChild('EditBar') private EditBar: ElementRef;
 
-  public Reponse_getUserById: Observable<Api>;
-  public Reponse_getUserById_form: Observable<Api>;
-  public Reponse_getUserById_initial: Observable<Api>;
+  private Reponse_getUserById: Observable<Api>;
+  private Reponse_getUserById_form: Observable<Api>;
+  private Reponse_getUserById_initial: Observable<Api>;
 
   public UserForm: FormGroup;
-  public initial_User: User;
-  public _currentUser: User;
-  public user: User;
-  public one: string;
+  private initial_User: User;
+  private _currentUser: User;
+  private user: User;
+  private one: string;
   public canEdit: boolean;
-
   public edit: boolean;
 
-  constructor(public app:AppComponent, public router: Router, public userApi: UserService, public route: ActivatedRoute, 
-    public fb: FormBuilder, public uploadApi: UploadService, public generic: GenericModule) { 
-    this.Reponse_getUserById = null;
-    this.Reponse_getUserById_form = null;
-    this.Reponse_getUserById_initial = null;
+  constructor(private app: AppComponent, private router: Router, private userApi: UserService, private route: ActivatedRoute, private fb: FormBuilder, private uploadApi: UploadService, private generic: GenericModule) { 
+    this.Reponse_getUserById = new Observable<Api>();
+    this.Reponse_getUserById_form = new Observable<Api>();
+    this.Reponse_getUserById_initial = new Observable<Api>();
 
+    this.UserForm = this.fb.group({
+      'id': null, 'statut': null, 'login' : null, 'password' : null, 'profile': null, 'date_signIn' : null, 'time_signIn' : null,
+      'date_logIn' : null, 'time_logIn' : null, 'gameTag' : null, 'name' : null, 'firstName' : null,
+      'birthDate' : null});
+    this.initial_User = new User(null);
     this._currentUser = new User(null);
     this.user = new User(null);
     this.one = null;
     this.canEdit = false;
     this.edit = false;
-    this.initial_User = new User(null);
-    this.UserForm = this.fb.group({
-      'id': null, 'statut': null, 'login' : null, 'password' : null, 'profile': null, 'date_signIn' : null, 'time_signIn' : null,
-        'date_logIn' : null, 'time_logIn' : null, 'gameTag' : null, 'name' : null, 'firstName' : null,
-        'birthDate' : null});
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.router.events.subscribe((path: any) => {
       if(path.url !== undefined && path.url !== this.one && path.url.split("/")[1] === "User") {
-        this.one = path.url
+        this.one = path.url;
         this.ngOnInit();
       }
     });
@@ -85,7 +84,7 @@ export class UserComponent implements OnInit {
       document.getElementById("footer").style.marginBottom = this.EditBar.nativeElement.offsetHeight - 6 + "px";
   }
 
-  public verifRight(user: User) {
+  private verifRight(user: User): void {
     if(this.router.url !== "/User/MonCompte")
       this.Reponse_getUserById_form = this.userApi.getUserById(Number(this.route.snapshot.paramMap.get('id')));
     else
@@ -107,7 +106,7 @@ export class UserComponent implements OnInit {
     })
   }
 
-  public initData(): void {
+  private initData(): void {
     this.Reponse_getUserById_form.subscribe((data: Api) => {
       this.UserForm = this.fb.group({
         'id': this.user.id,
@@ -140,7 +139,7 @@ export class UserComponent implements OnInit {
     })
   }
 
-  public imageChangeClick(event, value): void {
+  private imageChangeClick(event, value): void {
     if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditUser) {
       this.user = new User(value);
 
@@ -155,7 +154,7 @@ export class UserComponent implements OnInit {
       console.log("Vous n'avez pas la permission de modifier l'image de profile de cette utilisateur");
   }
 
-  public newImage(ok: any, name: string): void {
+  private newImage(ok: any, name: string): void {
     if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditUser) {
       if(ok.ok)
         this.user.profile = "https://dev.kevin-c.fr/uploads/" + name;
@@ -164,7 +163,7 @@ export class UserComponent implements OnInit {
       console.log("Vous n'avez pas la permission de modifier l'image de profile de cette utilisateur");
   }
 
-  public imageChangeDrag(event, value): void {
+  private imageChangeDrag(event, value): void {
     if(this._currentUser.group.rightGroupPage.SelectedUserManagement_EditUser) {
       // On Met dans l'object user les données que l'on a deja rentré
       this.user = new User(value);

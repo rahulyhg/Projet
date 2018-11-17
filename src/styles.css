@@ -22,6 +22,18 @@ html {
     left: 0;
     right: 0;
     top: 0;
+    transition: 0.15s;
+    overflow: hidden; /* Load */
+}
+
+#page_content {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  transition: 0.15s;
+  filter: blur(40px); /* Load */
 }
 
 a:-webkit-any-link {
@@ -31,7 +43,6 @@ a:-webkit-any-link {
 #page_nav,
 #page_header {
   border-left: none;
-  background-color: white;
 }
 
 #page_nav {
