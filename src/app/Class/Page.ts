@@ -16,7 +16,7 @@ export class Page {
     this.favicon = this.setFormatString(value.favicon, value, "assets/uploads/favicon/favicon.ico");
     this.refresh = this.setFormatNumber(value.refresh, value, 10000);
     this.route = this.setFormatString(value.route, value, "default");
-    this.needLogIn = this.setFormatBoolean(value.needLogIn, value, true);
+    this.needLogIn = this.setFormatBoolean(value.needLogIn, value, false);
   }
 
   private setFormatNumber(attirb: any, value: any, defaut: any): number {

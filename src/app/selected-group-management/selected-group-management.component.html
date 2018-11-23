@@ -1,11 +1,14 @@
 <!-- <div *ngIf="_currentUser.group.rightGroupPage.SelectedGroupManagement_Access"> -->
     <form [formGroup]="SelectedGroupManagementForm" (ngSubmit)="editGroup(SelectedGroupManagementForm.value)" class="example-form" style="display: inline-block;">
         <mat-form-field class="example-form-field">
-            <input matInput (keyup)="NameChange($event.target.value)" formControlName="name" placeholder="Name" #name>
-            <mat-icon *ngIf="name.value && canChangeName" mat-button matSuffix mat-icon-button (click)="name.value = ''">close</mat-icon>
+            <input matInput maxlength="{{setting.maxLengthGroupName}}" formControlName="name" placeholder="Nom du groupe" (keyup)="NameChange($event.target.value)" #name>
+            <mat-icon *ngIf="name.value && canChangeName" mat-button matSuffix mat-icon-button (click)="NameChange('default')">close</mat-icon>
+            <mat-hint *ngIf="name.value.length >= setting.minLengthGroupName" align="start">Limite de caractères pour le nom du groupe</mat-hint>
+            <mat-hint align="end">{{ name.value.length }} / {{setting.maxLengthGroupName}}</mat-hint>
+            <mat-hint style="color: red !important;" *ngIf="name.value.length < setting.minLengthGroupName" align="start">Nom de groupe trop court</mat-hint>
         </mat-form-field>
 
-        <div class="RightEdit">
+        <div class="RightEdit" style="margin-top: 20px;">
             <li>(La modification des droits de cette utilisateur va créer un group + un group de droit pour cette utilisateurs uniquement)</li>
 
             <mat-form-field style="margin-top: 10px !important;">
@@ -174,8 +177,8 @@
         <div class="EditBar" #EditBar>
             <button class="boutton_n" *ngIf="_currentUser.group.rightGroupPage.SelectedGroupManagement_DeleteGroup" mat-raised-button (click)="openDialog()" type="button" color="warn">Supprimer le groupe</button>
             <button class="boutton_m" *ngIf="_currentUser.group.rightGroupPage.SelectedGroupManagement_DeleteGroup" mat-raised-button (click)="openDialog()" type="button" color="warn" style="margin-left: 2%; float: left;"><i class="fas fa-trash-alt"></i></button>
-            <button class="boutton_n" style="margin-left: 20px !important;" *ngIf="_currentUser.group.rightGroupPage.SelectedGroupManagement_EditGroup" mat-raised-button type="submit" color="primary">Valider les modifications</button>
-            <button class="boutton_m" *ngIf="_currentUser.group.rightGroupPage.SelectedGroupManagement_EditGroup" mat-raised-button type="submit" color="primary" style="margin-left: 2%; float: left;"><i class="fas fa-user-check"></i></button>
+            <button class="boutton_n" style="margin-left: 20px !important;" *ngIf="_currentUser.group.rightGroupPage.SelectedGroupManagement_EditGroup" mat-raised-button type="submit" color="primary" [disabled]="statutButton">Valider les modifications</button>
+            <button class="boutton_m" *ngIf="_currentUser.group.rightGroupPage.SelectedGroupManagement_EditGroup" mat-raised-button type="submit" color="primary" style="margin-left: 2%; float: left;" [disabled]="statutButton"><i class="fas fa-user-check"></i></button>
         </div>
     </form>
 <!-- </div>  -->

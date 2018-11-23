@@ -15,6 +15,7 @@ import { RightGroupPage } from '../Class/RightGroupPage';
 
 import { GroupService } from '../Services/group.service';
 import { RightGroupPageService } from '../Services/RightGroupPage.service';
+import { Setting } from '../Class/Setting';
 
 @Component({
   templateUrl: './selected-group-management.component.html'
@@ -23,7 +24,7 @@ export class SelectedGroupManagementComponent implements OnInit {
   @ViewChild('name') private name: ElementRef;
   @ViewChild('EditBar') private EditBar: ElementRef;
   
-  private Reponse_getUserById: Observable<Api>;
+  private Reponse_getUserById: Observable<Object>;
   private Reponse_getGroupById_form: Observable<Object>;
   private Reponse_getGroupById_initial: Observable<Object>;
   private Reponse_getRightGroupPageList: Observable<Object>;
@@ -36,12 +37,15 @@ export class SelectedGroupManagementComponent implements OnInit {
   private one: boolean;
   public canChangeName: boolean;
   public MsgTemplate: string;
+  public statutButton: boolean;
+  public setting: Setting;
+  private try: number;
 
   constructor(private route: ActivatedRoute, private app: AppComponent, private router: Router, private fb: FormBuilder, private groupApi: GroupService, private rightGroupPageApi: RightGroupPageService, private generic: GenericModule, private dialog: MatDialog) { 
-    this.Reponse_getUserById = new Observable<Api>();
-    this.Reponse_getGroupById_form = new Observable<Api>();
-    this.Reponse_getGroupById_initial = new Observable<Api>();
-    this.Reponse_getRightGroupPageList = new Observable<Api>();
+    this.Reponse_getUserById = new Observable<Object>();
+    this.Reponse_getGroupById_form = new Observable<Object>();
+    this.Reponse_getGroupById_initial = new Observable<Object>();
+    this.Reponse_getRightGroupPageList = new Observable<Object>();
 
     this._currentUser = new User(null);
     this.RightGroupPageList = new RightGroupPage(null)[2];
@@ -61,6 +65,9 @@ export class SelectedGroupManagementComponent implements OnInit {
     this.one = false;
     this.canChangeName = true;
     this.MsgTemplate = null;
+    this.statutButton = false;
+    this.setting = new Setting(null);
+    this.try = 0;
   }
 
   // Affichage du popup lors de la suppression du groupe
@@ -74,164 +81,184 @@ export class SelectedGroupManagementComponent implements OnInit {
   }
 
   // Initialisation de la page
-  public ngOnInit(): void { 
+  public ngOnInit(): void {
     // Initialisation de la page
     this.app.ngOnInit();
+
+    var statut: boolean = false;
+    var a = setInterval(() => {
+      if(!statut) {
+        if(this.app.statut) {
+          statut = true;
+          clearInterval(a);
+          this.Init();
+        }
+      }
+    }, 1);
+  }
+
+  private Init(): void {
+    this.setting = this.app.setting;
+
     this.Reponse_getUserById = this.app.Reponse_getUserById;
 
     var statut_Reponse_getRightGroupPageList: boolean = false;
     var statut_Reponse_getGroupById_form: boolean = false;
+    var statut_Reponse_getUserById: boolean = false;
 
-    // Adaptation du DOOM (footer) car il y a la bar d'edition
-    if(this.EditBar.nativeElement !== null)
-      document.getElementById("footer").style.marginBottom = this.EditBar.nativeElement.offsetHeight - 6 + "px";
-
-    this.Reponse_getUserById.subscribe((data: Api) => {
-      // récupération de l'utilisateur connécté
-      this._currentUser = data.data;
-      
-      // Vérification des droits de l'utilisateur pour acceder a cette page
-      if(!this._currentUser.group.rightGroupPage.SelectedGroupManagement_Access) {
-        console.log("Vous n'avez pas la permission d'accedez à la page de Gestion de ce groupe");
-        this.router.navigate(['/Accueil']);
+    this.Reponse_getUserById = this.app.Reponse_getUserById;
+    this.Reponse_getUserById.subscribe((events: Response) => {
+      if(event && events.body !== undefined) {
+        var data: any = events.body;
+        var data_r: User = null;
+        data_r = this.generic.createUser(data.data);
+        if(data_r !== null) {
+          this._currentUser = data_r;
+          statut_Reponse_getUserById = true;
+        }
       }
-      
-      // Vérification des droits de l'utilisateur pour ajouter un groupe
-      if(!this._currentUser.group.rightGroupPage.GroupManagement_AddGroup && this.route.snapshot.paramMap.get('id') === "New") {
-        console.log("Vous n'avez pas la permission de creer de nouveau groupe");
-        this.router.navigate(['/Accueil']);
-      }
-      
-      // Vérification des droits de l'utilisateur pour modifier le groupe par defaut
-      if(!this._currentUser.group.rightGroupPage.GroupManagement_EditDefaultGroup && Number(this.route.snapshot.paramMap.get('id')) === 1) {
-        console.log("Vous n'avez pas la permission de modifier le groupe par defaut");
-        this.router.navigate(['/Accueil']);
-      }
-
-      // Désactivation des slides pour modifier les droit si l'utilisateur n'as pas les droit de les modifier
-      if(!this._currentUser.group.rightGroupPage.SelectedGroupManagement_EditRightPage) {
-        this.SelectedGroupManagementForm.disable();
-        this.SelectedGroupManagementForm.get('name').enable();
-      }
-
-      // Désactivation du formulaire si l'utilisateur n'as pas les droit de modifier le groupe
-      if(!this._currentUser.group.rightGroupPage.SelectedGroupManagement_EditGroup)
-        this.SelectedGroupManagementForm.disable();
     })
 
-    // Récupération des données du groupe que l'on veut éditer
     var id_group: string | number = this.route.snapshot.paramMap.get('id');
-    if(String(id_group) === "New" || Number(id_group) === 1)
-      this.Reponse_getGroupById_form = this.groupApi.getGroupById(1);
-    else
-      this.Reponse_getGroupById_form = this.groupApi.getGroupById(Number(id_group));
-    this.Reponse_getGroupById_initial = this.Reponse_getGroupById_form;
-    this.Reponse_getGroupById_form.subscribe((events: Response) => {
-      if(event && events.body !== undefined) {
-        var data: any = events.body;
-        var data_r: Group = null;
-        data_r = this.generic.createGroup(data.data);
-        if(data_r !== null) {
-          this.group = data_r;
-          statut_Reponse_getGroupById_form = true;
-        }
-      }
-    })
 
-    // On place dans un deuxième objet les valeurs initial du groupe
-    this.Reponse_getGroupById_initial.subscribe((events: Response) => {
-      if(event && events.body !== undefined) {
-        var data: any = events.body;
-        this.initial_group = this.generic.createGroup(data.data);
-      }
-    })
+    var b = setInterval(() => {
+      if(statut_Reponse_getUserById) {
+        clearInterval(b);
 
-    // Récupération de la liste des groupes de droit de page
-    this.Reponse_getRightGroupPageList = this.rightGroupPageApi.getRightGroupPageList();
-    this.Reponse_getRightGroupPageList.subscribe((events: Response) => {
-      if(event && events.body !== undefined && statut_Reponse_getGroupById_form) {
-        var data: any = events.body;
-        var list: RightGroupPage[] = [];
+        if(String(id_group) === "New" || Number(id_group) === 1)
+          this.Reponse_getGroupById_form = this.groupApi.getGroupById(1);
+        else
+          this.Reponse_getGroupById_form = this.groupApi.getGroupById(Number(id_group));
 
-        // Si le groupe que l'on veut modifier est un groupe personel, on modifie le nom du groupe de droit le le nom du groupe par 
-        // un nom plus joli et on enlève les autres groupe personel de la liste
-        for(var i: number = 0; i < data.data.length; i++) {
-          if(data.data[i].name.split('_')[1] === "user") {
-            if(String(id_group) !== "New") {
-              var id_user: number = Number(this.group.name.split('_')[2]);
-              if(Number(id_user) === Number(data.data[i].name.split('_')[2])) {
-                this.group.name = "Groupe personelle de l'utilisateur id: " + id_user;
-                data.data[i].name = this.group.name;
-                list.push(data.data[i]);
+        this.Reponse_getGroupById_initial = this.Reponse_getGroupById_form;
+        this.Reponse_getGroupById_form.subscribe((events: Response) => {
+          if(event && events.body !== undefined) {
+            var data: any = events.body;
+            if(data.data !== null) {
+              var data_r: Group = null;
+              data_r = this.generic.createGroup(data.data);
+              if(data_r !== null) {
+                this.group = data_r;
+                statut_Reponse_getGroupById_form = true;
               }
-            }
-          } else
-            list.push(data.data[i]);
-        }
-        var data_r: RightGroupPage[] = null;
-        data_r = this.generic.createRightGroupPageList(list);
-        if(data_r !== null) {
-          this.RightGroupPageList = data_r;
-          statut_Reponse_getRightGroupPageList = true;
-        }
-      }
-    })
-
-
-    this.Reponse_getUserById.subscribe((data: Api) => {
-      // Vérification de l'existence du groupe que l'on veux éditer
-      // if(this.group.id !== Number(id_group) && String(id_group) !== "New") {
-      //   console.log("Le group que vous tentez d'etiter n'existe pas");
-      //   this.router.navigate(['/GroupManagement']);
-      // }
-
-      // Modification du formulaire pour la création d'un nouveau groupe
-      if(String(id_group) === "New") {
-        // Si il s'agit de la création d'un groupe, on initialise le nom du groupe à NULL
-        this.group.name = null;
-
-        // On supprime également la possibilité de pouvoir supprimer le groupe
-        this._currentUser.group.rightGroupPage.SelectedGroupManagement_DeleteGroup = false;
-      }
-
-      // Modification pour la modification du groupe par defaut
-      if(Number(id_group) === 1) {
-        this.SelectedGroupManagementForm.get('RightGroupPage').disable(); // Désactive la liste déroulante des groupes de droit de page
-        this.canChangeName = false; // Désactive la croix dans le input pour empecher de vider le contenue du input
-
-        // On supprime également la possibilité de pouvoir supprimer le groupe
-        this._currentUser.group.rightGroupPage.SelectedGroupManagement_DeleteGroup = false;
-      }
-
-      // Modification pour la modification d'un groupe personel
-      if(this.initial_group.name.split('_').length !== 1) {
-        this.SelectedGroupManagementForm.get('RightGroupPage').disable(); // Désactive la liste déroulante des groupes de droit de page
-        this.canChangeName = false; // Désactive la croix dans le input pour empecher de vider le contenue du input
-      }
-
-      // On met le focus sur le nom du groupe l'or de l'ouverture de la page
-      if(!this.one) {
-        this.name.nativeElement.focus();
-        this.one = !(this.one);
-      }
-
-      // Modification du formulaire
-      this.SelectedGroupManagementForm.get('EditBar_Access').disable();
-      this.SelectedGroupManagementForm.get('Main_Access').disable();
-      this.SelectedGroupManagementForm.get('SelectedPageManagement_Access').disable();
-
-      // Initialisation des données à afficher dans le formulaire
-      var statut: boolean = false;
-      setInterval(() => {
-        if(statut_Reponse_getRightGroupPageList && statut_Reponse_getGroupById_form) {
-          if(!statut) {
-            statut = true;
-            this.initData();
-            // this.app.endInit();
+            } else
+              this.router.navigate(['/Accueil']);
           }
-        } 
-      }, 50);
-    })
+        })
+
+        // On place dans un deuxième objet les valeurs initial du groupe
+        this.Reponse_getGroupById_initial.subscribe((events: Response) => {
+          if(event && events.body !== undefined) {
+            var data: any = events.body;
+            this.initial_group = this.generic.createGroup(data.data);
+          }
+        })
+      }
+    }, 1);
+
+    var c = setInterval(() => {
+      if(statut_Reponse_getGroupById_form) {
+        clearInterval(c);
+
+        this.Reponse_getRightGroupPageList = this.rightGroupPageApi.getRightGroupPageList();
+        this.Reponse_getRightGroupPageList.subscribe((events: Response) => {
+          if(event && events.body !== undefined) {
+            var data: any = events.body;
+            var list: RightGroupPage[] = [];
+
+            // Si le groupe que l'on veut modifier est un groupe personel, on modifie le nom du groupe de droit le le nom du groupe par 
+            // un nom plus joli et on enlève les autres groupe personel de la liste
+            for(var i: number = 0; i < data.data.length; i++) {
+              if(data.data[i].name.split('_')[1] === "user") {
+                if(String(id_group) !== "New") {
+                  var id_user: number = Number(this.group.name.split('_')[2]);
+                  if(Number(id_user) === Number(data.data[i].name.split('_')[2])) {
+                    this.group.name = "Groupe personelle de l'utilisateur id: " + id_user;
+                    data.data[i].name = this.group.name;
+                    list.push(data.data[i]);
+                  }
+                }
+              } else
+                list.push(data.data[i]);
+            }
+            var data_r: RightGroupPage[] = null;
+            data_r = this.generic.createRightGroupPageList(list);
+            if(data_r !== null) {
+              this.RightGroupPageList = data_r;
+              statut_Reponse_getRightGroupPageList = true;
+            }
+          }
+        })        
+      }
+    }, 1);
+
+    var d = setInterval(() => {
+      if(statut_Reponse_getRightGroupPageList) {
+        clearInterval(d);
+        
+        this.Reponse_getUserById.subscribe((data: Api) => {
+          // Adaptation du DOOM (footer) car il y a la bar d'edition
+          if(this.EditBar.nativeElement !== null)
+            document.getElementById("footer").style.marginBottom = this.EditBar.nativeElement.offsetHeight - 6 + "px";
+  
+          // Vérification des droits de l'utilisateur pour acceder a cette page
+          if(!this._currentUser.group.rightGroupPage.SelectedGroupManagement_Access) {
+            console.log("Vous n'avez pas la permission d'accedez à la page de Gestion de ce groupe");
+            this.router.navigate(['/Accueil']);
+          }
+          
+          // Vérification des droits de l'utilisateur pour ajouter un groupe
+          if(!this._currentUser.group.rightGroupPage.GroupManagement_AddGroup && this.route.snapshot.paramMap.get('id') === "New") {
+            console.log("Vous n'avez pas la permission de creer de nouveau groupe");
+            this.router.navigate(['/Accueil']);
+          }
+          
+          // Vérification des droits de l'utilisateur pour modifier le groupe par defaut
+          if(!this._currentUser.group.rightGroupPage.GroupManagement_EditDefaultGroup && Number(this.route.snapshot.paramMap.get('id')) === 1) {
+            console.log("Vous n'avez pas la permission de modifier le groupe par defaut");
+            this.router.navigate(['/Accueil']);
+          }
+  
+          // Désactivation des slides pour modifier les droit si l'utilisateur n'as pas les droit de les modifier
+          if(!this._currentUser.group.rightGroupPage.SelectedGroupManagement_EditRightPage) {
+            this.SelectedGroupManagementForm.disable();
+            this.SelectedGroupManagementForm.get('name').enable();
+          }
+  
+          // Désactivation du formulaire si l'utilisateur n'as pas les droit de modifier le groupe
+          if(!this._currentUser.group.rightGroupPage.SelectedGroupManagement_EditGroup)
+            this.SelectedGroupManagementForm.disable();
+
+          // Modification du formulaire pour la création d'un nouveau groupe
+          if(String(id_group) === "New") {
+            // Si il s'agit de la création d'un groupe, on initialise le nom du groupe à NULL
+            this.group.name = null;
+
+            this.name.nativeElement.focus();
+
+            // On supprime également la possibilité de pouvoir supprimer le groupe
+            this._currentUser.group.rightGroupPage.SelectedGroupManagement_DeleteGroup = false;
+          }
+
+          if(Number(id_group) === 1)
+            this.canChangeName = false; // Désactive la croix dans le input pour empecher de vider le contenue du input
+
+          // Modification pour la modification d'un groupe personel
+          if(this.initial_group.name.split('_').length !== 1) {
+            this.SelectedGroupManagementForm.get('RightGroupPage').disable(); // Désactive la liste déroulante des groupes de droit de page
+            this.canChangeName = false; // Désactive la croix dans le input pour empecher de vider le contenue du input
+          }
+    
+          // Modification du formulaire
+          this.SelectedGroupManagementForm.get('EditBar_Access').disable();
+          this.SelectedGroupManagementForm.get('Main_Access').disable();
+          this.SelectedGroupManagementForm.get('SelectedPageManagement_Access').disable();
+
+          this.app.stopLoadingPage();
+          this.initData();
+        })
+      }
+    }, 1);
   }
 
   // Permet de changer la valeur du groupe de droit de page du group par celui séléctionné (change l'object)
@@ -344,6 +371,11 @@ export class SelectedGroupManagementComponent implements OnInit {
       this.group.rightGroupPage.name = "default";
     this.RightGroupPageList[initial_index].name = this.group.rightGroupPage.name;
     this.group.name = post;
+
+    if(this.group.name.length < this.setting.minLengthGroupName)
+      this.statutButton = true;
+    if(this.group.name.length >= this.setting.minLengthGroupName)
+      this.statutButton = false;
 
     // Initialisation des données à afficher dans le formulaire
     this.initData();
@@ -459,8 +491,8 @@ export class SelectedGroupManagementComponent implements OnInit {
     <p>Confirmez-vous la suppression ?</p>
   </mat-dialog-content>
   <mat-dialog-actions align="end">
-    <button mat-button mat-dialog-close>Cancel</button>
-    <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Supprimer</button>
+    <button mat-raised-button mat-dialog-close color="primary">Cancel</button>
+    <button mat-raised-button [mat-dialog-close]="true" cdkFocusInitial color="warn">Supprimer</button>
   </mat-dialog-actions>`
 })
 export class DeleteGroupPopup { }

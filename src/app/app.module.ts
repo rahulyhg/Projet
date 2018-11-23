@@ -23,12 +23,12 @@ import { AccueilComponent } from './accueil/accueil.component';
 import { DraggableModule } from './draggable/draggable.module';
 import { LoginComponent } from './login/login.component';
 import { UserManagementComponent } from './user-management/user-management.component';
-import { SelectedUserManagementComponent, DeleteUserPopup } from './selected-user-management/selected-user-management.component';
+import { SelectedUserManagementComponent, DeleteUserPopup, NewPasswordPopupUser } from './selected-user-management/selected-user-management.component';
 import { GroupManagementComponent } from './group-management/group-management.component';
 import { SelectedGroupManagementComponent, DeleteGroupPopup } from './selected-group-management/selected-group-management.component';
 import { HighlightDirective } from './Services/highlight.directive';
 import { SelectedPageManagementComponent } from './selected-page-management/selected-page-management.component';
-import { UserComponent } from './user/user.component';
+import { UserComponent, NewPasswordPopup } from './user/user.component';
 import { SettingsComponent } from './settings/settings.component';
 import { GenericModule } from './generic/generic.modules';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
@@ -54,6 +54,7 @@ const routes: Routes = [
     LoginComponent,
     UserManagementComponent,
     SelectedUserManagementComponent,
+    NewPasswordPopupUser,
     DeleteUserPopup,
     GroupManagementComponent,
     SelectedGroupManagementComponent,
@@ -61,6 +62,7 @@ const routes: Routes = [
     HighlightDirective,
     SelectedPageManagementComponent,
     UserComponent,
+    NewPasswordPopup,
     SettingsComponent,
     PageNotFoundComponent
   ],
@@ -97,6 +99,6 @@ const routes: Routes = [
   providers: [ DatePipe ],
   bootstrap: [ AppComponent ],
   exports: [ RouterModule ],
-  entryComponents: [DeleteUserPopup, DeleteGroupPopup]
+  entryComponents: [DeleteUserPopup, DeleteGroupPopup, NewPasswordPopup, NewPasswordPopupUser]
 })
 export class AppModule { }

@@ -1,18 +1,21 @@
-<div class="LoginForm_content" *ngIf="_currentUser.group.rightGroupPage.Login_Access">
-    <form [formGroup]="LoginForm" (ngSubmit)="logIn(LoginForm.value)" class="example-form" style="display: inline-block; width: 100%;">
+<!-- <div class="LoginForm_content" *ngIf="_currentUser.group.rightGroupPage.Login_Access"> -->
+<div class="LoginForm_content">
+    <form [formGroup]="LoginForm" (keyup.enter)="logIn(LoginForm.value)" class="example-form" style="display: inline-block; width: 100%;">
         <div> 
             <ul>
                 <mat-form-field class="example-form-field">
-                    <input matInput formControlName="login" placeholder="Login" #login>
-                    <mat-icon *ngIf="login.value" mat-button matSuffix mat-icon-button (click)="login.value = ''">close</mat-icon>
+                    <input matInput formControlName="login" placeholder="Login" (keyup)="InputChange('login', LoginForm.value)" #login>
+                    <mat-icon *ngIf="LoginForm.value.login" mat-button matSuffix mat-icon-button (click)="clearValue('login')">close</mat-icon>
+                    <mat-hint style="color: red !important;">{{ MsgLogin }}</mat-hint>
                 </mat-form-field>
 
-                <mat-form-field class="example-form-field">
-                    <input matInput type="password" formControlName="password" placeholder="Mot de passe" #password>
-                    <mat-icon *ngIf="password.value" mat-button matSuffix mat-icon-button (click)="password.value = ''">close</mat-icon>
+                <mat-form-field class="example-form-field" style="margin-top: 10px;">
+                    <input matInput type="password" formControlName="password" placeholder="Mot de passe" (keyup)="InputChange('password', LoginForm.value)">
+                    <mat-icon *ngIf="LoginForm.value.password" mat-button matSuffix mat-icon-button (click)="clearValue('password')">close</mat-icon>
+                    <mat-hint style="color: red !important;">{{ MsgPassword }}</mat-hint>
                 </mat-form-field>
 
-                <button class="boutton" style="width: 100%;" mat-raised-button type="submit" color="primary">S'identifier</button>
+                <button class="boutton" style="width: 100%; margin-top: 10px;" mat-flat-button (click)="logIn(LoginForm.value)" type="button" color="primary" [disabled]="statutButton">S'identifier</button>
             </ul>
         </div>
     </form>

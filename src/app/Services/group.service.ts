@@ -22,19 +22,10 @@ export class GroupService {
     return this.http.get(this.Api + id, { observe: 'events' });
   }
 
-  public getGroupList(): Observable<Api> {
+  public getGroupList(): Observable<HttpEvent<Object>> {
     console.log("GET / GROUP / getGroupList");
 
-    var reponse: Observable<Api> = this.http.get<Api>(this.Api).pipe(map((data: Api) => {
-      for(var i: number = 0; i < Number(data.data.length); i++) {
-        data.data[i] = new Group(data.data[i])
-        data.data[i].rightGroupPage = Object(new RightGroupPage(data.data[i].rightGroupPage))
-      }
-      return data
-    }));
-
-    this.InitReponse(reponse);
-    return reponse;
+    return this.http.get(this.Api, { observe: 'events' });
   }
 
   public putGroup(id: number, group: Group): Observable<HttpResponse<Object>> {

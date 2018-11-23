@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Md5 } from 'ts-md5/dist/md5';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpResponse, HttpEvent } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { map } from 'rxjs/operators';
+
+import { GenericModule } from '../generic/generic.modules';
 
 import { Api } from '../Class/Api';
 import { User } from '../Class/User';
@@ -16,102 +17,46 @@ import { Observable } from 'rxjs';
 export class UserService {
   private Api:string = environment.apiUrl + "User/";
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private generic: GenericModule) { }
 
-    // private Reponse_getUserById: Observable<Api>;
-    // private Reponse_Aut: Observable<Api>;
-    // private Reponse_getUserList: Observable<Api>;
-
-    // this.Reponse_getUserById = null;
-    // this.Reponse_Aut = null;
-    // this.Reponse_getUserList = null;
-
-    // this.Reponse_getUserById = this.userApi.getUserById(2);
-    // this.Reponse_getUserById.subscribe((data: Api) => {
-    //   this._currentUser = data.data
-    //   console.log(data)
-    // });
-
-    // this.Reponse_Aut = this.userApi.Auth("dev", "SlmgrRearm_1689");
-    // this.Reponse_Aut.subscribe((data: Api) => {
-    //   console.log(data)
-    // });
-
-    // this.Reponse_getUserList = this.userApi.getUserList();
-    // this.Reponse_getUserList.subscribe((data: Api) => {
-    //   console.log(data)
-    // });
-
-    //this.userApi.putUser(3, new User(null), false);
-    //this.userApi.deleteUser(11);
-    //this.userApi.postUser(new User(null));
-
-  public getUserById(id: number): Observable<Api> {
+  public getUserById(id: number): Observable<HttpEvent<Object>> {
     console.log("GET / USER / getUserById");
 
-    var reponse: Observable<Api> = this.http.get<Api>(this.Api + id).pipe(map((data: Api) => {
-      data.data = new User(data.data)
-      data.data.group = Object(new Group(data.data.group))
-      data.data.group.rightGroupPage = Object(new RightGroupPage(data.data.group.rightGroupPage))
-      return data
-    }));
-
-    this.InitReponse(reponse);
-    return reponse;
+    return this.http.get(this.Api + id, { observe: 'events' });
   }
 
-  public Auth(login: string, password: string): Observable<Api> {
+  public Auth(login: string, password: string): Observable<HttpEvent<Object>> {
     console.log("GET:AUTH / USER / AuthUser");
-    
-    var reponse: Observable<Api> = this.http.get<Api>(this.Api + "Auth/" + login + "/" + this.create_md5(password)).pipe(map((data: Api) => {
-      data.data = new User(data.data)
-      data.data.group = Object(new Group(data.data.group))
-      data.data.group.rightGroupPage = Object(new RightGroupPage(data.data.group.rightGroupPage))
-      return data
-    }));
 
-    this.InitReponse(reponse);
-    return reponse;
+    return this.http.get(this.Api + "Auth/" + login + "/" + this.generic.create_md5(password), { observe: 'events' });
   }
 
-  public getUserList(): Observable<Api> {
+  public getUserList(): Observable<HttpEvent<Object>> {
     console.log("GET / USER / getUserList");
 
-    var reponse: Observable<Api> = this.http.get<Api>(this.Api).pipe(map((data: Api) => {
-      for(var i: number = 0; i < Number(data.data.length); i++) {
-        data.data[i] = new User(data.data[i])
-        data.data[i].group = Object(new Group(data.data[i].group))
-        data.data[i].group.rightGroupPage = Object(new RightGroupPage(data.data[i].group.rightGroupPage))
-      }
-      return data
-    }));
-
-    this.InitReponse(reponse);
-    return reponse;
+    return this.http.get(this.Api, { observe: 'events' });
   }
 
   public putUser(id: number, user: User, regenerate_password: boolean): Observable<HttpResponse<Object>> {
     console.log("PUT / USER / putUser");
 
-    if(regenerate_password) { user.password = this.create_md5(user.password) }
+    if(regenerate_password) { user.password = String(this.generic.create_md5(user.password)) }
 
     return this.http.put(this.Api + id, user, { observe: 'response' });
   }
 
-  public deleteUser(id: number): void {
+  public deleteUser(id: number): Observable<HttpResponse<Object>> {
     console.log("DELETE / USER / deleteUser");
 
-    var reponse: Observable<Api> = this.http.delete<Api>(this.Api + id);
-    this.InitReponse(reponse);
+    return this.http.delete(this.Api + id, { observe: 'response' });
   }
 
-  public postUser(user: User): void {
+  public postUser(user: User): Observable<HttpResponse<Object>> {
     console.log("POST / USER / postUser");
 
-    user.password = this.create_md5(user.password);
+    user.password = String(this.generic.create_md5(user.password));
 
-    var reponse: Observable<Api> = this.http.post<Api>(this.Api, user);
-    this.InitReponse(reponse);
+    return this.http.post(this.Api, user, { observe: 'response' });
   }
 
   private InitReponse(value: Observable<Api>): void {
@@ -129,10 +74,5 @@ export class UserService {
       } else
         console.log("Error: Api false");
     })
-  }
-
-  private create_md5(attrib: string): any {
-    const md5 = new Md5();
-    return md5.appendStr(attrib).end();
   }
 }

@@ -1,283 +1,293 @@
-<!-- <div *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_Access"> -->
-    <form [formGroup]="SelectedUserManagementForm" (ngSubmit)="editUser(SelectedUserManagementForm.value)" class="example-form" style="display: inline-block;">
-        <div *ngIf="!_currentUser.group.rightGroupPage.SelectedUserManagement_EditUser">
-            <div class="profile">
-                <img src="{{ user.profile }}">
-            </div>
-            <div class="Account_content">
-                <ul>
-                    <li>Login : {{ user.login }}</li>
-                    <li *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_ViewPassword">Mot de passe : {{ user.password }}</li>
-                    <li>Group : {{ user.group.name }}</li>
-                    <li>Statut de connexion : {{ user.statut }}</li>
-                    <li>Date de dernière connexion : {{ user.date_time_logIn }}</li>
-                    <li>Datse d'Inscription : {{ user.date_time_signIn }}</li>
-                    <li>Game Tag : {{ user.gameTag }}</li>
-                    <li>Name : {{ user.name }}</li>
-                    <li>FirstName : {{ user.firstName }}</li>
-                    <li>BirthDate : {{ user.birthDate }}</li>
-                </ul>
-            </div>
+<form [formGroup]="SelectedUserManagementForm" (ngSubmit)="editUser(SelectedUserManagementForm.value)" class="example-form" style="display: inline-block;">
+    <div *ngIf="!_currentUser.group.rightGroupPage.SelectedUserManagement_EditUser">
+        <div class="profile">
+            <img src="{{ user.profile }}">
         </div>
-        <div *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_EditUser">
-            <div class="profile">
-                <input style="display: none" type="file" (change)="imageChangeClick($event, SelectedUserManagementForm.value)" #File>
-                <file-drop (onFileDrop)="imageChangeDrag($event, SelectedUserManagementForm.value)" (click)="File.click()">
-                    <img src="{{ user.profile }}" appHighlight>
-                </file-drop>
-            </div>
-            <div class="Account_content">
-                <ul>
-                    <mat-form-field class="example-form-field">
-                        <input matInput formControlName="login" placeholder="Login" #login>
-                        <mat-icon *ngIf="login.value && canChangeLogin" mat-button matSuffix mat-icon-button (click)="login.value = ''">close</mat-icon>
-                    </mat-form-field>
-
-                    <mat-form-field class="example-form-field" *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_ViewPassword">
-                        <input matInput formControlName="password" placeholder="Mot de passe">
-                        <mat-icon *ngIf="SelectedUserManagementForm.value.password" mat-button matSuffix mat-icon-button (click)="SelectedUserManagementForm.value.password = ''; user.password = ''; initData()" >close</mat-icon>
-                        <!-- <mat-icon *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_ShowPasswordButton" matSuffix (click)="showPassword()">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon> -->
-                    </mat-form-field>
-                    
-                    <mat-form-field class="example-form-field">
-                        <mat-select *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser" placeholder="Groupe" formControlName="group" (selectionChange)="setGroupSelected($event.value, SelectedUserManagementForm.value)">
-                            <mat-option *ngFor="let group of GroupList" [value]="group">{{ group.name}}</mat-option>
-                        </mat-select>
-                        <mat-hint style="color: red;">{{ MsgGroupDelete }}</mat-hint>
-                        <mat-select *ngIf="!_currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser" placeholder="{{ user.group.name }}" formControlName="group" (selectionChange)="setGroupSelected($event.value, SelectedUserManagementForm.value)">
-                            <mat-option [value]="user.group">{{ user.group.name }}</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                    <mat-chip-list>
-                        <mat-chip *ngIf="_currentUser.group.rightGroupPage.SelectedGroupManagement_Access" (click)="showPassword()" routerLink="/GroupManagement/{{ user.group.id }}" selected>{{ MsgGroupPerso }}</mat-chip>
-                    </mat-chip-list>
-
-                    <mat-slide-toggle style="margin-bottom: 20px; margin-top: 20px;" formControlName="statut" color="primary" [checked]="user.statut"> Statut de connexion </mat-slide-toggle>
-
-                    <br />
-                    
-                    <mat-form-field style="width: 50%">
-                        <input matInput [matDatepicker]="picker1" placeholder="Date de dernière connexion" formControlName="date_logIn">
-                        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-                        <mat-datepicker touchUi #picker1></mat-datepicker>
-                    </mat-form-field>
-
-                    <mat-form-field style="width: 50%">
-                        <input matInput type="time" placeholder="Heure de dernière connexion" atp-time-picker formControlName="time_logIn"/>
-                    </mat-form-field>
-
-                    <mat-form-field style="width: 50%">
-                        <input matInput [matDatepicker]="picker2" placeholder="Date d'Inscription" formControlName="date_signIn">
-                        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-                        <mat-datepicker touchUi #picker2></mat-datepicker>
-                    </mat-form-field>
-
-                    <mat-form-field style="width: 50%">
-                        <input matInput type="time" placeholder="Heure d'Inscription" atp-time-picker formControlName="time_signIn"/>
-                    </mat-form-field>
-
-                    <mat-form-field class="example-form-field">
-                        <input matInput formControlName="gameTag" placeholder="Game Tag" #gameTag>
-                        <mat-icon *ngIf="gameTag.value" mat-button matSuffix mat-icon-button (click)="gameTag.value = ''">close</mat-icon>
-                    </mat-form-field>
-
-                    <mat-form-field class="example-form-field">
-                        <input matInput formControlName="name" placeholder="name" #name>
-                        <mat-icon *ngIf="name.value" mat-button matSuffix mat-icon-button (click)="name.value = ''">close</mat-icon>
-                    </mat-form-field>
-
-                    <mat-form-field class="example-form-field">
-                        <input matInput formControlName="firstName" placeholder="firstName" #firstName>
-                        <mat-icon *ngIf="firstName.value" mat-button matSuffix mat-icon-button (click)="firstName.value = ''">close</mat-icon>
-                    </mat-form-field>
-
-                    <mat-form-field style="width: 100%">
-                        <input matInput [matDatepicker]="picker3" placeholder="Date d'anniversaire" formControlName="birthDate">
-                        <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
-                        <mat-datepicker touchUi #picker3></mat-datepicker>
-                    </mat-form-field>
-                </ul>
-            </div>
+        <div class="Account_content">
+            <ul>
+                <li>Login : {{ user.login }}</li>
+                <li *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_ViewPassword">Mot de passe : {{ user.password }}</li>
+                <li>Group : {{ user.group.name }}</li>
+                <li>Statut de connexion : {{ user.statut }}</li>
+                <li>Date de dernière connexion : {{ user.date_time_logIn }}</li>
+                <li>Datse d'Inscription : {{ user.date_time_signIn }}</li>
+                <li>Game Tag : {{ user.gameTag }}</li>
+                <li>Name : {{ user.name }}</li>
+                <li>FirstName : {{ user.firstName }}</li>
+                <li>BirthDate : {{ user.birthDate }}</li>
+            </ul>
         </div>
+    </div>
+    <div *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_EditUser">
+        <div class="profile">
+            <input style="display: none" type="file" (change)="imageChangeClick($event, SelectedUserManagementForm.value)" #File>
+            <file-drop (onFileDrop)="imageChangeDrag($event, UserForm.value)" (click)="File.click()">
+                <img id="profile" src="{{ user.profile }}" appHighlight>
+                <span id="drop_content">Cliquez ou glicer un fichier</span>
+            </file-drop>
+        </div>
+        <div class="Account_content">
+            <ul>
+                <mat-form-field class="example-form-field">
+                    <input matInput maxlength="{{setting.maxLengthLogin}}" formControlName="login" placeholder="Login" (keyup)="InputChange(SelectedUserManagementForm.value)" #login>
+                    <mat-icon *ngIf="login.value && canChangeLogin" mat-button matSuffix mat-icon-button (click)="clearValue('login')">close</mat-icon>
+                    <mat-hint *ngIf="login.value.length >= setting.minLengthLogin" align="start">Limite de caractères pour le login</mat-hint>
+                    <mat-hint align="end">{{ login.value.length }} / {{setting.maxLengthLogin}}</mat-hint>
+                    <mat-hint style="color: red !important;" *ngIf="login.value.length < setting.minLengthLogin" align="start">Login trop court</mat-hint>
+                </mat-form-field>
 
-        <div class="RightEdit">
-            <mat-accordion>
-                <mat-expansion-panel [expanded]="_RightEdit"> 
+                <button style="margin-top: 10px;" mat-raised-button (click)="ChangePassword()" type="button" color="primary">Créer un nouveau mot de passe</button>
+
+                <input formControlName="password" style="display: none !important;">
+                
+                <mat-form-field class="example-form-field" style="margin-top: 10px;">
+                    <mat-select *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser" placeholder="Groupe" formControlName="group" (selectionChange)="setGroupSelected($event.value, SelectedUserManagementForm.value)">
+                        <mat-option *ngFor="let group of GroupList" [value]="group">{{ group.name}}</mat-option>
+                    </mat-select>
+                    <mat-hint style="color: red;">{{ MsgGroupDelete }}</mat-hint>
+                    <mat-select *ngIf="!_currentUser.group.rightGroupPage.SelectedUserManagement_EditRightGroupPageUser" placeholder="{{ user.group.name }}" formControlName="group" (selectionChange)="setGroupSelected($event.value, SelectedUserManagementForm.value)">
+                        <mat-option [value]="user.group">{{ user.group.name }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <button *ngIf="_currentUser.group.rightGroupPage.SelectedGroupManagement_Access" style="margin-top: 10px;" mat-raised-button type="button" color="primary" routerLink="/GroupManagement/{{ user.group.id }}" selected>{{ MsgGroupPerso }}</button>
+
+                <br />
+                <mat-slide-toggle style="margin-bottom: 20px; margin-top: 20px;" formControlName="statut" color="primary" [checked]="user.statut"> Statut de connexion </mat-slide-toggle>
+                <br />
+                
+                <mat-form-field style="width: 50%">
+                    <input matInput [matDatepicker]="picker1" placeholder="Date de dernière connexion" formControlName="date_logIn">
+                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                    <mat-datepicker touchUi #picker1></mat-datepicker>
+                </mat-form-field>
+
+                <mat-form-field style="width: 50%">
+                    <input matInput type="time" placeholder="Heure de dernière connexion" atp-time-picker formControlName="time_logIn"/>
+                </mat-form-field>
+
+                <mat-form-field style="width: 50%">
+                    <input matInput [matDatepicker]="picker2" placeholder="Date d'Inscription" formControlName="date_signIn">
+                    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                    <mat-datepicker touchUi #picker2></mat-datepicker>
+                </mat-form-field>
+
+                <mat-form-field style="width: 50%">
+                    <input matInput type="time" placeholder="Heure d'Inscription" atp-time-picker formControlName="time_signIn"/>
+                </mat-form-field>
+
+                <mat-form-field class="example-form-field" style="margin-top: 10px;">
+                    <input matInput maxlength="{{setting.maxLengthGameTag}}" formControlName="gameTag" placeholder="Identifiant dans le jeu" (keyup)="InputChange(SelectedUserManagementForm.value)" #gameTag>
+                    <mat-icon *ngIf="gameTag.value" mat-button matSuffix mat-icon-button (click)="clearValue('gameTag')">close</mat-icon>
+                    <mat-hint *ngIf="gameTag.value.length >= setting.minLengthGameTag" align="start">Limite de caractères pour l'identifiant</mat-hint>
+                    <mat-hint align="end">{{ gameTag.value.length }} / {{setting.maxLengthGameTag}}</mat-hint>
+                    <mat-hint style="color: red !important;" *ngIf="gameTag.value.length < setting.minLengthGameTag" align="start">Identifiant trop court</mat-hint>
+                </mat-form-field>
+
+                <mat-form-field class="example-form-field" style="margin-top: 10px;">
+                    <input matInput maxlength="{{setting.maxLengthName}}" formControlName="name" placeholder="Nom" (keyup)="InputChange(SelectedUserManagementForm.value)" #name>
+                    <mat-icon *ngIf="name.value" mat-button matSuffix mat-icon-button (click)="clearValue('name')">close</mat-icon>
+                    <mat-hint *ngIf="name.value.length >= setting.minLengthName" align="start">Limite de caractères pour le nom</mat-hint>
+                    <mat-hint align="end">{{ name.value.length }} / {{setting.maxLengthName}}</mat-hint>
+                    <mat-hint style="color: red !important;" *ngIf="name.value.length < setting.minLengthName" align="start">Nom trop court</mat-hint>
+                </mat-form-field>
+
+                <mat-form-field class="example-form-field" style="margin-top: 10px;">
+                    <input matInput maxlength="{{setting.maxLengthFirstName}}" formControlName="firstName" placeholder="Prénom" (keyup)="InputChange(SelectedUserManagementForm.value)" #firstName>
+                    <mat-icon *ngIf="firstName.value" mat-button matSuffix mat-icon-button (click)="clearValue('firstName')">close</mat-icon>
+                    <mat-hint *ngIf="firstName.value.length >= setting.minLengthFirstName" align="start">Limite de caractères pour le prénom</mat-hint>
+                    <mat-hint align="end">{{ firstName.value.length }} / {{setting.maxLengthName}}</mat-hint>
+                    <mat-hint style="color: red !important;" *ngIf="firstName.value.length < setting.minLengthFirstName" align="start">Prénom trop court</mat-hint>
+                </mat-form-field>
+
+                <mat-form-field style="width: 100%; margin-top: 10px;">
+                    <input matInput [matDatepicker]="picker3" placeholder="Date d'anniversaire" formControlName="birthDate">
+                    <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+                    <mat-datepicker touchUi #picker3></mat-datepicker>
+                </mat-form-field>
+            </ul>
+        </div>
+    </div>
+
+    <div class="RightEdit">
+        <mat-accordion>
+            <mat-expansion-panel [expanded]="_RightEdit"> 
+                <mat-expansion-panel-header>
+                    <mat-panel-title>RightGroupPage</mat-panel-title>
+                    <mat-panel-description>Modification des droit de l'utilisateur</mat-panel-description>
+                </mat-expansion-panel-header>
+        
+                <li>(La modification des droits de cette utilisateur va créer un group + un group de droit pour cette utilisateurs uniquement)</li>
+
+                <mat-form-field style="margin-top: 10px !important;">
+                    <mat-select placeholder="RightGroupPage" formControlName="rightGroupPage">
+                        <mat-option *ngFor="let RightGroupPage of RightGroupPageList" (click)="setRightGroupPageSelected(RightGroupPage, SelectedUserManagementForm.value)" [value]="RightGroupPage">{{ RightGroupPage.name }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                {{ MsgTemplate }}
+                
+                <h2>Main Page</h2>
+                <label style="font-weight: bold;">Peut affecter le bon fonctionnement du site !</label>
+                <br />
+                <mat-slide-toggle class="disabledCheck" formControlName="Main_Access" color="primary">
+                    Droit de l'utilisateur pour acceder au site
+                </mat-slide-toggle>
+    
+                <h2>Accueil Page</h2>
+                <label style="font-weight: bold;">Peut affecter le bon fonctionnement du site !</label>
+                <br />
+                <mat-slide-toggle formControlName="Accueil_Access" color="primary" (toggleChange)="setRightSelected(SelectedUserManagementForm.value, 'Accueil_Access')">
+                    Droit de l'utilisateur pour acceder à la page d'accueil
+                </mat-slide-toggle>
+    
+                <h2>Login Page</h2>
+                <label style="font-weight: bold;">Peut affecter le bon fonctionnement du site !</label>
+                <br />
+                <mat-slide-toggle formControlName="Login_Access" color="primary" (toggleChange)="setRightSelected(SelectedUserManagementForm.value, 'Login_Access')">
+                    Droit de l'utilisateur pour acceder à la page de connection
+                </mat-slide-toggle>
+    
+                <h2>User Page</h2>
+                <mat-slide-toggle formControlName="User_Access" color="primary" (toggleChange)="setRightSelected(SelectedUserManagementForm.value, 'User_Access')">
+                    Droit de l'utilisateur pour acceder à la page d'un utilisateur (et à la personne connécté à son compte)
+                </mat-slide-toggle>
+    
+                <h2>EditBar</h2>
+                <mat-slide-toggle class="disabledCheck" formControlName="EditBar_Access" color="primary">
+                    Droit de l'utilisateur pour voir la bare de d'édition
+                </mat-slide-toggle>
+                <br />
+                <mat-slide-toggle formControlName="EditBar_Edit" color="primary" (toggleChange)="setRightSelected(SelectedUserManagementForm.value, 'EditBar_Edit')">
+                    Droit de l'utilisateur pour acceder à la page de gestion de la page en cours
+                </mat-slide-toggle>
+                <br />
+                <mat-slide-toggle formControlName="EditBar_Dev" color="primary" (toggleChange)="setRightSelected(SelectedUserManagementForm.value, 'EditBar_Dev')">
+                    Droit de l'utilisateur pour d'acceder à la page de développement
+                </mat-slide-toggle>
+                <br />
+                <mat-slide-toggle formControlName="Settings_Access" color="primary" (toggleChange)="setRightSelected(SelectedUserManagementForm.value, 'Settings_Access')">
+                    Droit de l'utilisateur pour d'acceder à la page de gestion de paramètre globaux du site
+                </mat-slide-toggle>
+    
+                <br />
+                <br />
+    
+                <mat-expansion-panel> 
                     <mat-expansion-panel-header>
-                        <mat-panel-title>RightGroupPage</mat-panel-title>
-                        <mat-panel-description>Modification des droit de l'utilisateur</mat-panel-description>
+                        <mat-panel-title>Gestion des utilisateurs</mat-panel-title>
+                        <mat-panel-description>Modification des droit de l'utilisateur liés à la gestion des utilisateurs</mat-panel-description>
                     </mat-expansion-panel-header>
-            
-                    <li>(La modification des droits de cette utilisateur va créer un group + un group de droit pour cette utilisateurs uniquement)</li>
-
-                    <mat-form-field style="margin-top: 10px !important;">
-                        <mat-select placeholder="RightGroupPage" formControlName="rightGroupPage" (selectionChange)="setRightGroupPageSelected($event.value, SelectedUserManagementForm.value)">
-                            <mat-option *ngFor="let RightGroupPage of RightGroupPageList" [value]="RightGroupPage">{{ RightGroupPage.name }}</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                    
-                    <h2>Main Page</h2>
-                    <label style="font-weight: bold;">Peut affecter le bon fonctionnement du site !</label>
-                    <br />
-                    <mat-slide-toggle class="disabledCheck" formControlName="Main_Access" color="primary">
-                        Droit de l'utilisateur pour acceder au site
-                    </mat-slide-toggle>
-        
-                    <h2>Accueil Page</h2>
-                    <label style="font-weight: bold;">Peut affecter le bon fonctionnement du site !</label>
-                    <br />
-                    <mat-slide-toggle formControlName="Accueil_Access" color="primary" (click)="setRightSelected(SelectedUserManagementForm.value, 'Accueil_Access')">
-                        Droit de l'utilisateur pour acceder à la page d'accueil
-                    </mat-slide-toggle>
-        
-                    <h2>Login Page</h2>
-                    <label style="font-weight: bold;">Peut affecter le bon fonctionnement du site !</label>
-                    <br />
-                    <mat-slide-toggle formControlName="Login_Access" color="primary" (click)="setRightSelected(SelectedUserManagementForm.value, 'Login_Access')">
-                        Droit de l'utilisateur pour acceder à la page de connection
-                    </mat-slide-toggle>
-        
-                    <h2>User Page</h2>
-                    <mat-slide-toggle formControlName="User_Access" color="primary" (click)="setRightSelected(SelectedUserManagementForm.value, 'User_Access')">
-                        Droit de l'utilisateur pour acceder à la page d'un utilisateur (et à la personne connécté à son compte)
-                    </mat-slide-toggle>
-        
-                    <h2>EditBar</h2>
-                    <mat-slide-toggle class="disabledCheck" formControlName="EditBar_Access" color="primary">
-                        Droit de l'utilisateur pour voir la bare de d'édition
+    
+                    <mat-slide-toggle formControlName="SelectedUserManagement_Access" color="primary" (toggleChange)="setRightSelected(SelectedUserManagementForm.value, 'SelectedUserManagement_Access')">
+                        Droit de l'utilisateur pour acceder à la page de gestion d'un utilisateur précis
                     </mat-slide-toggle>
                     <br />
-                    <mat-slide-toggle formControlName="EditBar_Edit" color="primary" (click)="setRightSelected(SelectedUserManagementForm.value, 'EditBar_Edit')">
-                        Droit de l'utilisateur pour acceder à la page de gestion de la page en cours
+                    <mat-slide-toggle formControlName="SelectedUserManagement_ViewPassword" color="primary" (toggleChange)="setRightSelected(SelectedUserManagementForm.value, 'SelectedUserManagement_ViewPassword')">
+                        Droit de l'utilisateur pour voir le mot de passe de l'utilisateur
                     </mat-slide-toggle>
                     <br />
-                    <mat-slide-toggle formControlName="EditBar_Dev" color="primary" (click)="setRightSelected(SelectedUserManagementForm.value, 'EditBar_Dev')">
-                        Droit de l'utilisateur pour d'acceder à la page de développement
+                    <mat-slide-toggle formControlName="SelectedUserManagement_ShowPasswordButton" color="primary" (toggleChange)="setRightSelected(SelectedUserManagementForm.value, 'SelectedUserManagement_ShowPasswordButton')">
+                        Droit de l'utilisateur pour afficher le bouton pour faire apparaitre le mot de passe de l'utilisateur
                     </mat-slide-toggle>
                     <br />
-                    <mat-slide-toggle formControlName="Settings_Access" color="primary" (click)="setRightSelected(SelectedUserManagementForm.value, 'Settings_Access')">
-                        Droit de l'utilisateur pour d'acceder à la page de gestion de paramètre globaux du site
+                    <mat-slide-toggle formControlName="SelectedUserManagement_EditRightGroupPageUser" color="primary" (toggleChange)="setRightSelected(SelectedUserManagementForm.value, 'SelectedUserManagement_EditRightGroupPageUser')">
+                        Droit de l'utilisateur pour modifier les droit de l'utilisateur
                     </mat-slide-toggle>
-
                     <br />
+                    <mat-slide-toggle formControlName="SelectedUserManagement_DeleteUser" color="primary" (toggleChange)="setRightSelected(SelectedUserManagementForm.value, 'SelectedUserManagement_DeleteUser')">
+                        Droit de l'utilisateur pour supprimer l'utilisateur
+                    </mat-slide-toggle>
                     <br />
-
-                    <mat-expansion-panel> 
-                        <mat-expansion-panel-header>
-                            <mat-panel-title>Gestion des utilisateurs</mat-panel-title>
-                            <mat-panel-description>Modification des droit de l'utilisateur liés à la gestion des utilisateurs</mat-panel-description>
-                        </mat-expansion-panel-header>
-
-                        <mat-slide-toggle formControlName="SelectedUserManagement_Access" color="primary" (click)="setRightSelected(SelectedUserManagementForm.value, 'SelectedUserManagement_Access')">
-                            Droit de l'utilisateur pour acceder à la page de gestion d'un utilisateur précis
-                        </mat-slide-toggle>
-                        <br />
-                        <mat-slide-toggle formControlName="SelectedUserManagement_ViewPassword" color="primary" (click)="setRightSelected(SelectedUserManagementForm.value, 'SelectedUserManagement_ViewPassword')">
-                            Droit de l'utilisateur pour voir le mot de passe de l'utilisateur
-                        </mat-slide-toggle>
-                        <br />
-                        <mat-slide-toggle formControlName="SelectedUserManagement_ShowPasswordButton" color="primary" (click)="setRightSelected(SelectedUserManagementForm.value, 'SelectedUserManagement_ShowPasswordButton')">
-                            Droit de l'utilisateur pour afficher le bouton pour faire apparaitre le mot de passe de l'utilisateur
-                        </mat-slide-toggle>
-                        <br />
-                        <mat-slide-toggle formControlName="SelectedUserManagement_EditRightGroupPageUser" color="primary" (click)="setRightSelected(SelectedUserManagementForm.value, 'SelectedUserManagement_EditRightGroupPageUser')">
-                            Droit de l'utilisateur pour modifier les droit de l'utilisateur
-                        </mat-slide-toggle>
-                        <br />
-                        <mat-slide-toggle formControlName="SelectedUserManagement_DeleteUser" color="primary" (click)="setRightSelected(SelectedUserManagementForm.value, 'SelectedUserManagement_DeleteUser')">
-                            Droit de l'utilisateur pour supprimer l'utilisateur
-                        </mat-slide-toggle>
-                        <br />
-                        <mat-slide-toggle formControlName="SelectedUserManagement_EditUser" color="primary" (click)="setRightSelected(SelectedUserManagementForm.value, 'SelectedUserManagement_EditUser')">
-                            Droit de l'utilisateur pour modifier l'utilisateur
-                        </mat-slide-toggle>
-                        <br />
-                        <mat-slide-toggle formControlName="UserManagement_Access" color="primary" (click)="setRightSelected(SelectedUserManagementForm.value, 'UserManagement_Access')">
-                            Droit de l'utilisateur pour acceder à la page de l'ensemble des utilisateurs
-                        </mat-slide-toggle>
-                        <br />
-                        <mat-slide-toggle formControlName="UserManagement_AddUser" color="primary" (click)="setRightSelected(SelectedUserManagementForm.value, 'UserManagement_AddUser')">
-                            Droit de l'utilisateur pour ajouter un utilisateur
-                        </mat-slide-toggle>
-                        <br />
-                        <mat-slide-toggle formControlName="UserManagement_EditDefaultUser" color="primary" (click)="setRightSelected(SelectedUserManagementForm.value, 'UserManagement_EditDefaultUser')">
-                            Droit de l'utilisateur pour modifier l'utilisateur par defaut
-                        </mat-slide-toggle>
-                    </mat-expansion-panel>
-
+                    <mat-slide-toggle formControlName="SelectedUserManagement_EditUser" color="primary" (toggleChange)="setRightSelected(SelectedUserManagementForm.value, 'SelectedUserManagement_EditUser')">
+                        Droit de l'utilisateur pour modifier l'utilisateur
+                    </mat-slide-toggle>
                     <br />
-
-                    <mat-expansion-panel> 
-                        <mat-expansion-panel-header>
-                            <mat-panel-title>Gestion des groupes</mat-panel-title>
-                            <mat-panel-description>Modification des droit de l'utilisateur liés à la gestion des groupes</mat-panel-description>
-                        </mat-expansion-panel-header>
-
-                        <mat-slide-toggle formControlName="SelectedGroupManagement_Access" color="primary" (click)="setRightSelected(SelectedUserManagementForm.value, 'SelectedGroupManagement_Access')">
-                            Droit de l'utilisateur pour acceder a la page de gestion du groupe précis
-                        </mat-slide-toggle>
-                        <br />
-                        <mat-slide-toggle formControlName="SelectedGroupManagement_EditGroup" color="primary" (click)="setRightSelected(SelectedUserManagementForm.value, 'SelectedGroupManagement_EditGroup')">
-                            Droit de l'utilisateur pour modifier le groupe
-                        </mat-slide-toggle>
-                        <br />
-                        <mat-slide-toggle formControlName="SelectedGroupManagement_DeleteGroup" color="primary" (click)="setRightSelected(SelectedUserManagementForm.value, 'SelectedGroupManagement_DeleteGroup')">
-                            Droit de l'utilisateur pour supprimer le groupe
-                        </mat-slide-toggle>
-                        <br />
-                        <mat-slide-toggle formControlName="SelectedGroupManagement_EditRightPage" color="primary" (click)="setRightSelected(SelectedUserManagementForm.value, 'SelectedGroupManagement_EditRightPage')">
-                            Droit de l'utilisateur pour modifier les droits du groupe
-                        </mat-slide-toggle>
-                        <br />
-                        <mat-slide-toggle formControlName="GroupManagement_Access" color="primary" (click)="setRightSelected(SelectedUserManagementForm.value, 'GroupManagement_Access')">
-                            Droit de l'utilisateur pour acceder a la page de gestion de l'ensemble des groupes
-                        </mat-slide-toggle>
-                        <br />
-                        <mat-slide-toggle formControlName="GroupManagement_AddGroup" color="primary" (click)="setRightSelected(SelectedUserManagementForm.value, 'GroupManagement_AddGroup')">
-                            Droit de l'utilisateur pour ajouter un groupe
-                        </mat-slide-toggle>
-                        <br />
-                        <mat-slide-toggle formControlName="GroupManagement_EditDefaultGroup" color="primary" (click)="setRightSelected(SelectedUserManagementForm.value, 'GroupManagement_EditDefaultGroup')">
-                            Droit de l'utilisateur pour modifier le groupe par defaut
-                        </mat-slide-toggle>
-                    </mat-expansion-panel>
-
+                    <mat-slide-toggle formControlName="UserManagement_Access" color="primary" (toggleChange)="setRightSelected(SelectedUserManagementForm.value, 'UserManagement_Access')">
+                        Droit de l'utilisateur pour acceder à la page de l'ensemble des utilisateurs
+                    </mat-slide-toggle>
                     <br />
-
-                    <mat-expansion-panel> 
-                        <mat-expansion-panel-header>
-                            <mat-panel-title>Gestion des pages</mat-panel-title>
-                            <mat-panel-description>Modification des droit de l'utilisateur liés à la gestion des pages</mat-panel-description>
-                        </mat-expansion-panel-header>
-
-                        <mat-slide-toggle class="disabledCheck" formControlName="SelectedPageManagement_Access" color="primary">
-                            Droit de l'utilisateur pour accéder à la page de gestion de la page
-                        </mat-slide-toggle>
-                        <br />
-                        <mat-slide-toggle formControlName="SelectedPageManagement_EditPage" color="primary" (click)="setRightSelected(SelectedUserManagementForm.value, 'SelectedPageManagement_EditPage')">
-                            Droit de l'utilisateur pour modifier la page
-                        </mat-slide-toggle>
-                        <br />
-                        <mat-slide-toggle formControlName="SelectedPageManagement_EditRefresh" color="primary" (click)="setRightSelected(SelectedUserManagementForm.value, 'SelectedPageManagement_EditRefresh')">
-                            Droit de l'utilisateur pour modifier l'interval de refresh des données pour la page
-                        </mat-slide-toggle>
-                        <br />
-                        <mat-slide-toggle formControlName="SelectedPageManagement_EditRoute" color="primary" (click)="setRightSelected(SelectedUserManagementForm.value, 'SelectedPageManagement_EditRoute')">
-                            Droit de l'utilisateur pour modifier le chemin depuis la racine pour la page
-                        </mat-slide-toggle>
-                        <br />
-                        <mat-slide-toggle formControlName="SelectedPageManagement_EditNeedLogIn" color="primary" (click)="setRightSelected(SelectedUserManagementForm.value, 'SelectedPageManagement_EditNeedLogIn')">
-                            Droit de l'utilisateur pour modifier la néssécité ou non d'un utilisateur connécté pour la page
-                        </mat-slide-toggle>   
-                    </mat-expansion-panel>
+                    <mat-slide-toggle formControlName="UserManagement_AddUser" color="primary" (toggleChange)="setRightSelected(SelectedUserManagementForm.value, 'UserManagement_AddUser')">
+                        Droit de l'utilisateur pour ajouter un utilisateur
+                    </mat-slide-toggle>
+                    <br />
+                    <mat-slide-toggle formControlName="UserManagement_EditDefaultUser" color="primary" (toggleChange)="setRightSelected(SelectedUserManagementForm.value, 'UserManagement_EditDefaultUser')">
+                        Droit de l'utilisateur pour modifier l'utilisateur par defaut
+                    </mat-slide-toggle>
                 </mat-expansion-panel>
-            </mat-accordion>
-        </div>
-        <div class="EditBar" #EditBar>
-            <button class="boutton_n" *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_DeleteUser" mat-raised-button (click)="openDialog()" type="button" color="warn">Supprimer l'utilisateur</button>
-            <button class="boutton_m" *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_DeleteUser" mat-raised-button (click)="openDialog()" type="button" color="warn" style="margin-left: 2%; float: left;"><i class="fas fa-trash-alt"></i></button>
-            <button class="boutton_n" style="margin-left: 20px !important;" *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_EditUser" mat-raised-button type="submit" color="primary">Valider les modifications</button>
-            <button class="boutton_m" *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_EditUser" mat-raised-button type="submit" color="primary" style="margin-left: 2%; float: left;"><i class="as fa-user-check"></i></button>
-        </div>
-    </form>
-<!-- </div>  -->
+    
+                <br />
+    
+                <mat-expansion-panel> 
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>Gestion des groupes</mat-panel-title>
+                        <mat-panel-description>Modification des droit de l'utilisateur liés à la gestion des groupes</mat-panel-description>
+                    </mat-expansion-panel-header>
+    
+                    <mat-slide-toggle formControlName="SelectedGroupManagement_Access" color="primary" (toggleChange)="setRightSelected(SelectedUserManagementForm.value, 'SelectedGroupManagement_Access')">
+                        Droit de l'utilisateur pour acceder a la page de gestion du groupe précis
+                    </mat-slide-toggle>
+                    <br />
+                    <mat-slide-toggle formControlName="SelectedGroupManagement_EditGroup" color="primary" (toggleChange)="setRightSelected(SelectedUserManagementForm.value, 'SelectedGroupManagement_EditGroup')">
+                        Droit de l'utilisateur pour modifier le groupe
+                    </mat-slide-toggle>
+                    <br />
+                    <mat-slide-toggle formControlName="SelectedGroupManagement_DeleteGroup" color="primary" (toggleChange)="setRightSelected(SelectedUserManagementForm.value, 'SelectedGroupManagement_DeleteGroup')">
+                        Droit de l'utilisateur pour supprimer le groupe
+                    </mat-slide-toggle>
+                    <br />
+                    <mat-slide-toggle formControlName="SelectedGroupManagement_EditRightPage" color="primary" (toggleChange)="setRightSelected(SelectedUserManagementForm.value, 'SelectedGroupManagement_EditRightPage')">
+                        Droit de l'utilisateur pour modifier les droits du groupe
+                    </mat-slide-toggle>
+                    <br />
+                    <mat-slide-toggle formControlName="GroupManagement_Access" color="primary" (toggleChange)="setRightSelected(SelectedUserManagementForm.value, 'GroupManagement_Access')">
+                        Droit de l'utilisateur pour acceder a la page de gestion de l'ensemble des groupes
+                    </mat-slide-toggle>
+                    <br />
+                    <mat-slide-toggle formControlName="GroupManagement_AddGroup" color="primary" (toggleChange)="setRightSelected(SelectedUserManagementForm.value, 'GroupManagement_AddGroup')">
+                        Droit de l'utilisateur pour ajouter un groupe
+                    </mat-slide-toggle>
+                    <br />
+                    <mat-slide-toggle formControlName="GroupManagement_EditDefaultGroup" color="primary" (toggleChange)="setRightSelected(SelectedUserManagementForm.value, 'GroupManagement_EditDefaultGroup')">
+                        Droit de l'utilisateur pour modifier le groupe par defaut
+                    </mat-slide-toggle>
+                </mat-expansion-panel>
+    
+                <br />
+    
+                <mat-expansion-panel> 
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>Gestion des pages</mat-panel-title>
+                        <mat-panel-description>Modification des droit de l'utilisateur liés à la gestion des pages</mat-panel-description>
+                    </mat-expansion-panel-header>
+    
+                    <mat-slide-toggle class="disabledCheck" formControlName="SelectedPageManagement_Access" color="primary">
+                        Droit de l'utilisateur pour accéder à la page de gestion de la page
+                    </mat-slide-toggle>
+                    <br />
+                    <mat-slide-toggle formControlName="SelectedPageManagement_EditPage" color="primary" (toggleChange)="setRightSelected(SelectedUserManagementForm.value, 'SelectedPageManagement_EditPage')">
+                        Droit de l'utilisateur pour modifier la page
+                    </mat-slide-toggle>
+                    <br />
+                    <mat-slide-toggle formControlName="SelectedPageManagement_EditRefresh" color="primary" (toggleChange)="setRightSelected(SelectedUserManagementForm.value, 'SelectedPageManagement_EditRefresh')">
+                        Droit de l'utilisateur pour modifier l'interval de refresh des données pour la page
+                    </mat-slide-toggle>
+                    <br />
+                    <mat-slide-toggle formControlName="SelectedPageManagement_EditRoute" color="primary" (toggleChange)="setRightSelected(SelectedUserManagementForm.value, 'SelectedPageManagement_EditRoute')">
+                        Droit de l'utilisateur pour modifier le chemin depuis la racine pour la page
+                    </mat-slide-toggle>
+                    <br />
+                    <mat-slide-toggle formControlName="SelectedPageManagement_EditNeedLogIn" color="primary" (toggleChange)="setRightSelected(SelectedUserManagementForm.value, 'SelectedPageManagement_EditNeedLogIn')">
+                        Droit de l'utilisateur pour modifier la néssécité ou non d'un utilisateur connécté pour la page
+                    </mat-slide-toggle>   
+    
+                </mat-expansion-panel>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </div>
+    <div class="EditBar" #EditBar>
+        <button class="boutton_n" *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_DeleteUser" mat-raised-button (click)="openDialog()" type="button" color="warn">Supprimer l'utilisateur</button>
+        <button class="boutton_m" *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_DeleteUser" mat-raised-button (click)="openDialog()" type="button" color="warn" style="margin-left: 2%; float: left;"><i class="fas fa-trash-alt"></i></button>
+        <button class="boutton_n" style="margin-left: 20px !important;" *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_EditUser" mat-raised-button type="submit" color="primary" [disabled]="statutButton">Valider les modifications</button>
+        <button class="boutton_m" style="margin-left: 2%; float: left;" *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_EditUser" mat-raised-button type="submit" color="primary" [disabled]="statutButton"><i class="as fa-user-check"></i></button>
+    </div>
+</form>

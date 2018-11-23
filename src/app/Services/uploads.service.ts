@@ -58,7 +58,7 @@ export class UploadService {
   public UploadFile(file: File, name: string) {
     var uploadData: FormData = new FormData();
     uploadData.append('myFile', file, name);
-    return this.http.post('https://dev.kevin-c.fr/api/file.php', uploadData, { observe: 'events' })
+    return this.http.post('https://dev.kevin-c.fr/api/file.php', uploadData, { reportProgress: true, observe: 'events' })
   }
 
   private InitReponse(api: Api): Upload[] {

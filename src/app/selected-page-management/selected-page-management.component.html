@@ -1,29 +1,36 @@
 <!-- <div *ngIf="_currentUser.group.rightGroupPage.SelectedPageManagement_Access"> -->
-  <form [formGroup]="SelectedPageManagementForm" (ngSubmit)="editPage(SelectedPageManagementForm.value)" class="example-form" style="display: inline-block; width: 100%;">
+<form [formGroup]="SelectedPageManagementForm" (ngSubmit)="editPage(SelectedPageManagementForm.value)" class="example-form" style="display: inline-block; width: 100%;">
     <div class="edit_page_gauche">
-      <label>Icone de la page :</label>
-      <div class="favicon">
-          <input style="display: none" type="file" (change)="imageChangeClick($event, SelectedPageManagementForm.value)" #File>
-          <file-drop (onFileDrop)="imageChangeDrag($event, SelectedPageManagementForm.value)" (click)="File.click()">
-              <img src="{{ page.favicon }}" appHighlight>
-          </file-drop>
-      </div>
-      <mat-form-field class="example-form-field">
-          <input matInput formControlName="title" placeholder="Titre de la page" #title>
-          <mat-icon *ngIf="title.value" mat-button matSuffix mat-icon-button (click)="title.value = ''">close</mat-icon>
-      </mat-form-field>
+        <label>Icone de la page :</label>
+        <div class="favicon">
+            <input style="display: none" type="file" (change)="imageChangeClick($event, SelectedPageManagementForm.value)" #File>
+            <file-drop (onFileDrop)="imageChangeDrag($event, SelectedPageManagementForm.value)" (click)="File.click()">
+                <img id="favicon" src="{{ page.favicon }}" appHighlight>
+                <span id="drop_content">Cliquez ou glicer un fichier</span>
+            </file-drop>
+        </div>
+        <mat-form-field class="example-form-field" style="margin-top: 30px;">
+            <input matInput maxlength="{{setting.maxLengthTitle}}" formControlName="title" placeholder="Titre de la page" (keyup)="TitleChange(title.value)" #title>
+            <mat-icon *ngIf="title.value" mat-button matSuffix mat-icon-button (click)="clearValue('title')">close</mat-icon>
+            <mat-hint *ngIf="title.value.length >= setting.minLengthTitle" align="start">Limite de caractères pour le titre de la page</mat-hint>
+            <mat-hint align="end">{{ title.value.length }} / {{setting.maxLengthTitle}}</mat-hint>
+            <mat-hint style="color: red !important;" *ngIf="title.value.length < setting.minLengthTitle" align="start">Titre de la page trop court</mat-hint>
+        </mat-form-field>
 
-      <mat-form-field class="example-form-field">
-          <input matInput type="number" formControlName="refresh" placeholder="Temps de refresh des données de la page" #refresh>
-          <mat-icon *ngIf="refresh.value" mat-button matSuffix mat-icon-button (click)="refresh.value = ''">close</mat-icon>
-      </mat-form-field>
+        <mat-form-field class="example-form-field" style="margin-top: 10px;">
+            <input matInput type="number" formControlName="refresh" placeholder="Temps de refresh des données de la page" #refresh>
+            <mat-icon *ngIf="refresh.value" mat-button matSuffix mat-icon-button (click)="clearValue('refresh')">close</mat-icon>
+        </mat-form-field>
 
-      <mat-form-field class="example-form-field">
-          <input matInput formControlName="route" placeholder="Chemin de la page depuis la source" #route>
-          <mat-icon *ngIf="route.value" mat-button matSuffix mat-icon-button (click)="route.value = ''">close</mat-icon>
-      </mat-form-field>
+        <mat-form-field class="example-form-field">
+            <input matInput maxlength="{{setting.maxLengthRoute}}" formControlName="route" placeholder="Chemin de la page depuis la source" (keyup)="InputChange(SelectedPageManagementForm.value)" #route>
+            <mat-icon *ngIf="route.value" mat-button matSuffix mat-icon-button (click)="clearValue('route')">close</mat-icon>
+            <mat-hint *ngIf="route.value.length >= setting.minLengthRoute" align="start">Limite de caractères pour le chemin de la page depuis la source</mat-hint>
+            <mat-hint align="end">{{ route.value.length }} / {{setting.maxLengthRoute}}</mat-hint>
+            <mat-hint style="color: red !important;" *ngIf="route.value.length < setting.minLengthRoute" align="start">Chemin de la page depuis la source trop court</mat-hint>
+        </mat-form-field>
 
-      <mat-slide-toggle formControlName="needLogIn" color="primary"> Cette page nécessite un utilisateur connécté </mat-slide-toggle>
+        <mat-slide-toggle style="margin-top: 10px;" formControlName="needLogIn" color="primary"> Cette page nécessite un utilisateur connécté </mat-slide-toggle>
     </div>
     <div class="edit_page_droite">
       <img class="onglet" src="assets/uploads/images/PageNotVoid.jpg">
@@ -31,8 +38,8 @@
       <div class="edit_page_title">{{ page.title }}</div>
     </div>
     <div class="EditBar" #EditBar>
-        <button class="boutton_n" *ngIf="_currentUser.group.rightGroupPage.SelectedPageManagement_EditPage" mat-raised-button (click)="DeleteGroup()" type="button" color="primary">Valider les modifications</button>
-        <button class="boutton_m" style="margin-left: 2%; float: left;" *ngIf="_currentUser.group.rightGroupPage.SelectedPageManagement_EditPage" mat-raised-button color="primary"matBadge="8" matBadgePosition="before" matBadgeColor="warn"><i (click)="DeleteGroup()" type="button" class="fas fa-trash-alt"></i></button>
+        <button class="boutton_n" *ngIf="_currentUser.group.rightGroupPage.SelectedPageManagement_EditPage" mat-raised-button type="submit" color="primary" [disabled]="statutButton">Valider les modifications</button>
+        <button class="boutton_m" *ngIf="_currentUser.group.rightGroupPage.SelectedPageManagement_EditPage" mat-raised-button type="submit" color="primary" [disabled]="statutButton" style="margin-left: 2%; float: left;"><i class="fas fa-trash-alt"></i></button>
     </div>
   </form>
 <!-- </div> -->

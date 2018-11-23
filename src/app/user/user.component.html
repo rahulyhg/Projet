@@ -57,38 +57,50 @@
             <div class="profile">
                 <input style="display: none" type="file" (change)="imageChangeClick($event, UserForm.value)" #File>
                 <file-drop (onFileDrop)="imageChangeDrag($event, UserForm.value)" (click)="File.click()">
-                    <img src="{{ user.profile }}" appHighlight>
+                    <img id="profile" src="{{ user.profile }}" appHighlight>
+                    <span id="drop_content">Cliquez ou glicer un fichier</span>
                 </file-drop>
             </div>
             <div class="Account_content">
                 <ul>
                     <mat-form-field class="example-form-field">
-                        <input matInput formControlName="login" placeholder="Login" #login>
-                        <mat-icon *ngIf="login.value" mat-button matSuffix mat-icon-button (click)="login.value = ''">close</mat-icon>
+                        <input matInput maxlength="{{setting.maxLengthLogin}}" formControlName="login" placeholder="Login" (keyup)="InputChange(UserForm.value)">
+                        <mat-icon *ngIf="UserForm.value.login" mat-button matSuffix mat-icon-button (click)="clearValue('login')">close</mat-icon>
+                        <mat-hint *ngIf="UserForm.value.login.length >= setting.minLengthLogin" align="start">Limite de caractères pour le login</mat-hint>
+                        <mat-hint align="end">{{ UserForm.value.login.length }} / {{setting.maxLengthLogin}}</mat-hint>
+                        <mat-hint style="color: red !important;" *ngIf="UserForm.value.login.length < setting.minLengthLogin" align="start">Login trop court</mat-hint>
                     </mat-form-field>
 
-                    <mat-form-field class="example-form-field" *ngIf="_currentUser.group.rightGroupPage.SelectedUserManagement_ViewPassword">
-                        <input matInput formControlName="password" placeholder="Mot de passe" #password>
-                        <mat-icon *ngIf="password.value" mat-button matSuffix mat-icon-button (click)="password.value = ''" >close</mat-icon>
+                    <button style="margin-top: 10px;" mat-raised-button (click)="openDialog()" type="button" color="primary">Créer un nouveau mot de passe</button>
+
+                    <input formControlName="password" style="display: none !important;">
+
+                    <mat-form-field class="example-form-field" style="margin-top: 10px;">
+                        <input matInput maxlength="{{setting.maxLengthGameTag}}" formControlName="gameTag" placeholder="Identifiant dans le jeu" (keyup)="InputChange(UserForm.value)">
+                        <mat-icon *ngIf="UserForm.value.gameTag" mat-button matSuffix mat-icon-button (click)="clearValue('gameTag')">close</mat-icon>
+                        <mat-hint *ngIf="UserForm.value.gameTag.length >= setting.minLengthGameTag" align="start">Limite de caractères pour l'identifiant</mat-hint>
+                        <mat-hint align="end">{{ UserForm.value.gameTag.length }} / {{setting.maxLengthGameTag}}</mat-hint>
+                        <mat-hint style="color: red !important;" *ngIf="UserForm.value.gameTag.length < setting.minLengthGameTag" align="start">Identifiant trop court</mat-hint>
                     </mat-form-field>
 
-                    <mat-form-field class="example-form-field">
-                        <input matInput formControlName="gameTag" placeholder="Game Tag" #gameTag>
-                        <mat-icon *ngIf="gameTag.value" mat-button matSuffix mat-icon-button (click)="gameTag.value = ''">close</mat-icon>
+                    <mat-form-field class="example-form-field" style="margin-top: 10px;">
+                        <input matInput maxlength="{{setting.maxLengthName}}" formControlName="name" placeholder="Nom" (keyup)="InputChange(UserForm.value)">
+                        <mat-icon *ngIf="UserForm.value.name" mat-button matSuffix mat-icon-button (click)="clearValue('name')">close</mat-icon>
+                        <mat-hint *ngIf="UserForm.value.name.length >= setting.minLengthName" align="start">Limite de caractères pour le nom</mat-hint>
+                        <mat-hint align="end">{{ UserForm.value.name.length }} / {{setting.maxLengthName}}</mat-hint>
+                        <mat-hint style="color: red !important;" *ngIf="UserForm.value.name.length < setting.minLengthName" align="start">Nom trop court</mat-hint>
                     </mat-form-field>
 
-                    <mat-form-field class="example-form-field">
-                        <input matInput formControlName="name" placeholder="name" #name>
-                        <mat-icon *ngIf="name.value" mat-button matSuffix mat-icon-button (click)="name.value = ''">close</mat-icon>
+                    <mat-form-field class="example-form-field" style="margin-top: 10px;">
+                        <input matInput maxlength="{{setting.maxLengthFirstName}}" formControlName="firstName" placeholder="Prénom" (keyup)="InputChange(UserForm.value)">
+                        <mat-icon *ngIf="UserForm.value.firstName" mat-button matSuffix mat-icon-button (click)="clearValue('firstName')">close</mat-icon>
+                        <mat-hint *ngIf="UserForm.value.firstName.length >= setting.minLengthFirstName" align="start">Limite de caractères pour le prénom</mat-hint>
+                        <mat-hint align="end">{{ UserForm.value.firstName.length }} / {{setting.maxLengthFirstName}}</mat-hint>
+                        <mat-hint style="color: red !important;" *ngIf="UserForm.value.firstName.length < setting.minLengthFirstName" align="start">Prénom trop court</mat-hint>
                     </mat-form-field>
 
-                    <mat-form-field class="example-form-field">
-                        <input matInput formControlName="firstName" placeholder="firstName" #firstName>
-                        <mat-icon *ngIf="firstName.value" mat-button matSuffix mat-icon-button (click)="firstName.value = ''">close</mat-icon>
-                    </mat-form-field>
-
-                    <mat-form-field style="width: 100%">
-                        <input matInput [matDatepicker]="picker1" placeholder="Date d'anniversaire" formControlName="birthDate">
+                    <mat-form-field style="width: 100%; margin-top: 10px;">
+                        <input matInput [matDatepicker]="picker1" placeholder="Date de naissance" formControlName="birthDate">
                         <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
                         <mat-datepicker touchUi #picker1></mat-datepicker>
                     </mat-form-field>
@@ -98,8 +110,8 @@
         <div class="EditBar" #EditBar>
             <button class="boutton_n" *ngIf="canEdit && !edit" mat-raised-button (click)="edit = true" type="button" color="primary">Modifier mon compte</button>
             <button class="boutton_m" *ngIf="canEdit && !edit" mat-raised-button (click)="edit = true" style="margin-left: 2%; float: left;" color="primary" matBadge="8" matBadgePosition="before" matBadgeColor="primary"><i class="far fa-edit"></i></button>
-            <button class="boutton_n" style="margin-left: 20px !important;" type="submit" *ngIf="edit" mat-raised-button color="primary">Valider les modifications</button>
-            <button class="boutton_m" style="margin-left: 2%; float: left;" type="submit" *ngIf="edit" mat-raised-button color="primary" matBadge="8" matBadgePosition="before" matBadgeColor="accent"><i class="fas fa-user-check"></i></button>
+            <button class="boutton_n" style="margin-left: 20px !important;" type="submit" *ngIf="edit" mat-raised-button color="primary" [disabled]="statutButton">Valider les modifications</button>
+            <button class="boutton_m" style="margin-left: 2%; float: left;" type="submit" *ngIf="edit" mat-raised-button color="primary" [disabled]="statutButton"><i class="fas fa-user-check"></i></button>
         </div>
     </form>
   <!-- </div> -->

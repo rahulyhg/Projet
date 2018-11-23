@@ -26,13 +26,9 @@ structurer le peus de CSS présent  (par page)
 
 Mise en place d'in system de report de bug dans le footer
 
-(PLUS DE DEV POPUP) OK => le click droit sur le popup dev active le drop
-
 verifier les format de fichier que l'on upload
 => que des .ico pour les icone
 => que les format image pour les images ...
-
-OK => faire page d'erreur par default pour page inconue
 
 voir pour mettre de la transparence sur le blanc dans les logo de page
 => via methode automatique
@@ -45,17 +41,11 @@ Mettre un fichier valide dans le contructeur de l'object Upload
 
 Faire la vérification des format de données (comme pour les @GameTag ou il y pas d'espace)
 
-OK => Remettre la gestion de droit dans SelectedGroupManagement
-
-OK => Faire la meme chose que pour UserDefault dans GroupManagement (griser si pas droit modif)
-
 Mettre a jour la date d edernier connection dans l'aPI
 
 voir le format max pour chaque input et adapter cette taille dans la base de donnée
 
 Mettre un temp d'arret avant d'afficher les données
-
-OK=> faire en sorte que les page ne s'affiche que lorsque les données sont chargé et traité
 
 Les liste déroulante pour proposer des valeur deja rentré dans ces champ sont avec un bacground white en mode sombre
 
@@ -64,10 +54,6 @@ Voir pour centrer le contenue de la page User
 remettre les messages d'erreur pour la page de login
 
 Revoir pour remettre les variable api, auth, ErrorMsg dans l'API et le traitement via une methode generic
-
-OK =>enlever la case pour supprimer le contenue d'un input si le input est desactivé (et quand on a pas les droit de modifier)
-
-OK => rajouter "sur exemple de " a coté de la liste des template dans SelectedGroupManagement
 
 le min-height du page_section ,n'est pas bon quand il y a plus la console d'ouverte
 
@@ -83,4 +69,29 @@ mettre couleur rouge sur le bouton supprimer (popup)
 
 Voir pour pouvoir get des element meme quand il sont dans des ngIf (voir user.compnent.ts et user.compnent.html)
 
-Voir pour la vérification de l'existence ou nom du groupe que l'on veut editer
+OK => Voir pour la vérification de l'existence ou nom du groupe que l'on veut editer (a faire aussi pour UserManagement)
+
+(PAS POSSIBLE CAR PAS DINAMIQUE) OK => dans la gestion automatique des droit, rajouter que pour les pages dans lesquel on doit etre log la dependence de la page login
+
+OK => Voir si quand on fait page precedente, on a quand meme l'animation de chargement
+
+OK => l'emplacement du logo de chargement change avec la page
+(PAS BESOIN) OK => metre un gotop au start du loading page pour eviter le problème
+
+OK => voir pour elever la variable one dans SelectedGroupManagement
+
+verifier dans User et dans SelectedUserManagement que le login que l'on rentre est pas deja pris
+
+OK => faire comme pour la page User avec Page (detecter sur le parametre en GET change ou nom  dans l'URL)
+
+(NON car sinon plus de blur et on peut pas le mettre avnt) OK => mettre un display none sur le page_content avant de fait le startLoadPage
+
+OK => Le background du menu mobile est pas dynamique 
+
+voir pour que les .length dans les imput prenne en compte les données de l'auto complete sur mobile (firefox, chrome)
+
+OK => enlever le focus auto sur le input qui sont desactivé
+
+Firefox(PC) => Blocage d’une requête multiorigines (Cross-Origin Request)
+
+traduire le nom du groupe dans User

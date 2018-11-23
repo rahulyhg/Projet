@@ -4,9 +4,12 @@ import { Md5 } from 'ts-md5/dist/md5';
 
 import { RightGroupPage } from '../Class/RightGroupPage';
 import { Group } from '../Class/Group';
+import { User } from '../Class/User';
+import { Page } from '../Class/Page';
+import { Setting } from '../Class/Setting';
 
 @NgModule({ 
-  imports: [CommonModule ] 
+  imports: [CommonModule] 
 })
 export class GenericModule { 
 
@@ -297,5 +300,110 @@ export class GenericModule {
       data[i] = new RightGroupPage(data[i])
     }
     return data;
+  }
+
+  public createUser(data: any): User {
+    data = new User(data)
+    data.group = Object(new Group(data.group))
+    data.group.rightGroupPage = Object(new RightGroupPage(data.group.rightGroupPage))
+    return data;
+  }
+
+  public createPage(data: any): Page {
+    return new Page(data)
+  }
+
+  public createSetting(data: any): Setting {
+    return new Setting(data)
+  }
+
+  public createUserList(data: any): User[] {
+    for(var i: number = 0; i < Number(data.length); i++) {
+      data[i] = new User(data[i])
+      data[i].group = Object(new Group(data[i].group))
+      data[i].group.rightGroupPage = Object(new RightGroupPage(data[i].group.rightGroupPage))
+    }
+    return data
+  }
+
+  public createGroupList(data: any): Group[] {
+    for(var i: number = 0; i < Number(data.length); i++) {
+      data[i] = new Group(data[i])
+      data[i].rightGroupPage = Object(new RightGroupPage(data[i].rightGroupPage))
+    }
+    return data
+  }
+
+  public startUploadAnimation(element: string): void {
+    var content: Element = document.getElementsByTagName('file-drop')[0].getElementsByTagName('div')[0].getElementsByTagName('div')[0];
+    var image = content.getElementsByTagName('img')[0];
+    image.style.transition = "0s";
+    image.style.boxShadow = "none";
+    image.style.height = String(image.offsetWidth + "px");
+
+    var progress: HTMLElement = document.createElement( "div" );
+    progress.setAttribute( "id", "progress" );
+    progress.setAttribute( "style", "position: absolute; opacity: 1; cursor: pointer; text-align: center; " + 
+    "border: 2px solid transparent; background-color: rgb(100, 100, 100, 0.8); height: " + String(image.offsetHeight - 4) + "px; " +
+    "margin-top: -" + String(image.offsetHeight + 6) + "px;");
+    content.appendChild( progress );
+
+    if(getComputedStyle(image,null).getPropertyValue('border-radius') !== "0px") {
+      var backgroundColor: string = window.getComputedStyle( document.getElementById("page_header") ,null).getPropertyValue('background-color');
+      var cache_load: HTMLElement = document.createElement( "div" );
+      cache_load.setAttribute( "id", "cache_load" );
+      cache_load.setAttribute( "style", "background: radial-gradient(ellipse 50% 50%, transparent 0, transparent 100%, " + backgroundColor + " 100%); " +
+      "z-index: 2; position: absolute; cursor: pointer; height: " + String(image.offsetHeight) + "px; " + 
+      "width: " + String(image.offsetWidth) + "px; margin-top: -" + String(image.offsetHeight + 6) + "px;");
+      content.appendChild( cache_load ); 
+    }
+
+    var drop_content: Element = document.getElementById('drop_content');
+    if (drop_content) { content.removeChild(drop_content) }
+
+    var upload_content: HTMLElement = document.createElement( "span" );
+    upload_content.setAttribute( "id", "upload" );
+    upload_content.textContent = "Envoie du fichier ...";
+    content.appendChild( upload_content ); 
+  }
+
+  public startTritementUpload(): void {
+    var content: Element = document.getElementsByTagName('file-drop')[0].getElementsByTagName('div')[0].getElementsByTagName('div')[0];
+
+    var traitement_content: HTMLElement = document.createElement( "span" );
+    traitement_content.setAttribute( "id", "traitement" );
+    traitement_content.setAttribute("style", "float: left; width: 100%;");
+    traitement_content.textContent = "Traitement ...";
+    content.appendChild( traitement_content ); 
+  }
+
+  public updateLoadUploade(value: number, element: string): void {
+    var content: Element = document.getElementsByTagName('file-drop')[0].getElementsByTagName('div')[0].getElementsByTagName('div')[0];
+    var width: number = content.getElementsByTagName('img')[0].offsetWidth - 4;
+
+    document.getElementById('progress').style.width = String((value / 100) * width + "px");
+    document.getElementById("upload").innerHTML = "Envoie du fichier ... (" + String(value).split('.')[0] + "%)";
+  }
+
+  public stopUploadAnimation(element: string): void {
+    var content: Element = document.getElementsByTagName('file-drop')[0].getElementsByTagName('div')[0].getElementsByTagName('div')[0];
+    var traitement: Element = document.getElementById('traitement');
+    var cache_load: Element = document.getElementById('cache_load');
+    var progress: Element = document.getElementById('progress');
+    var image: HTMLElement = document.getElementById(element);
+    var upload: Element = document.getElementById('upload');
+
+    if (traitement) { content.removeChild(traitement) }
+    if (cache_load) { content.removeChild(cache_load) }
+    if (progress) { content.removeChild(progress) }
+    if (upload) { content.removeChild(upload) }
+
+    var drop_content: HTMLElement = document.createElement( "span" );
+    drop_content.setAttribute( "id", "drop_content" );
+    drop_content.textContent = "Cliquez ou glicer un fichier";
+    content.appendChild( drop_content ); 
+
+    image.style.transition = "";
+    image.style.boxShadow = "";
   }
 }

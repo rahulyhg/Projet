@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Md5 } from 'ts-md5/dist/md5';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpEvent } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { map } from 'rxjs/operators';
 
@@ -44,16 +44,10 @@ export class SettingService {
     //   this.settingApi.postSetting(new Setting(data.data));
     // });
 
-  public getSettingById(id: number): Observable<Api> {
+  public getSetting(): Observable<HttpEvent<Object>> {
     console.log("GET / SETTING / getSettingById");
 
-    var reponse: Observable<Api> = this.http.get<Api>(this.Api + id).pipe(map((data: Api) => {
-      data.data = new Setting(data.data)
-      return data
-    }));
-
-    this.InitReponse(reponse);
-    return reponse;
+    return this.http.get(this.Api, { observe: 'events' });
   }
 
   public getSettingList(): Observable<Api> {

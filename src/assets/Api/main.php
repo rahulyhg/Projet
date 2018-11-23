@@ -8,6 +8,7 @@
   require_once "Group.php";
   require_once "RightGroupPage.php";
   require_once "Page.php";
+  require_once "Setting.php";
 
   $request_method=$_SERVER["REQUEST_METHOD"];
 
@@ -146,6 +147,37 @@
           $json = json_decode(file_get_contents("php://input"), true);
           if(empty($_GET["param1"]))
             returnJson($api, $auth, $ErrorMsg, Page::postPage($json));
+          break;
+      }
+      break;
+    case 'Setting':
+      switch($request_method) {
+        case 'GET':
+          if(!empty($_GET["param1"]))
+          {
+            if(empty($_GET['param2']) && empty($_GET['param3']))
+              returnJson($api, $auth, $ErrorMsg, Setting::getSettingById($_GET["param1"]));
+          } else
+            returnJson($api, $auth, $ErrorMsg, Setting::getSettingList());
+          break;
+        case 'PUT':
+          $json = json_decode(file_get_contents("php://input"), true);
+          if(!empty($_GET["param1"]))
+          {
+            if(empty($_GET['param2']) && empty($_GET['param3']))
+              returnJson($api, $auth, $ErrorMsg, Setting::putSetting($_GET["param1"], $json));
+          }
+          break;
+        case "DELETE":
+          if(!empty($_GET["param1"])) {
+            if(empty($_GET['param2']) && empty($_GET['param3']))
+              returnJson($api, $auth, $ErrorMsg, Setting::deleteSetting($_GET["param1"]));
+          }
+          break;
+        case 'POST':
+          $json = json_decode(file_get_contents("php://input"), true);
+          if(empty($_GET["param1"]))
+            returnJson($api, $auth, $ErrorMsg, Setting::postSetting($json));
           break;
       }
       break;

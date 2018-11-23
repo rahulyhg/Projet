@@ -1,5 +1,5 @@
 <ngx-loading-bar [includeSpinner]="true" color="#00BE00" height="4px"></ngx-loading-bar>
-<ngx-spinner bdColor="rgba(51,51,51,0)" size="medium" color="#333" class="la-ball-atom la-dark la-3x" type="ball-atom" la-dark></ngx-spinner>
+<ngx-spinner bdColor="rgba(51,51,51,0)" size="medium" color="{{ setting.primary_load_color }}" class="la-ball-atom la-dark la-3x" type="ball-atom" la-dark></ngx-spinner>
 <div id="page_content" [class.example-is-mobile]="mobileQuery.matches" (click)="nav_m_blur_click()">
   <header id="page_header">
     <div class="bouton_nav_mobile nav_m">
@@ -19,7 +19,7 @@
         <li *ngIf="!_currentUser.group.rightGroupPage.User_Access" style="color: #555;">Mon Compte ({{ _currentUser.login }})</li>
         <li class="lien" (click)="logOut()">Se déconnecter</li>
       </div>
-      <div *ngIf="!_currentUser.statut">
+      <div *ngIf="!_currentUser.statut && _currentPage.route !== '/Login'">
         <li class="lien"><a routerLink="/Login">Se Connecter</a></li>
       </div>
     </div>
@@ -52,40 +52,39 @@
     </mat-sidenav-content>
   </mat-sidenav-container>
 
-<div class="nav_n">
-  <div id="page_nav">
-    <div class="page_nav_content">
-        <div class="page_nav_logo">
-          <a routerLink="/Accueil"><img class="lien" src="assets/uploads/images/logo.jpg"></a>
+  <div class="nav_n">
+    <div id="page_nav">
+      <div class="page_nav_content">
+          <div class="page_nav_logo">
+            <a routerLink="/Accueil"><img class="lien" src="assets/uploads/images/logo.jpg"></a>
+          </div>
+          <div class="page_nav_liens">
+            <li class="lien" >Lien 1</li>
+            <li class="lien" >Lien 2</li>
+            <li class="lien" >Lien 3</li>
+            <li class="lien" >Lien 4</li>
+          </div>
         </div>
-        <div class="page_nav_liens">
-          <li class="lien" >Lien 1</li>
-          <li class="lien" >Lien 2</li>
-          <li class="lien" >Lien 3</li>
-          <li class="lien" >Lien 4</li>
-        </div>
-      </div>
+    </div>
+    
+    <section id="dev" *ngIf="_currentUser.group.rightGroupPage.EditBar_Access">
+      <div *ngIf="_currentUser.group.rightGroupPage.SelectedPageManagement_Access" class="edit"><a routerLink="/PageManagement/{{ _currentPage.id }}"><i class="far fa-edit"></i></a></div>
+      <div *ngIf="_currentUser.group.rightGroupPage.EditBar_Dev" class="dev"><a routerLink="/Developer"><i class="fas fa-code"></i></a></div>
+      <div *ngIf="_currentUser.group.rightGroupPage.Settings_Access" class="settings" ><a routerLink="/Settings"><i class="fas fa-cogs"></i></a></div>
+    </section>
   </div>
-  
-  <section id="dev" *ngIf="_currentUser.group.rightGroupPage.EditBar_Access">
-    <div *ngIf="_currentUser.group.rightGroupPage.SelectedPageManagement_Access" class="edit"><a routerLink="/PageManagement/{{ _currentPage.id }}"><i class="far fa-edit"></i></a></div>
-    <div *ngIf="_currentUser.group.rightGroupPage.EditBar_Dev" class="dev"><a routerLink="/Developer"><i class="fas fa-code"></i></a></div>
-    <div *ngIf="_currentUser.group.rightGroupPage.Settings_Access" class="settings" ><a routerLink="/Settings"><i class="fas fa-cogs"></i></a></div>
+
+  <section id="page_section">
+    <router-outlet></router-outlet>
   </section>
-</div>
 
-<section id="page_section">
-  <router-outlet></router-outlet>
-</section>
-
-<footer id="footer">
-  <div class="left_content">
-    Footer
-  </div>
-  <div class="right_content">
-    {{ setting.version }}
-    <a href="https://github.com/dov118/Projet">Page Git du projet</a>
-  </div>
-</footer>
-
+  <footer id="footer">
+    <div class="left_content">
+      Footer
+    </div>
+    <div class="right_content">
+      {{ setting.version }}
+      <a href="https://github.com/dov118/Projet">Page Git du projet</a>
+    </div>
+  </footer>
 </div>
