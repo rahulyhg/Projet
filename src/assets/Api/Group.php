@@ -6,9 +6,14 @@
   {
     public static function getGroupById($id) {
   		global $connection;
-  		$rs = $connection->query("SELECT * from `Group` WHERE `id`='$id'")->fetchAll(PDO::FETCH_CLASS, "Group")[0];
-      $rs->rightGroupPage = RightGroupPage::getRightGroupPageById($rs->rightGroupPage);
-
+  		$rs = $connection->query("SELECT * from `Group` WHERE `id`='$id'")->fetchAll(PDO::FETCH_CLASS, "Group");
+      if($rs) {
+        $rs = $rs[0];
+        $rs->rightGroupPage = RightGroupPage::getRightGroupPageById($rs->rightGroupPage);
+      } else {
+        $rs = null;
+      }
+    
       return $rs;
     }
 

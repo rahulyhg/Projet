@@ -6,19 +6,52 @@
   {
     public static function getUserById($id) {
   		global $connection;
-  		$rs = $connection->query("SELECT * from `User` WHERE `id`='$id'")->fetchAll(PDO::FETCH_CLASS, "User")[0];
-      $rs->group = Group::getGroupById($rs->group);
-
+  		$rs = $connection->query("SELECT * from `User` WHERE `id`='$id'")->fetchAll(PDO::FETCH_CLASS, "User");
+      if($rs) {
+        $rs = $rs[0];
+        $rs->group = Group::getGroupById($rs->group);
+      } else {
+        $rs = null;
+      }
       return $rs;
     }
 
     public static function Auth($login, $password) {
       global $connection;
-      $rs = $connection->query("SELECT * from `User` WHERE `login`='$login' AND `password`='$password'")->fetchAll(PDO::FETCH_CLASS, "User")[0];
-      $rs->group = Group::getGroupById($rs->group);
+      $rs[0] = $connection->query("SELECT * from `User` WHERE `login`='$login' AND `password`='$password'")->fetchAll(PDO::FETCH_CLASS, "User");
+      if($rs[0]) {
+        $result[0] = $rs[0][0];
+        $result[0]->group = Group::getGroupById($result[0]->group);
+        User::logIn($result[0]->id);
+        $result[1] = null;
+      } else {
+        $login_ok = "0";
+        $password_ok = "0";
 
-      User::logIn($rs->id);
-      return $rs;
+        $rs = $connection->query("SELECT * from `User` WHERE `login`='$login'")->fetchAll(PDO::FETCH_CLASS, "User");
+        if($rs) {
+          $login_ok = "1";
+        } else {
+          $rs = $connection->query("SELECT * from `User` WHERE `password`='$password'")->fetchAll(PDO::FETCH_CLASS, "User");
+          if($rs) {
+            $password_ok = "1";
+          }
+        }
+
+        $result[0] = null;
+
+        if($login_ok == true && $password_ok == false) {
+          $result[1] = 2;
+        }
+        if($login_ok == false && $password_ok == true) {
+          $result[1] = 1;
+        }
+        if($login_ok == false && $password_ok == false) {
+          $result[1] = 3;
+        }
+      }
+
+      return $result;
     }
 
     public static function logIn($id) {
@@ -96,6 +129,7 @@
       $login = $json['login'];
       $password = $json['password'];
       $profile = $json['profile'];
+      $statut = $json['statut'];
       $date_time_signIn = $json['date_time_signIn'];
       $date_time_logIn = $json['date_time_logIn'];
       $group = $json['group']['id'];
@@ -103,10 +137,11 @@
       $name = $json['name'];
       $firstName = $json['firstName'];
       $birthDate = $json['birthDate'];
+      $token = bin2hex(random_bytes(100));
 
-      $connection->query("INSERT INTO `User` (`login`, `password`, `profile`, `date_time_signIn`, `date_time_logIn`, `group`, `gameTag`, `name`, `firstName`, `birthDate`) VALUES ('$login', '$password', '$profile', '$date_time_signIn', '$date_time_logIn', '$group', '$gameTag', '$name', '$firstName', '$birthDate')");
+      $connection->query("INSERT INTO `User` (`login`, `password`, `profile`, `statut`, `date_time_signIn`, `date_time_logIn`, `group`, `gameTag`, `name`, `firstName`, `birthDate`, `token`) VALUES ('$login', '$password', '$profile', '$statut', '$date_time_signIn', '$date_time_logIn', '$group', '$gameTag', '$name', '$firstName', '$birthDate', '$token')");
 
-      if($json['id'] === 0) {
+      if($json['group']['id'] === 0) {
         $id = $connection->query("SELECT `id` FROM `User` ORDER BY `id` DESC LIMIT 1")->fetchAll()[0]['id'];
         $json['group']['name'] = "_user_".$id;
         $id_group = Group::postGroup($json['group']);

@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { DatePipe } from '@angular/common';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material';
 
 import { FileSystemFileEntry } from '../../../node_modules/ngx-file-drop';
@@ -33,6 +33,8 @@ export class SelectedUserManagementComponent implements OnInit {
   private Reponse_getUserById_form: Observable<Object>;
   private Reponse_getGroupList: Observable<Object>;
 
+  private subscribe: Subscription;
+
   public _currentUser: User;
   public _RightEdit: boolean;
   private _ChangeRightPage: boolean;
@@ -48,6 +50,7 @@ export class SelectedUserManagementComponent implements OnInit {
   public MsgTemplate: string;
   private statutButton: boolean;
   private setting: Setting;
+  private statut: boolean;
   private try: number;
 
   constructor(private route: ActivatedRoute, private app: AppComponent, private userApi: UserService, private router: Router, private fb: FormBuilder, private groupApi: GroupService, private rightGroupPageApi: RightGroupPageService, private uploadApi: UploadService, private date: DatePipe, private generic: GenericModule, private dialog: MatDialog) { 
@@ -83,13 +86,14 @@ export class SelectedUserManagementComponent implements OnInit {
       this.MsgTemplate = null;
       this.statutButton = false;
       this.setting = new Setting(null);
+      this.statut = true;
       this.try = 0;
     }
 
   private openDialog(): void {
     const dialogRef = this.dialog.open(DeleteUserPopup);
 
-    dialogRef.afterClosed().subscribe(result => {
+    this.subscribe = dialogRef.afterClosed().subscribe(result => {
       if(result)
         this.DeleteUser();
     });
@@ -98,31 +102,36 @@ export class SelectedUserManagementComponent implements OnInit {
   private ChangePassword(): void {
     const dialogRef = this.dialog.open(NewPasswordPopupUser);
 
-    dialogRef.keydownEvents().subscribe(event => {
+    this.subscribe = dialogRef.keydownEvents().subscribe(event => {
       if(event.key === "Enter") {
         if(this.verifNewPassword())
           dialogRef.close();
       }
     })
 
-    dialogRef.afterClosed().subscribe(result => {
+    this.subscribe = dialogRef.afterClosed().subscribe(result => {
       if(result)
         this.verifNewPassword();
     });
   }
 
-  // Initialisation de la page
-  public ngOnInit(): void {
-    this.app.ngOnInit();
-
-    var statut: boolean = false;
-    var a = setInterval(() => {
-      if(!statut) {
-        if(this.app.statut) {
-          statut = true;
-          clearInterval(a);
-          this.Init();
-        }
+  public ngOnInit(): void { 
+    var t = setInterval(() => {
+      if(this.app.statut_app && this.statut) {
+        clearInterval(t);
+  
+        this.app.ngOnInit();
+  
+        var statut: boolean = false;
+        var a = setInterval(() => {
+          if(!statut) {
+            if(this.app.statut) {
+              statut = true;
+              clearInterval(a);
+              this.Init();
+            }
+          }
+        }, 1);
       }
     }, 1);
   }
@@ -137,8 +146,8 @@ export class SelectedUserManagementComponent implements OnInit {
     var statut_Reponse_getRightGroupPageList :boolean = false;
     var statut_Reponse_getGroupList :boolean = false;
 
-    this.Reponse_getUserById.subscribe((events: Response) => {
-      if(event && events.body !== undefined) {
+    this.subscribe = this.Reponse_getUserById.subscribe((events: Response) => {
+      if(events.ok && events.body !== undefined) {
         var data: any = events.body;
         var data_r: User = null;
         data_r = this.generic.createUser(data.data);
@@ -155,14 +164,16 @@ export class SelectedUserManagementComponent implements OnInit {
       if(statut_Reponse_getUserById) {
         clearInterval(b);
 
+        this.userApi.token = this._currentUser.token;
+
         if(String(id_user) === "New" || Number(id_user) === 1)
           this.Reponse_getUserById_form = this.userApi.getUserById(1);
         else
           this.Reponse_getUserById_form = this.userApi.getUserById(Number(id_user));
 
         this.Reponse_getUserById_initial = this.Reponse_getUserById_form;
-        this.Reponse_getUserById_form.subscribe((events: Response) => {
-          if(event && events.body !== undefined) {
+        this.subscribe = this.Reponse_getUserById_form.subscribe((events: Response) => {
+          if(events.ok && events.body !== undefined) {
             var data: any = events.body;
 
             var data: any = events.body;
@@ -194,8 +205,8 @@ export class SelectedUserManagementComponent implements OnInit {
         clearInterval(c);
 
         // On place dans un deuxième objet les valeurs initial de l'utilisateur
-        this.Reponse_getUserById_initial.subscribe((events: Response) => {
-          if(event && events.body !== undefined) {
+        this.subscribe = this.Reponse_getUserById_initial.subscribe((events: Response) => {
+          if(events.ok && events.body !== undefined) {
             var data: any = events.body;
 
             data.data.date_time_logIn = this.generic.changeDateTimeFormatFromBdd(data.data.date_time_logIn);
@@ -217,11 +228,13 @@ export class SelectedUserManagementComponent implements OnInit {
       if(statut_Reponse_getUserById_form) {
         clearInterval(d);
 
+        this.groupApi.token = this._currentUser.token;
+
         // Récupération de la liste des groupes
         this.Reponse_getGroupList = this.groupApi.getGroupList();
         var Reponse_getGroupList_initial: Observable<Object> = this.Reponse_getGroupList;
-        this.Reponse_getGroupList.subscribe((events: Response) => {
-          if(event && events.body !== undefined) {
+        this.subscribe = this.Reponse_getGroupList.subscribe((events: Response) => {
+          if(events.ok && events.body !== undefined) {
             var data: any = events.body;
             var groupList: Group[] = [];
             var rightGroupPageList: RightGroupPage[] = [];
@@ -257,8 +270,8 @@ export class SelectedUserManagementComponent implements OnInit {
           }
         })
 
-        Reponse_getGroupList_initial.subscribe((events: Response) => {
-          if(event && events.body !== undefined) {
+        this.subscribe = Reponse_getGroupList_initial.subscribe((events: Response) => {
+          if(events.ok && events.body !== undefined) {
             var data: any = events.body;
     
             var data_r: Group[] = null;
@@ -271,7 +284,7 @@ export class SelectedUserManagementComponent implements OnInit {
     }, 1);
 
     var e = setInterval(() => {
-      this.Reponse_getUserById_form.subscribe(data => {
+      this.subscribe = this.Reponse_getUserById_form.subscribe(data => {
         if(statut_Reponse_getRightGroupPageList && statut_Reponse_getGroupList) {
           clearInterval(e);
 
@@ -555,7 +568,8 @@ export class SelectedUserManagementComponent implements OnInit {
 
         if(this.route.snapshot.paramMap.get('id') === "New") {
           if(this._currentUser.group.rightGroupPage.UserManagement_AddUser) {
-            this.userApi.postUser(user).subscribe((data) => { 
+            this.userApi.token = this._currentUser.token;
+            this.subscribe = this.userApi.postUser(user).subscribe((data) => { 
               if(data.ok)
                 this.router.navigate(['/UserManagement']);
             });
@@ -572,7 +586,8 @@ export class SelectedUserManagementComponent implements OnInit {
           } else
             user.id = this.initial_user.id;
 
-          this.userApi.putUser(this.user.id, user, regenerate_password).subscribe(data => {
+          this.userApi.token = this._currentUser.token;
+          this.subscribe = this.userApi.putUser(this.user.id, user, regenerate_password).subscribe(data => {
             if(data.ok) {
               this.router.navigate(['/UserManagement'])
               if(this.user.id === this._currentUser.id)
@@ -587,7 +602,8 @@ export class SelectedUserManagementComponent implements OnInit {
 
   private DeleteUser(): void {
     if(this._currentUser.group.rightGroupPage.SelectedUserManagement_DeleteUser) {
-      this.userApi.deleteUser(this.user.id).subscribe(data => {
+      this.userApi.token = this._currentUser.token;
+      this.subscribe = this.userApi.deleteUser(this.user.id).subscribe(data => {
         if(data.ok) {
           this.router.navigate(['/UserManagement']);
           if(this.user.id === this._currentUser.id)
@@ -612,7 +628,8 @@ export class SelectedUserManagementComponent implements OnInit {
 
       var name: string = "profile" + Math.random() * 1000 + ".jpg";
       if(event.target.files[0] !==undefined) {
-        this.uploadApi.UploadFile(event.target.files[0], name).subscribe(event => {
+        this.uploadApi.token = this._currentUser.token;
+        this.subscribe = this.uploadApi.UploadFile(event.target.files[0], name).subscribe(event => {
           this.statutButton = true;
           var load: any = event;
           var a: number = load.loaded * 100 / load.total;
@@ -655,7 +672,8 @@ export class SelectedUserManagementComponent implements OnInit {
         reader.readAsDataURL(file);
       })
       var name: string = "profile" + Math.random() * 1000 + ".jpg";
-      (event.files[0].fileEntry as FileSystemFileEntry).file((file: File) => { this.uploadApi.UploadFile(file, name).subscribe(event => {
+      this.uploadApi.token = this._currentUser.token;
+      (event.files[0].fileEntry as FileSystemFileEntry).file((file: File) => { this.subscribe = this.uploadApi.UploadFile(file, name).subscribe(event => {
         this.statutButton = true;
         var load: any = event;
         var a: number = load.loaded * 100 / load.total;
@@ -728,6 +746,13 @@ export class SelectedUserManagementComponent implements OnInit {
       user.birthDate = value.birthDate;
     }
     return user;
+  }
+
+  // Traitement a la fermeture de l'application
+  public ngOnDestroy(): void {
+    this.statut = false;
+    if(this.subscribe !== undefined)
+      this.subscribe.unsubscribe();
   }
 }
 

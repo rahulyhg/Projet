@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material';
 
 import { FileSystemFileEntry } from '../../../node_modules/ngx-file-drop';
@@ -25,6 +25,7 @@ export class UserComponent implements OnInit {
   private Reponse_getUserById: Observable<Object>;
   private Reponse_getUserById_form: Observable<Object>;
   private Reponse_getUserById_initial: Observable<Object>;
+  private subscribe: Subscription;
 
   public UserForm: FormGroup;
   private initial_User: User;
@@ -35,6 +36,7 @@ export class UserComponent implements OnInit {
   public edit: boolean;
   public statutButton: boolean;
   public setting: Setting;
+  private statut: boolean;
   private try: number;
 
   constructor(private app: AppComponent, private router: Router, private userApi: UserService, private route: ActivatedRoute, private fb: FormBuilder, private uploadApi: UploadService, private generic: GenericModule, private dialog: MatDialog) { 
@@ -54,37 +56,44 @@ export class UserComponent implements OnInit {
     this.edit = false;
     this.statutButton = false;
     this.setting = new Setting(null);
+    this.statut = true;
     this.try = 0;
   }
 
   private openDialog(): void {
     const dialogRef = this.dialog.open(NewPasswordPopup);
 
-    dialogRef.keydownEvents().subscribe(event => {
+    this.subscribe = dialogRef.keydownEvents().subscribe(event => {
       if(event.key === "Enter") {
         if(this.verifNewPassword())
           dialogRef.close();
       }
     })
 
-    dialogRef.afterClosed().subscribe(result => {
+    this.subscribe = dialogRef.afterClosed().subscribe(result => {
       if(result) {
         this.verifNewPassword();
       }
     });
   }
 
-  public ngOnInit(): void {
-    this.app.ngOnInit();
-
-    var statut: boolean = false;
-    var a = setInterval(() => {
-      if(!statut) {
-        if(this.app.statut) {
-          clearInterval(a);
-          statut = true;
-          this.Init();
-        }
+  public ngOnInit(): void { 
+    var t = setInterval(() => {
+      if(this.app.statut_app && this.statut) {
+        clearInterval(t);
+  
+        this.app.ngOnInit();
+  
+        var statut: boolean = false;
+        var a = setInterval(() => {
+          if(!statut) {
+            if(this.app.statut) {
+              statut = true;
+              clearInterval(a);
+              this.Init();
+            }
+          }
+        }, 1);
       }
     }, 1);
   }
@@ -97,12 +106,14 @@ export class UserComponent implements OnInit {
     var statut_Reponse_getUserById_form: boolean = false;
     var statut_Reponse_getUserById_initial: boolean = false;
 
-    this.Reponse_getUserById.subscribe((events: Response) => {
-      if(event && events.body !== undefined) {
+    this.subscribe = this.Reponse_getUserById.subscribe((events: Response) => {
+      if(events.ok && events.body !== undefined) {
         var data: any = events.body;
         var data_r: User = null;
         var obs: Observable<Object> = null;
         data_r = this.generic.createUser(data.data);
+
+        this.userApi.token = this._currentUser.token;
 
         if(this.router.url !== "/User/MonCompte")
           obs = this.userApi.getUserById(Number(this.route.snapshot.paramMap.get('id')));
@@ -121,8 +132,8 @@ export class UserComponent implements OnInit {
       if(statut_Reponse_getUserById) {
         clearInterval(b);
         this.Reponse_getUserById_initial = this.Reponse_getUserById_form;
-        this.Reponse_getUserById_form.subscribe((events: Response) => {
-          if(event && events.body !== undefined) {
+        this.subscribe = this.Reponse_getUserById_form.subscribe((events: Response) => {
+          if(events.ok && events.body !== undefined) {
             var data: any = events.body;
             if(data.data !== null) {
               var data_r: User = null;
@@ -151,8 +162,8 @@ export class UserComponent implements OnInit {
       if(statut_Reponse_getUserById_form) {
         clearInterval(c);
 
-        this.Reponse_getUserById_initial.subscribe((events: Response) => {
-          if(event && events.body !== undefined) {
+        this.subscribe = this.Reponse_getUserById_initial.subscribe((events: Response) => {
+          if(events.ok && events.body !== undefined) {
             var data: any = events.body;
 
             var data_r: User = null;
@@ -168,7 +179,7 @@ export class UserComponent implements OnInit {
       }
     }, 1);
 
-    this.Reponse_getUserById.subscribe((data) => {
+    this.subscribe = this.Reponse_getUserById.subscribe((data) => {
       var d = setInterval(() => {
         if(statut_Reponse_getUserById_initial) {
           clearInterval(d);
@@ -178,7 +189,7 @@ export class UserComponent implements OnInit {
             this.router.navigate(['/Accueil']);
           }
 
-          this.router.events.subscribe((path: any) => {
+          this.subscribe = this.router.events.subscribe((path: any) => {
             if(path.url !== undefined && path.url !== this.one && path.url.split("/")[1] === "User") {
               this.one = path.url;
               this.ngOnInit();
@@ -220,7 +231,8 @@ export class UserComponent implements OnInit {
     if(this.user.password !== this.initial_User.password)
       regenerate_password = true;
 
-    this.userApi.putUser(this.user.id, this.user, regenerate_password).subscribe((data) => { 
+    this.userApi.token = this._currentUser.token;
+    this.subscribe = this.userApi.putUser(this.user.id, this.user, regenerate_password).subscribe((data) => { 
       if(data.ok) {
         this.edit = false;
         this.ngOnInit();
@@ -241,7 +253,8 @@ export class UserComponent implements OnInit {
 
       var name: string = "profile" + Math.random() * 1000 + ".jpg";
       if(event.target.files[0] !==undefined) {
-        this.uploadApi.UploadFile(event.target.files[0], name).subscribe(event => {
+        this.uploadApi.token = this._currentUser.token;
+        this.subscribe = this.uploadApi.UploadFile(event.target.files[0], name).subscribe(event => {
           this.statutButton = true;
           var load: any = event;
           var a: number = load.loaded * 100 / load.total;
@@ -284,7 +297,8 @@ export class UserComponent implements OnInit {
         reader.readAsDataURL(file);
       })
       var name: string = "profile" + Math.random() * 1000 + ".jpg";
-      (event.files[0].fileEntry as FileSystemFileEntry).file((file: File) => { this.uploadApi.UploadFile(file, name).subscribe(event => {
+      this.uploadApi.token = this._currentUser.token;
+      (event.files[0].fileEntry as FileSystemFileEntry).file((file: File) => { this.subscribe = this.uploadApi.UploadFile(file, name).subscribe(event => {
         this.statutButton = true;
         var load: any = event;
         var a: number = load.loaded * 100 / load.total;
@@ -330,6 +344,13 @@ export class UserComponent implements OnInit {
     if(value.login.length >= this.app.setting.minLengthLogin && value.gameTag.length >= this.app.setting.minLengthGameTag &&
       value.name.length >= this.app.setting.minLengthName && value.firstName.length >= this.app.setting.minLengthFirstName)
       this.statutButton = false;
+  }
+
+  // Traitement a la fermeture de l'application
+  public ngOnDestroy(): void {
+    this.statut = false;
+    if(this.subscribe !== undefined)
+      this.subscribe.unsubscribe();
   }
 }
 

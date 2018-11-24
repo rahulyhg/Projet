@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Md5 } from 'ts-md5/dist/md5';
-import { HttpClient, HttpEvent } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { map } from 'rxjs/operators';
 
@@ -13,41 +13,14 @@ import { Observable } from 'rxjs';
 })
 export class SettingService {
   private Api:string = environment.apiUrl + "Setting/";
+  public token: string = null;
 
   constructor(private http: HttpClient) { }
-
-    // private Reponse_getSettingById: Observable<Api>;
-    // private Reponse_getSettingList: Observable<Api>;
-
-    // this.Reponse_getSettingById = null;
-    // this.Reponse_getSettingList = null;
-
-    // this.Reponse_getSettingById = this.settingApi.getSettingById(2);
-    // this.Reponse_getSettingById.subscribe((data: Api) => {
-    //   console.log(data)
-    // });
-
-    // this.Reponse_getSettingList = this.settingApi.getSettingList();
-    // this.Reponse_getSettingList.subscribe((data: Api) => {
-    //   console.log(data)
-    // });
-
-    // this.Reponse_getSettingById = this.settingApi.getSettingById(2);
-    // this.Reponse_getSettingById.subscribe((data: Api) => {
-    //   this.settingApi.putSetting(3, new Setting(data.data));
-    // });
-
-    //this.settingApi.deleteSetting(3);
-
-    // this.Reponse_getSettingById = this.settingApi.getSettingById(2);
-    // this.Reponse_getSettingById.subscribe((data: Api) => {
-    //   this.settingApi.postSetting(new Setting(data.data));
-    // });
 
   public getSetting(): Observable<HttpEvent<Object>> {
     console.log("GET / SETTING / getSettingById");
 
-    return this.http.get(this.Api, { observe: 'events' });
+    return this.http.get(this.Api, { headers: new HttpHeaders().set('Authorization', this.token), observe: 'events' });
   }
 
   public getSettingList(): Observable<Api> {

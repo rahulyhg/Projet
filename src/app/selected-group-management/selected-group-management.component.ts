@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute} from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material';
 
 import { GenericModule } from '../generic/generic.modules';
@@ -28,6 +28,7 @@ export class SelectedGroupManagementComponent implements OnInit {
   private Reponse_getGroupById_form: Observable<Object>;
   private Reponse_getGroupById_initial: Observable<Object>;
   private Reponse_getRightGroupPageList: Observable<Object>;
+  private subscribe: Subscription;
 
   public _currentUser: User;
   public RightGroupPageList: RightGroupPage[];
@@ -38,6 +39,7 @@ export class SelectedGroupManagementComponent implements OnInit {
   public canChangeName: boolean;
   public MsgTemplate: string;
   public statutButton: boolean;
+  private statut: boolean;
   public setting: Setting;
   private try: number;
 
@@ -67,6 +69,7 @@ export class SelectedGroupManagementComponent implements OnInit {
     this.MsgTemplate = null;
     this.statutButton = false;
     this.setting = new Setting(null);
+    this.statut = true;
     this.try = 0;
   }
 
@@ -74,25 +77,29 @@ export class SelectedGroupManagementComponent implements OnInit {
   private openDialog(): void {
     const dialogRef = this.dialog.open(DeleteGroupPopup);
 
-    dialogRef.afterClosed().subscribe(result => {
+    this.subscribe = dialogRef.afterClosed().subscribe(result => {
       if(result)
         this.DeleteGroup();
     });
   }
 
-  // Initialisation de la page
-  public ngOnInit(): void {
-    // Initialisation de la page
-    this.app.ngOnInit();
-
-    var statut: boolean = false;
-    var a = setInterval(() => {
-      if(!statut) {
-        if(this.app.statut) {
-          statut = true;
-          clearInterval(a);
-          this.Init();
-        }
+  public ngOnInit(): void { 
+    var t = setInterval(() => {
+      if(this.app.statut_app && this.statut) {
+        clearInterval(t);
+  
+        this.app.ngOnInit();
+  
+        var statut: boolean = false;
+        var a = setInterval(() => {
+          if(!statut) {
+            if(this.app.statut) {
+              statut = true;
+              clearInterval(a);
+              this.Init();
+            }
+          }
+        }, 1);
       }
     }, 1);
   }
@@ -107,8 +114,8 @@ export class SelectedGroupManagementComponent implements OnInit {
     var statut_Reponse_getUserById: boolean = false;
 
     this.Reponse_getUserById = this.app.Reponse_getUserById;
-    this.Reponse_getUserById.subscribe((events: Response) => {
-      if(event && events.body !== undefined) {
+    this.subscribe = this.Reponse_getUserById.subscribe((events: Response) => {
+      if(events.ok && events.body !== undefined) {
         var data: any = events.body;
         var data_r: User = null;
         data_r = this.generic.createUser(data.data);
@@ -125,14 +132,16 @@ export class SelectedGroupManagementComponent implements OnInit {
       if(statut_Reponse_getUserById) {
         clearInterval(b);
 
+        this.groupApi.token = this._currentUser.token;
+
         if(String(id_group) === "New" || Number(id_group) === 1)
           this.Reponse_getGroupById_form = this.groupApi.getGroupById(1);
         else
           this.Reponse_getGroupById_form = this.groupApi.getGroupById(Number(id_group));
 
         this.Reponse_getGroupById_initial = this.Reponse_getGroupById_form;
-        this.Reponse_getGroupById_form.subscribe((events: Response) => {
-          if(event && events.body !== undefined) {
+        this.subscribe = this.Reponse_getGroupById_form.subscribe((events: Response) => {
+          if(events.ok && events.body !== undefined) {
             var data: any = events.body;
             if(data.data !== null) {
               var data_r: Group = null;
@@ -147,8 +156,8 @@ export class SelectedGroupManagementComponent implements OnInit {
         })
 
         // On place dans un deuxième objet les valeurs initial du groupe
-        this.Reponse_getGroupById_initial.subscribe((events: Response) => {
-          if(event && events.body !== undefined) {
+        this.subscribe = this.Reponse_getGroupById_initial.subscribe((events: Response) => {
+          if(events.ok && events.body !== undefined) {
             var data: any = events.body;
             this.initial_group = this.generic.createGroup(data.data);
           }
@@ -160,9 +169,11 @@ export class SelectedGroupManagementComponent implements OnInit {
       if(statut_Reponse_getGroupById_form) {
         clearInterval(c);
 
+        this.rightGroupPageApi.token = this._currentUser.token;
+
         this.Reponse_getRightGroupPageList = this.rightGroupPageApi.getRightGroupPageList();
-        this.Reponse_getRightGroupPageList.subscribe((events: Response) => {
-          if(event && events.body !== undefined) {
+        this.subscribe = this.Reponse_getRightGroupPageList.subscribe((events: Response) => {
+          if(events.ok && events.body !== undefined) {
             var data: any = events.body;
             var list: RightGroupPage[] = [];
 
@@ -195,8 +206,8 @@ export class SelectedGroupManagementComponent implements OnInit {
     var d = setInterval(() => {
       if(statut_Reponse_getRightGroupPageList) {
         clearInterval(d);
-        
-        this.Reponse_getUserById.subscribe((data: Api) => {
+
+        this.subscribe = this.Reponse_getUserById.subscribe((data) => {
           // Adaptation du DOOM (footer) car il y a la bar d'edition
           if(this.EditBar.nativeElement !== null)
             document.getElementById("footer").style.marginBottom = this.EditBar.nativeElement.offsetHeight - 6 + "px";
@@ -440,7 +451,9 @@ export class SelectedGroupManagementComponent implements OnInit {
             }
           }
 
-          this.groupApi.putGroup(group.id, group).subscribe((data) => {
+          this.groupApi.token = this._currentUser.token;
+
+          this.subscribe = this.groupApi.putGroup(group.id, group).subscribe((data) => {
             if(data.ok) {
               this.router.navigate(['/GroupManagement']);
               if(group.id === this._currentUser.group.id)
@@ -456,8 +469,9 @@ export class SelectedGroupManagementComponent implements OnInit {
             console.log("Vous n'avez pas la permission de créer un groupe");
             this.router.navigate(['/GroupManagement']);
           }
+          this.groupApi.token = this._currentUser.token;
 
-          this.groupApi.postGroup(group).subscribe((data) => {
+          this.subscribe = this.groupApi.postGroup(group).subscribe((data) => {
             if(data.ok)
               this.router.navigate(['/GroupManagement']);
           });
@@ -472,7 +486,8 @@ export class SelectedGroupManagementComponent implements OnInit {
   // Traitement et apel de service pour supprimer le groupe
   private DeleteGroup(): void {
     if(this._currentUser.group.rightGroupPage.SelectedGroupManagement_EditGroup) {
-      this.groupApi.deleteGroup(this.group.id).subscribe((data) => {
+      this.groupApi.token = this._currentUser.token;
+      this.subscribe = this.groupApi.deleteGroup(this.group.id).subscribe((data) => {
         if(data.ok) {
           this.router.navigate(['/GroupManagement']);
           if(this.group.id === this._currentUser.id)
@@ -481,6 +496,13 @@ export class SelectedGroupManagementComponent implements OnInit {
       });
     } else 
       console.log("Vous n'avez pas la permission de supprimer ce groupe");
+  }
+
+  // Traitement a la fermeture de l'application
+  public ngOnDestroy(): void {
+    this.statut = false;
+    if(this.subscribe !== undefined)
+      this.subscribe.unsubscribe();
   }
 }
 

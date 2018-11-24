@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Md5 } from 'ts-md5/dist/md5';
-import { HttpClient, HttpEvent, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpResponse, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { map } from 'rxjs/operators';
 
@@ -13,6 +13,7 @@ import { Observable } from 'rxjs';
 })
 export class PageService {
   private Api:string = environment.apiUrl + "Page/";
+  public token: string = null;
 
   constructor(private http: HttpClient) { }
 
@@ -48,7 +49,7 @@ export class PageService {
   public getPageById(id: number): Observable<HttpEvent<Object>> {
     console.log("GET / PAGE / getPageById");
 
-    return this.http.get(this.Api + id, { observe: 'events' });
+    return this.http.get(this.Api + id, { headers: new HttpHeaders().set('Authorization', this.token), observe: 'events' });
   }
 
   public getPageByRoute(route: string): Observable<HttpEvent<Object>> {
@@ -56,7 +57,7 @@ export class PageService {
 
     if(route === "") { route = "*" }
 
-    return this.http.get(this.Api + "Route/" + route, { observe: 'events' });
+    return this.http.get(this.Api + "Route/" + route, { headers: new HttpHeaders().set('Authorization', this.token), observe: 'events' });
   }
 
   public getPageList(): Observable<Api> {
@@ -75,8 +76,7 @@ export class PageService {
 
   public putPage(id: number, page: Page): Observable<HttpResponse<Object>> {
     console.log("PUT / PAGE / putPage");
-
-    return this.http.put(this.Api + id, page, { observe: 'response' });
+    return this.http.put(this.Api + id, page, { headers: new HttpHeaders().set('Authorization', this.token), observe: 'response' });
   }
 
   public deletePage(id: number): void {

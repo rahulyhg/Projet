@@ -43,9 +43,9 @@ Faire la vérification des format de données (comme pour les @GameTag ou il y p
 
 Mettre a jour la date d edernier connection dans l'aPI
 
-voir le format max pour chaque input et adapter cette taille dans la base de donnée
+(faire le coté database) => voir le format max pour chaque input et adapter cette taille dans la base de donnée
 
-Mettre un temp d'arret avant d'afficher les données
+OK => Mettre un temp d'arret avant d'afficher les données
 
 Les liste déroulante pour proposer des valeur deja rentré dans ces champ sont avec un bacground white en mode sombre
 
@@ -69,29 +69,10 @@ mettre couleur rouge sur le bouton supprimer (popup)
 
 Voir pour pouvoir get des element meme quand il sont dans des ngIf (voir user.compnent.ts et user.compnent.html)
 
-OK => Voir pour la vérification de l'existence ou nom du groupe que l'on veut editer (a faire aussi pour UserManagement)
-
-(PAS POSSIBLE CAR PAS DINAMIQUE) OK => dans la gestion automatique des droit, rajouter que pour les pages dans lesquel on doit etre log la dependence de la page login
-
-OK => Voir si quand on fait page precedente, on a quand meme l'animation de chargement
-
-OK => l'emplacement du logo de chargement change avec la page
-(PAS BESOIN) OK => metre un gotop au start du loading page pour eviter le problème
-
-OK => voir pour elever la variable one dans SelectedGroupManagement
-
 verifier dans User et dans SelectedUserManagement que le login que l'on rentre est pas deja pris
-
-OK => faire comme pour la page User avec Page (detecter sur le parametre en GET change ou nom  dans l'URL)
-
-(NON car sinon plus de blur et on peut pas le mettre avnt) OK => mettre un display none sur le page_content avant de fait le startLoadPage
-
-OK => Le background du menu mobile est pas dynamique 
 
 voir pour que les .length dans les imput prenne en compte les données de l'auto complete sur mobile (firefox, chrome)
 
-OK => enlever le focus auto sur le input qui sont desactivé
-
-Firefox(PC) => Blocage d’une requête multiorigines (Cross-Origin Request)
+OK => Firefox(PC) => Blocage d’une requête multiorigines (Cross-Origin Request)
 
 traduire le nom du groupe dans User

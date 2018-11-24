@@ -6,7 +6,13 @@
   {
     public static function getPageById($id) {
       global $connection;
-      return $connection->query("SELECT * from `Page` WHERE `id`='$id'")->fetchAll(PDO::FETCH_CLASS, "Page")[0];
+      $rs = $connection->query("SELECT * from `Page` WHERE `id`='$id'")->fetchAll(PDO::FETCH_CLASS, "Page");
+      if($rs) {
+        $rs = $rs[0];
+      } else {
+        $rs = null;
+      }
+      return $rs;
     }
 
     public static function getPageByRoute($route) {

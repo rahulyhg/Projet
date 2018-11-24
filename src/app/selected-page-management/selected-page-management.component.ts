@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from "@angular/router";
 import { Location } from '@angular/common';
 import { FileSystemFileEntry } from '../../../node_modules/ngx-file-drop';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import { GenericModule } from '../generic/generic.modules';
 
@@ -22,9 +22,9 @@ import { Setting } from '../Class/Setting';
 export class SelectedPageManagementComponent implements OnInit {
   @ViewChild('EditBar') private EditBar: ElementRef;
 
-  private Reponse_getUserById: Observable<Object>;
   private Reponse_getPageById: Observable<Object>;
   private Reponse_getPageById_initial: Observable<Object>;
+  private subscribe: Subscription;
 
   public _currentUser: User;
   public page: Page;
@@ -33,10 +33,9 @@ export class SelectedPageManagementComponent implements OnInit {
   public setting: Setting;
   private one: string;
   private statutButton: boolean;
-  private try: number;
+  private statut: boolean;
 
   constructor(private app: AppComponent, private router: Router, private pageApi: PageService, private route: ActivatedRoute, private fb: FormBuilder, private uploadApi: UploadService, private generic: GenericModule, private location: Location) { 
-    this.Reponse_getUserById = new Observable<Object>();
     this.Reponse_getPageById = new Observable<Object>();
     
     this._currentUser = new User(null);
@@ -46,21 +45,26 @@ export class SelectedPageManagementComponent implements OnInit {
     this.setting = new Setting(null);
     this.one = null;
     this.statutButton = false;
-    this.try = 0;
+    this.statut = true;
   }
 
-  public ngOnInit(): void {
-    // Initialisation de la page
-    this.app.ngOnInit();
-
-    var statut: boolean = false;
-    var a = setInterval(() => {
-      if(!statut) {
-        if(this.app.statut) {
-          clearInterval(a);
-          statut = true;
-          this.Init();
-        }
+  public ngOnInit(): void { 
+    var t = setInterval(() => {
+      if(this.app.statut_app && this.statut) {
+        clearInterval(t);
+  
+        this.app.ngOnInit();
+  
+        var statut: boolean = false;
+        var a = setInterval(() => {
+          if(!statut) {
+            if(this.app.statut) {
+              statut = true;
+              clearInterval(a);
+              this.Init();
+            }
+          }
+        }, 1);
       }
     }, 1);
   }
@@ -72,29 +76,24 @@ export class SelectedPageManagementComponent implements OnInit {
     var statut_Reponse_getPageById: boolean = false;
     var statut_Reponse_getPageById_initial: boolean = false;
 
-    this.Reponse_getUserById = this.app.Reponse_getUserById;
-    this.Reponse_getUserById.subscribe((events: Response) => {
-      if(event && events.body !== undefined) {
-        var data: any = events.body;
-        var data_r: User = null;
-        data_r = this.generic.createUser(data.data);
+    var data_r: User = null;
+    data_r = this.generic.createUser(this.app._currentUser);
 
-        if(data_r !== null) {
-          this._currentUser = data_r;
-          statut_Reponse_getUserById = true;
-        }
-      }
-    })
+    if(data_r !== null) {
+      this._currentUser = data_r;
+      statut_Reponse_getUserById = true;
+    }
 
     var b = setInterval(() => {
       if(statut_Reponse_getUserById) {
         clearInterval(b);
 
+        this.pageApi.token = this._currentUser.token;
+
         this.Reponse_getPageById = this.pageApi.getPageById(Number(this.route.snapshot.paramMap.get('id')));
         this.Reponse_getPageById_initial = this.Reponse_getPageById;
-
-        this.Reponse_getPageById.subscribe((events: Response) => {
-          if(event && events.body !== undefined) {
+        this.subscribe = this.Reponse_getPageById.subscribe((events: Response) => {
+          if(events.ok && events.body !== undefined) {
             var data: any = events.body;
             if(data.data !== null) {
               var data_r: Page = null;
@@ -115,8 +114,8 @@ export class SelectedPageManagementComponent implements OnInit {
       if(statut_Reponse_getPageById) {
         clearInterval(c);
 
-        this.Reponse_getPageById_initial.subscribe((events: Response) => {
-          if(event && events.body !== undefined) {
+        this.subscribe = this.Reponse_getPageById_initial.subscribe((events: Response) => {
+          if(events.ok && events.body !== undefined) {
             var data: any = events.body;
             var data_r: Page = null;
             data_r = this.generic.createPage(data.data);
@@ -134,8 +133,8 @@ export class SelectedPageManagementComponent implements OnInit {
       if(statut_Reponse_getPageById_initial) {
         clearInterval(d);
 
-        this.Reponse_getUserById.subscribe((data) => {
-          this.router.events.subscribe((path: any) => {
+        this.subscribe = this.Reponse_getPageById.subscribe((data) => {
+          this.subscribe = this.router.events.subscribe((path: any) => {
             if(path.url !== undefined && path.url !== this.one) {
               this.one = path.url;
               this.ngOnInit();
@@ -191,7 +190,8 @@ export class SelectedPageManagementComponent implements OnInit {
 
       var name: string = "faviconPage" + Math.random() * 1000 + ".ico";
       if(event.target.files[0] !==undefined) {
-        this.uploadApi.UploadFile(event.target.files[0], name).subscribe(event => {
+        this.uploadApi.token = this._currentUser.token;
+        this.subscribe = this.uploadApi.UploadFile(event.target.files[0], name).subscribe(event => {
           this.statutButton = true;
           var load: any = event;
           var a: number = load.loaded * 100 / load.total;
@@ -233,7 +233,8 @@ export class SelectedPageManagementComponent implements OnInit {
         reader.readAsDataURL(file);
       })
       var name: string = "faviconPage" + Math.random() * 1000 + ".ico";
-      (event.files[0].fileEntry as FileSystemFileEntry).file((file: File) => { this.uploadApi.UploadFile(file, name).subscribe(event => {
+      this.uploadApi.token = this._currentUser.token;
+      (event.files[0].fileEntry as FileSystemFileEntry).file((file: File) => { this.subscribe = this.uploadApi.UploadFile(file, name).subscribe(event => {
         this.statutButton = true;
         var load: any = event;
         var a: number = load.loaded * 100 / load.total;
@@ -272,7 +273,8 @@ export class SelectedPageManagementComponent implements OnInit {
       if(!this._currentUser.group.rightGroupPage.SelectedPageManagement_EditNeedLogIn)
         this.page.needLogIn = this.initial_page.needLogIn;
 
-      this.pageApi.putPage(this.page.id, this.page).subscribe((data) => { 
+      this.pageApi.token = this._currentUser.token;
+      this.subscribe = this.pageApi.putPage(this.page.id, this.page).subscribe((data) => { 
         if(data.ok)
           this.location.back();
       });
@@ -290,5 +292,12 @@ export class SelectedPageManagementComponent implements OnInit {
   private clearValue(data: string): void {
     this.SelectedPageManagementForm.get(data).setValue("");
     this.InputChange(this.SelectedPageManagementForm.value);
+  }
+
+  // Traitement a la fermeture de l'application
+  public ngOnDestroy(): void {
+    this.statut = false;
+    if(this.subscribe !== undefined)
+      this.subscribe.unsubscribe();
   }
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpEvent } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { map } from 'rxjs/operators';
 
@@ -12,6 +12,7 @@ import { Observable } from 'rxjs';
 })
 export class RightGroupPageService {
   private Api: string = environment.apiUrl + "RightGroupPage/";
+  public token: string = null;
 
   constructor(private http: HttpClient) { }
 
@@ -30,7 +31,7 @@ export class RightGroupPageService {
   public getRightGroupPageList(): Observable<HttpEvent<Object>> {
     console.log("GET / RIGHTGROUPPAGE / getRightGroupPageList");
 
-    return this.http.get(this.Api, { observe: 'events' });
+    return this.http.get(this.Api, { headers: new HttpHeaders().set('Authorization', this.token), observe: 'events' });
   }
 
   public putRightGroupPage(id: number, rightGroupPage: RightGroupPage): void {

@@ -18,7 +18,7 @@
         </mat-form-field>
 
         <mat-form-field class="example-form-field" style="margin-top: 10px;">
-            <input matInput type="number" formControlName="refresh" placeholder="Temps de refresh des données de la page" #refresh>
+            <input matInput type="number" class="just_number" formControlName="refresh" placeholder="Temps de refresh des données de la page" #refresh >
             <mat-icon *ngIf="refresh.value" mat-button matSuffix mat-icon-button (click)="clearValue('refresh')">close</mat-icon>
         </mat-form-field>
 

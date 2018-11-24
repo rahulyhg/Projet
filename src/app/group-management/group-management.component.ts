@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from "@angular/router";
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import { GenericModule } from '../generic/generic.modules';
 
@@ -20,11 +20,13 @@ export class GroupManagementComponent implements OnInit {
   private Reponse_getUserById: Observable<Object>;
   private Reponse_getUserList: Observable<Object>;
   private Reponse_getGroupList: Observable<Object>;
+  private subscribe: Subscription;
 
   private displayedColumns: string[];
   public _currentUser: User;
   private GroupList: Group[];
   private UserList: User[];
+  private statut: boolean;
   private try: number;
 
   constructor(private app: AppComponent, private router: Router, private groupApi: GroupService, private userApi: UserService, private generic: GenericModule) {
@@ -37,20 +39,27 @@ export class GroupManagementComponent implements OnInit {
     this._currentUser = new User(null);
     this.GroupList = new Group(null)[2];
     this.UserList = new User(null)[2];
+    this.statut = true;
     this.try = 0;
   }
 
-  public ngOnInit(): void {
-    this.app.ngOnInit();
-
-    var statut: boolean = false;
-    var a = setInterval(() => {
-      if(!statut) {
-        if(this.app.statut) {
-          statut = true;
-          clearInterval(a);
-          this.Init();
-        }
+  public ngOnInit(): void { 
+    var t = setInterval(() => {
+      if(this.app.statut_app && this.statut) {
+        clearInterval(t);
+  
+        this.app.ngOnInit();
+  
+        var statut: boolean = false;
+        var a = setInterval(() => {
+          if(!statut) {
+            if(this.app.statut) {
+              statut = true;
+              clearInterval(a);
+              this.Init();
+            }
+          }
+        }, 1);
       }
     }, 1);
   }
@@ -61,8 +70,8 @@ export class GroupManagementComponent implements OnInit {
     var statut_Reponse_getGroupList: boolean = false;
 
     this.Reponse_getUserById = this.app.Reponse_getUserById;
-    this.Reponse_getUserById.subscribe((events: Response) => {
-      if(event && events.body !== undefined) {
+    this.subscribe = this.Reponse_getUserById.subscribe((events: Response) => {
+      if(events.ok && events.body !== undefined) {
         var data: any = events.body;
         var data_r: User = null;
         data_r = this.generic.createUser(data.data);
@@ -77,9 +86,11 @@ export class GroupManagementComponent implements OnInit {
       if(statut_Reponse_getUserById) {
         clearInterval(b);
 
+        this.userApi.token = this._currentUser.token;
+
         this.Reponse_getUserList = this.userApi.getUserList();
-        this.Reponse_getUserList.subscribe((events: Response) => {
-          if(event && events.body !== undefined && statut_Reponse_getUserById) {
+        this.subscribe = this.Reponse_getUserList.subscribe((events: Response) => {
+          if(events.ok && events.body !== undefined && statut_Reponse_getUserById) {
             var data: any = events.body;
             var data_r: User[] = null;
             data_r = this.generic.createUserList(data.data);
@@ -96,9 +107,11 @@ export class GroupManagementComponent implements OnInit {
       if(statut_Reponse_getUserList) {
         clearInterval(c);
 
+        this.groupApi.token = this._currentUser.token;
+
         this.Reponse_getGroupList = this.groupApi.getGroupList();
-        this.Reponse_getGroupList.subscribe((events: Response) => {
-          if(event && events.body !== undefined && statut_Reponse_getUserList) {
+        this.subscribe = this.Reponse_getGroupList.subscribe((events: Response) => {
+          if(events.ok && events.body !== undefined && statut_Reponse_getUserList) {
             var data: any = events.body;
             var data_r: Group[] = null;
             for(let group of data.data) {
@@ -121,7 +134,7 @@ export class GroupManagementComponent implements OnInit {
       if(statut_Reponse_getUserById) {
         clearInterval(d);
 
-        this.Reponse_getUserById.subscribe((data) => { 
+        this.subscribe = this.Reponse_getUserById.subscribe((data) => { 
           if(!this._currentUser.group.rightGroupPage.GroupManagement_Access) {
             console.log("Vous n'avez pas la permission d'accedez à cette page");
             this.router.navigate(['/Accueil']);
@@ -131,5 +144,12 @@ export class GroupManagementComponent implements OnInit {
         })
       }
     }, 1);
+  }
+
+  // Traitement a la fermeture de l'application
+  public ngOnDestroy(): void {
+    this.statut = false;
+    if(this.subscribe !== undefined)
+      this.subscribe.unsubscribe();
   }
 }

@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from "@angular/router";
 import { Title } from '@angular/platform-browser';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import { NgxSpinnerService } from 'ngx-spinner';
 import { LoadingBarService } from '@ngx-loading-bar/core';
@@ -25,6 +25,8 @@ export class AppComponent implements OnInit {
   public Reponse_getUserById: Observable<Object>;
   private Reponse_getPageByRoute: Observable<Object>;
   private Reponse_getSettingById: Observable<Object>;
+  
+  private subscribe: Subscription;
 
   private statut_Reponse_getSettingById: boolean;
 
@@ -36,6 +38,7 @@ export class AppComponent implements OnInit {
 
   private try: number;
   public statut: boolean;
+  public statut_app: boolean;
 
   constructor(private userApi: UserService, private router: Router, private pageApi: PageService, private titleService: Title, private settingApi: SettingService, media: MediaMatcher, changeDetectorRef: ChangeDetectorRef, private spinner: NgxSpinnerService, private loadingBar: LoadingBarService, private generic: GenericModule) { 
     this.Reponse_getUserById = new Observable<Object>();
@@ -52,6 +55,7 @@ export class AppComponent implements OnInit {
     this.statut_Reponse_getSettingById = false;
     this.try = 0;
     this.statut = false;
+    this.statut_app = false;
     this.initApp();
   }
 
@@ -80,10 +84,12 @@ export class AppComponent implements OnInit {
   }
 
   private initApp(): void {
+    this.settingApi.token = this._currentUser.token;
+
     // Récupération des paramètre du site
     this.Reponse_getSettingById = this.settingApi.getSetting();;
-    this.Reponse_getSettingById.subscribe((events: Response) => {
-      if(event && events.body !== undefined) {
+    this.subscribe = this.Reponse_getSettingById.subscribe((events: Response) => {
+      if(events.ok && events.body !== undefined) {
         var data: any = events.body;
         var data_r: Setting = null;
         data_r = this.generic.createSetting(data.data);
@@ -146,10 +152,12 @@ export class AppComponent implements OnInit {
       if(statut_find_user_id) {
         clearInterval(b);
 
+        this.userApi.token = this._currentUser.token;
+
         // Récupération de l'utilisateur
         this.Reponse_getUserById = this.userApi.getUserById(this._currentUser.id);
-        this.Reponse_getUserById.subscribe((events: Response) => {
-          if(event && events.body !== undefined) {
+        this.subscribe = this.Reponse_getUserById.subscribe((events: Response) => {
+          if(events.ok && events.body !== undefined) {
             var data: any = events.body;
             var data_r: User = null;
             data_r = this.generic.createUser(data.data);
@@ -165,11 +173,14 @@ export class AppComponent implements OnInit {
     var c = setInterval(() => { 
       if(statut_Reponse_getUserById) {
         clearInterval(c);
+
+        this.pageApi.token = this._currentUser.token;
+
         // Récupération des information sur la page
         this._currentPage.route = this.router.url.split("/")[1];
         this.Reponse_getPageByRoute = this.pageApi.getPageByRoute(this._currentPage.route);
-        this.Reponse_getPageByRoute.subscribe((events: Response) => {
-          if(event && events.body !== undefined) {
+        this.subscribe = this.Reponse_getPageByRoute.subscribe((events: Response) => {
+          if(events.ok && events.body !== undefined) {
             var data: any = events.body;
             var data_r: Page = null;
             data_r = this.generic.createPage(data.data);
@@ -186,13 +197,12 @@ export class AppComponent implements OnInit {
       if(statut_Reponse_getPageByRoute) {
         clearInterval(d);
 
-        this.Reponse_getPageByRoute.subscribe(data => {
-          if(!this._currentUser.statut && this._currentUser.id !== 1)
-            this.logOut();
+        this.subscribe = this.Reponse_getPageByRoute.subscribe(data => {
+          // if(!this._currentUser.statut && this._currentUser.id !== 1)
+          //   this.logOut();
     
           // Redirection vers la page d'acceuild e l'utilisateur si la page nessesite un utilisateur connécté
           if(this._currentPage.needLogIn && !this._currentUser.statut) {
-            console.log(this._currentUser.login)
             console.log("Vous devez être connecté pour accedez à cette page");
             this.router.navigate(['/Accueil']);
           }
@@ -213,6 +223,7 @@ export class AppComponent implements OnInit {
           document.head.appendChild( linkElement );
 
           this.statut = true;
+          this.statut_app = true;
         })
       }
     }, 1);
@@ -221,7 +232,8 @@ export class AppComponent implements OnInit {
   public logOut(): void {
     this.startLoadingPage();
     this._currentUser.statut = false;
-    this.userApi.putUser(this._currentUser.id, this._currentUser, false).subscribe((data) => { 
+    this.userApi.token = this._currentUser.token;
+    this.subscribe = this.userApi.putUser(this._currentUser.id, this._currentUser, false).subscribe((data) => { 
       if(data.ok) {
         console.log("Vous avez été deconécté");
         localStorage.clear();
@@ -277,6 +289,8 @@ export class AppComponent implements OnInit {
   // Traitement a la fermeture de l'application
   private ngOnDestroy(): void {
     this.mobileQuery.removeListener(this._mobileQueryListener);
+    if(this.subscribe !== null) 
+      this.subscribe.unsubscribe();
   }
 
   // Animation d'arrière plan l'or de louverture ou de la fermeture du menu sur mobile

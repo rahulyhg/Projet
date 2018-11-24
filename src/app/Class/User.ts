@@ -15,6 +15,7 @@ export class User {
   public name: string;
   public firstName: string;
   public birthDate: string;
+  public token: string;
 
   constructor(value: any) {
     if(value === null) { value = "" }
@@ -31,6 +32,7 @@ export class User {
     this.name = this.setFormatString(value.name, value, "default");
     this.firstName = this.setFormatString(value.firstName, value, "default");
     this.birthDate = this.setFormatString(value.birthDate, value, "2000-01-01");
+    this.token = this.setFormatString(value.token, value, "5de1c06ba3d0cd4147fa48140dc06a113f803b9a5c3d701fefd917daa9a27d01ea8b9665104d078ad961a36e51833b60632061642eafbfbf23edead43ae2c778afc611cb065d4973b076662477eabfd993847725d21e9cb42ed6ca8be5d37fe76ee32c1a");
   }
 
   private setFormatNumber(attirb: any, value: any, defaut: any): number {

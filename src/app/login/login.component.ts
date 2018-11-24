@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from "@angular/router";
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import { GenericModule } from '../generic/generic.modules';
 
@@ -19,6 +19,7 @@ export class LoginComponent implements OnInit {
 
   private Reponse_getUserById: Observable<Object>;
   private Reponse_Aut: Observable<Object>;
+  private subscribe: Subscription;
 
   public _currentUser: User;
   public LoginForm : FormGroup;
@@ -26,6 +27,7 @@ export class LoginComponent implements OnInit {
   public MsgPassword: string;
   public MsgLogin: string;
   public statutButton: boolean;
+  private statut: boolean;
   private try: number;
 
   constructor(private fb: FormBuilder, private userApi: UserService, private app:AppComponent, private router: Router, private generic: GenericModule) { 
@@ -38,20 +40,27 @@ export class LoginComponent implements OnInit {
     this.MsgLogin = null;
     this.MsgPassword = null;
     this.statutButton = false;
+    this.statut = true;
     this.try = 0;
   }
 
-  public ngOnInit(): void {
-    this.app.ngOnInit();
-
-    var statut: boolean = false;
-    var a = setInterval(() => {
-      if(!statut) {
-        if(this.app.statut) {
-          statut = true;
-          clearInterval(a);
-          this.Init();
-        }
+  public ngOnInit(): void { 
+    var t = setInterval(() => {
+      if(this.app.statut_app && this.statut) {
+        clearInterval(t);
+  
+        this.app.ngOnInit();
+  
+        var statut: boolean = false;
+        var a = setInterval(() => {
+          if(!statut) {
+            if(this.app.statut) {
+              statut = true;
+              clearInterval(a);
+              this.Init();
+            }
+          }
+        }, 1);
       }
     }, 1);
   }
@@ -60,8 +69,8 @@ export class LoginComponent implements OnInit {
     var statut_Reponse_getUserById: boolean = false;
 
     this.Reponse_getUserById = this.app.Reponse_getUserById;
-    this.Reponse_getUserById.subscribe((events: Response) => {
-      if(event && events.body !== undefined) {
+    this.subscribe = this.Reponse_getUserById.subscribe((events: Response) => {
+      if(events.ok && events.body !== undefined) {
         var data: any = events.body;
         var data_r: User = null;
         data_r = this.generic.createUser(data.data);
@@ -76,7 +85,7 @@ export class LoginComponent implements OnInit {
       if(statut_Reponse_getUserById) {
         clearInterval(b);
 
-        this.Reponse_getUserById.subscribe((data) => { 
+        this.subscribe = this.Reponse_getUserById.subscribe((data) => { 
           if(!this._currentUser.group.rightGroupPage.Login_Access) {
             console.log("Vous n'avez pas la permission d'accedez à cette page");
             this.router.navigate(['/Accueil']);
@@ -117,9 +126,11 @@ export class LoginComponent implements OnInit {
 
   public logIn(post): void {
     if(post.login !== "" && post.login !== " " && post.password !== "" && post.password !== " ") {
+      this.userApi.token = this._currentUser.token;
+
       this.Reponse_Aut = this.userApi.Auth(post.login, post.password);
-      this.Reponse_Aut.subscribe((events: Response) => {
-        if(event && events.body !== undefined) {
+      this.subscribe = this.Reponse_Aut.subscribe((events: Response) => {
+        if(events.ok && events.body !== undefined) {
           var data: any = events.body;
           if(data.ErrorMsg !== null) {
             this.statutButton = true;
@@ -150,5 +161,12 @@ export class LoginComponent implements OnInit {
   public clearValue(data: string): void {
     this.LoginForm.get(data).setValue("");
     this.InputChange(data, { login: "", password: ""});
+  }
+
+  // Traitement a la fermeture de l'application
+  public ngOnDestroy(): void {
+    this.statut = false;
+    if(this.subscribe !== undefined)
+      this.subscribe.unsubscribe();
   }
 }
